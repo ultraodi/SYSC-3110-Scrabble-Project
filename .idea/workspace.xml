@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03a1d6c4-b4e2-4be5-a674-4e8fbe681133" name="Changes" comment="Added Javadoc comments. The code here is irrelevant to the project as of now" />
+    <list default="true" id="03a1d6c4-b4e2-4be5-a674-4e8fbe681133" name="Changes" comment="Added Javadoc comments. The code here is irrelevant to the project as of now">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,9 +56,9 @@
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project",
     "onboarding.tips.debug.path": "/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project/src/src/Main.java",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
