@@ -1,0 +1,48 @@
+In Scrabble, each letter is assigned a point value based on its frequency of use in the English language. Here's a breakdown of the point value and frequency for each letter in Scrabble:
+
+| Letter | Frequency (Number of Tiles) | Point Value |
+|--------|------------------------------|-------------|
+| A      | 9                            | 1           |
+| B      | 2                            | 3           |
+| C      | 2                            | 3           |
+| D      | 4                            | 2           |
+| E      | 12                           | 1           |
+| F      | 2                            | 4           |
+| G      | 3                            | 2           |
+| H      | 2                            | 4           |
+| I      | 9                            | 1           |
+| J      | 1                            | 8           |
+| K      | 1                            | 5           |
+| L      | 4                            | 1           |
+| M      | 2                            | 3           |
+| N      | 6                            | 1           |
+| O      | 8                            | 1           |
+| P      | 2                            | 3           |
+| Q      | 1                            | 10          |
+| R      | 6                            | 1           |
+| S      | 4                            | 1           |
+| T      | 6                            | 1           |
+| U      | 4                            | 1           |
+| V      | 2                            | 4           |
+| W      | 2                            | 4           |
+| X      | 1                            | 8           |
+| Y      | 2                            | 4           |
+| Z      | 1                            | 10          |
+| Blank  | 2 (wildcards, no points)     | 0           |
+
+### Key Points:
+- Common letters like **E**, **A**, **I**, **O**, **N**, **R**, **T**, **L**, and **S** have lower point values but appear more frequently.
+- Rare letters like **Q**, **Z**, **J**, and **X** are worth more points but are much less frequent.
+- Blanks (wildcards) can be used as any letter but have no point value.
+
+For further study on Scrabble letter distribution and point allocation:
+1. *Word Freak* by Stefan Fatsis (Book)  
+   https://www.goodreads.com/book/show/46842.Word_Freak
+2. *The Official Scrabble Players Dictionary* by Merriam-Webster (Book)  
+   https://www.amazon.com/Official-Scrabble-Players-Dictionary-Merriam-Webster/dp/0877795967
+3. "History of Scrabble" (Article)  
+   https://www.scrabble-assoc.com/info/history.html
+4. "Scrabble Letter Distribution" (Article)  
+   https://en.wikipedia.org/wiki/Scrabble_letter_distributions
+5. *The Mathematics of Scrabble* by Tanya Khovanova (Research Paper)  
+   https://arxiv.org/abs/1001.0062
