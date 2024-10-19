@@ -7,10 +7,15 @@ public class Square {
      * Triple Word, Triple Letter, Double Word, Double Letter, and the normal squares.
      */
     public enum Types {
+        /** Represents Triple Word on the board*/
         TRIPLE_WORD,
+        /** Represents Triple Letter on the board*/
         TRIPLE_LETTER,
+        /** Represents Double Word on the board*/
         DOUBLE_WORD,
+        /** Represents Double Letter on the board*/
         DOUBLE_LETTER,
+        /** Represents normal squares on the board*/
         NORMAL
     }
 
