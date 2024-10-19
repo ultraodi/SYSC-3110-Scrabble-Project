@@ -103,6 +103,7 @@
 +Square()
 +placeTile(tile: Tile): void
 +getType(): Square.Types
++getPlacedTile(): Tile
 </string>
      </void>
     </void>
