@@ -188,7 +188,7 @@
 -&lt;u&gt;validWordsURL: String = &quot;https://www.mit.edu/~ecprice/wordlist.10000&quot;&lt;/u&gt;
 -validWordsFile: String = &quot;valid_words.txt&quot;;
 -validWords: HashSet&lt;String&gt;
--currentWord: String</string>
+-currentValidWord: String</string>
      </void>
     </void>
     <void property="methods">

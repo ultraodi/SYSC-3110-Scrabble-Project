@@ -26,6 +26,8 @@ public class ScrabbleGame {
     private ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
+    /** URL string*/
+    private final String validWordsURLString = "https://www.mit.edu/~ecprice/wordlist.10000";
     /** Holds the file path for the text file containing the valid words*/
     private final String validWordsFile = "valid_words.txt";
     /** Holds a set of valid words*/
@@ -50,14 +52,16 @@ public class ScrabbleGame {
         scrabbleBoard = new ScrabbleBoard();
         tileBag = new TileBag();
         plays = new ArrayList<>();
+        playerTurn = null;
         // The URL class throws the MalformedURLException so the program is required to handle it.
         try {
-            validWordsURL = new URL("https://www.mit.edu/~ecprice/wordlist.10000");
+            validWordsURL = new URL(validWordsURLString);
             validWords = getValidWordsFromUrl();
         } catch (Exception e) {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
+        currentValidWord = "";
         playerInputWord = "";
         playerInputBoardPosition = "";
 
@@ -190,7 +194,6 @@ public class ScrabbleGame {
                     Integer.parseInt(row, 16);
                     Integer.parseInt(col, 16);
                 } catch (Exception e) {
-                    System.out.println("There's an issue here.");
                     return false;
                 }
             }
@@ -206,6 +209,7 @@ public class ScrabbleGame {
      * @return true if the word is valid. false otherwise.
      */
     private boolean isValidWord(String word) {
+        if (word == null) {return false;}
         return validWords.contains(word.toLowerCase());
     }
 
