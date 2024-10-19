@@ -12,7 +12,8 @@
     <void property="methods">
      <void property="text">
       <string>+ScrabbleBoard()
-+drawBoard(): void</string>
++drawBoard(): void
++toString(): String</string>
      </void>
     </void>
     <void property="name">

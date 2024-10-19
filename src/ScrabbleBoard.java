@@ -171,7 +171,7 @@ public class ScrabbleBoard {
     }
 
     public static void main(String[] args) {
-        ScrabbleBoard board = new ScrabbleBoard();
-        System.out.println(board);
+        ScrabbleBoard board1 = new ScrabbleBoard();
+        board1.drawBoard();
     }
 }
