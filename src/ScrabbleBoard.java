@@ -91,6 +91,41 @@ public class ScrabbleBoard {
             board[13 - i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
             board[13 - i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
         }
+
+        // Double Letter Squares
+        board[3][0] = new Square(Square.Types.DOUBLE_LETTER);
+        board[11][0] = new Square(Square.Types.DOUBLE_LETTER);
+        board[6][2] = new Square(Square.Types.DOUBLE_LETTER);
+        board[8][2] = new Square(Square.Types.DOUBLE_LETTER);
+        board[0][3] = new Square(Square.Types.DOUBLE_LETTER);
+        board[7][3] = new Square(Square.Types.DOUBLE_LETTER);
+        board[14][3] = new Square(Square.Types.DOUBLE_LETTER);
+        board[2][6] = new Square(Square.Types.DOUBLE_LETTER);
+        board[6][6] = new Square(Square.Types.DOUBLE_LETTER);
+        board[8][6] = new Square(Square.Types.DOUBLE_LETTER);
+        board[12][6] = new Square(Square.Types.DOUBLE_LETTER);
+        board[3][7] = new Square(Square.Types.DOUBLE_LETTER);
+        board[11][7] = new Square(Square.Types.DOUBLE_LETTER);
+        board[3][14] = new Square(Square.Types.DOUBLE_LETTER);
+        board[11][14] = new Square(Square.Types.DOUBLE_LETTER);
+        board[6][12] = new Square(Square.Types.DOUBLE_LETTER);
+        board[8][12] = new Square(Square.Types.DOUBLE_LETTER);
+        board[0][11] = new Square(Square.Types.DOUBLE_LETTER);
+        board[7][11] = new Square(Square.Types.DOUBLE_LETTER);
+        board[14][11] = new Square(Square.Types.DOUBLE_LETTER);
+        board[2][8] = new Square(Square.Types.DOUBLE_LETTER);
+        board[6][8] = new Square(Square.Types.DOUBLE_LETTER);
+        board[8][8] = new Square(Square.Types.DOUBLE_LETTER);
+        board[12][8] = new Square(Square.Types.DOUBLE_LETTER);
+
+        // Normal Squares
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (board[i][j] == null) {
+                    board[i][j] = new Square(Square.Types.NORMAL);
+                }
+            }
+        }
     }
 
     public void drawBoard() {
