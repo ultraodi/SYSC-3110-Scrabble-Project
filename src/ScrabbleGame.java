@@ -28,6 +28,7 @@ public class ScrabbleGame {
         tileBag = new TileBag();
         plays = new ArrayList<>();
 
+        String name = "";
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
         }
