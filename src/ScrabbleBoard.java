@@ -139,8 +139,8 @@ public class ScrabbleBoard {
         boardString = boardString.concat("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
         for (int i = 1; i <= SIZE; i++) {
-            boardString = boardString.concat("   -------------------------------------------------------------------------------------------");
-            boardString = boardString.concat(Integer.toHexString(i).toUpperCase() + " |");
+            boardString = boardString.concat("   -------------------------------------------------------------------------------------------\n");
+            boardString = boardString.concat(" ".concat(Integer.toHexString(i).toUpperCase() + " |"));
             for (int j = 0; j < SIZE; j++) {
                 Square.Types type = board[i - 1][j].getType();
                 switch (type) {
