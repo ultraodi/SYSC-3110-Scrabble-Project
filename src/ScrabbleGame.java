@@ -164,6 +164,10 @@ public class ScrabbleGame {
         playerInput = inputWord.nextLine();
     }
 
+    /**
+     * Parses through the user's input and checks for errors.
+     * @return Returns true if both word and board position parameters are valid. Returns false if board position is out of range.
+     */
     private boolean parseInputPlay() {
         String _tempWord = "";
         String _tempPosition = "";
@@ -196,6 +200,11 @@ public class ScrabbleGame {
         return true;
     }
 
+    /**
+     * Determines if a word is in the list of valid words.
+     * @param word The word to check
+     * @return true if the word is valid. false otherwise.
+     */
     private boolean isValidWord(String word) {
         return validWords.contains(word.toLowerCase());
     }
