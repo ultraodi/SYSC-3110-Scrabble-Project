@@ -45,7 +45,7 @@ public class ScrabbleGame {
         try {
             validWordsURL = new URL("https://www.mit.edu/~ecprice/wordlist.10000");
             /*validWords = getValidWordsFromUrl();*/
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
