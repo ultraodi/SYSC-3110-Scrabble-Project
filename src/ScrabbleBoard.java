@@ -168,7 +168,8 @@ public class ScrabbleBoard {
                     default:
                         System.out.println("No Square type of that type.");
                 }
-                boardString = boardString.concat(board[row][col].String.format(" %s |", stringRep));
+                Square _square = board[row -1][col];
+                boardString = boardString.concat((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep));
             }
             boardString = boardString.concat("\n");
         }
