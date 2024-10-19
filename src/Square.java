@@ -1,5 +1,8 @@
 /**
  * The Square class models the squares on a Scrabble Board.
+ *
+ * @author Marvel Adotse-ogah
+ * @version October 18, 2024
  */
 public class Square {
     /**
