@@ -21,7 +21,6 @@ public class Square {
         /** Represents normal squares on the board*/
         NORMAL
     }
-
     /**
      * The tile on this square on the board.
      */
