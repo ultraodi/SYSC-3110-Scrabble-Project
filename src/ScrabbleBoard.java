@@ -151,12 +151,12 @@ public class ScrabbleBoard {
     @Override
     public String toString() {
         String stringRep = "";
-        String boardString = "";
-        boardString = boardString.concat("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
+        StringBuilder boardString = new StringBuilder();
+        boardString.append("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
         for (int row = 1; row <= SIZE; row++) {
-            boardString = boardString.concat("   -------------------------------------------------------------------------------------------\n");
-            boardString = boardString.concat(" ".concat(Integer.toHexString(row).toUpperCase() + " |"));
+            boardString.append("   -------------------------------------------------------------------------------------------\n");
+            boardString.append(" ".concat(Integer.toHexString(row).toUpperCase() + " |"));
             for (int col = 0; col < SIZE; col++) {
                 Square.Types type = board[row - 1][col].getType();
                 switch (type) {
@@ -182,12 +182,12 @@ public class ScrabbleBoard {
                         System.out.println("No Square type of that type.");
                 }
                 Square _square = board[row -1][col];
-                boardString = boardString.concat((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep));
+                boardString.append((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep));
             }
-            boardString = boardString.concat("\n");
+            boardString.append("\n");
         }
-        boardString = boardString.concat("   -------------------------------------------------------------------------------------------\n");
-        return boardString;
+        boardString.append("   -------------------------------------------------------------------------------------------\n");
+        return boardString.toString();
     }
 
     public static void main(String[] args) {
