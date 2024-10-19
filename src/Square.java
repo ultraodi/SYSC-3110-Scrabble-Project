@@ -3,44 +3,55 @@
  */
 public class Square {
     /**
-     * Represent the scrabble Triple Word (TW) square on the board.
+     * Represents all the possible types for the square such as
+     * Triple Word, Triple Letter, Double Word, Double Letter, and the normal squares.
      */
-    public static final int TRIPLE_WORD = 4;
-    /**
-     * Represent the scrabble Triple Letter (TL) square on the board.
-     */
-    public static final int TRIPLE_LETTER = 3;
-    /**
-     * Represent the scrabble Double Word (DW) square on the board.
-     */
-    public static final int DOUBLE_WORD = 2;
-    /**
-     * Represent the scrabble Double Letter (DL) square on the board.
-     */
-    public static final int DOUBLE_LETTER = 1;
-    /**
-     * Represent the scrabble normal square on the board. A square with not special
-     * rules.
-     */
-    public static final int NORMAL = 0;
+    public enum Types {
+        TRIPLE_WORD,
+        TRIPLE_LETTER,
+        DOUBLE_WORD,
+        DOUBLE_LETTER,
+        NORMAL
+    }
 
-
+    /**
+     * The tile on this square on the board.
+     */
     private Tile placedTile;
-    private int squareType;
+    /**
+     * The variable that holds the square type (Double Word, Double Letter, e.t.c.) for a square on the board.
+     */
+    private Square.Types squareType;
 
-    public Square(int type) {
+    /**
+     * Constructor for this Class.
+     * @param type The type designated using the static variables defined in this class.
+     */
+    public Square(Square.Types type) {
         this.squareType = type;
+        this.placedTile = null;
     }
 
+    /**
+     * Constructor for this Class. Creates a normal square.
+     */
     public Square() {
-        this.squareType = NORMAL;
+        this.squareType = Types.NORMAL;
     }
 
+    /**
+     * Assigns the tile placed on this square.
+     * @param tile The tile placed on the square.
+     */
     public void placeTile(Tile tile) {
         this.placedTile = tile;
     }
 
-    public int getType() {
+    /**
+     * Gets the type of this square.
+     * @return The type of square.
+     */
+    public Square.Types getType() {
         return squareType;
     }
 }
