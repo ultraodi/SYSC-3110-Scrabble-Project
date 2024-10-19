@@ -63,4 +63,12 @@ public class Square {
     public Square.Types getType() {
         return squareType;
     }
+
+    /**
+     * Gets the tile placed on this square.
+     * @return The tile placed on this square
+     */
+    public Tile getPlacedTile() {
+        return placedTile;
+    }
 }
