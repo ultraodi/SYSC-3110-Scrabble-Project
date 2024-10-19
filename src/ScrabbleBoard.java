@@ -134,14 +134,44 @@ public class ScrabbleBoard {
 
     @Override
     public String toString() {
+        String stringRep = "";
         String boardString = "";
         boardString = boardString.concat("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
         for (int i = 1; i <= SIZE; i++) {
-
+            boardString = boardString.concat("   -------------------------------------------------------------------------------------------");
+            boardString = boardString.concat(Integer.toHexString(i).toUpperCase() + " |");
+            for (int j = 0; j < SIZE; j++) {
+                Square.Types type = board[i - 1][j].getType();
+                switch (type) {
+                    case NORMAL:
+                        stringRep = "   ";
+                        break;
+                    case DOUBLE_LETTER:
+                        stringRep = "DLR";
+                        break;
+                    case DOUBLE_WORD:
+                        stringRep = "DWD";
+                        break;
+                    case TRIPLE_LETTER:
+                        stringRep = "TLR";
+                        break;
+                    case TRIPLE_WORD:
+                        stringRep = "TWD";
+                        break;
+                    default:
+                        System.out.println("No Square type of that type.");
+                }
+                boardString = boardString.concat(String.format(" %s |", stringRep));
+            }
+            boardString = boardString.concat("\n");
         }
 
         return boardString;
     }
 
+    public static void main(String[] args) {
+        ScrabbleBoard board = new ScrabbleBoard();
+        System.out.println(board);
+    }
 }
