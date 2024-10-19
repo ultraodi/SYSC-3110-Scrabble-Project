@@ -1,9 +1,17 @@
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
  * game Scrabble.
- * @author Clinton Odinamadu, Abdul Babatunde, Marvel Adotse-ogah
+ * @author Clinton Odinamadu
+ * @author Abdul Babatunde
+ * @author Marvel Adotse-ogah
  * @version October 19, 2024
  */
 public class ScrabbleGame {
@@ -17,6 +25,12 @@ public class ScrabbleGame {
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
     private ArrayList<Play> plays;
+    /** Holds the URL from which the validWords set will be generated from*/
+    private final URL validWordsURL;
+    /** Holds a set of valid words*/
+    private HashSet<String> validWords;
+    /** Holds the current word played*/
+    private String currentWord;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -27,11 +41,21 @@ public class ScrabbleGame {
         scrabbleBoard = new ScrabbleBoard();
         tileBag = new TileBag();
         plays = new ArrayList<>();
+        try {
+            validWordsURL = new URL("https://www.mit.edu/~ecprice/wordlist.10000");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        validWords = getValidWordsFromUrl();
+        List<String> _list = new ArrayList<String>(validWords);
+        Collections.sort(_list);
+        System.out.println(_list);
+        System.out.println(_list.size());
 
-        String name = "";
+        /*String name = "";
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
-        }
+        }*/
     }
 
     /**
@@ -56,7 +80,36 @@ public class ScrabbleGame {
         return true;
     }
 
-    public static void main(String[] args) {
+    private HashSet<String> getValidWordsFromUrl() {
+        HashSet<String> returnSet = new HashSet<>();
+        BufferedReader inStream;
+        StringBuilder validWordsString = new StringBuilder();
+        try {
+            HttpURLConnection connection = (HttpURLConnection) validWordsURL.openConnection();
+            // Configures the connection's type of request. In this case, it is the GET request
+            connection.setRequestMethod("GET");
+            inStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inStreamLine;
+            while ((inStreamLine = inStream.readLine()) != null) {
+                validWordsString.append(inStreamLine.toLowerCase() + "\n");
+            }
 
+            inStream.close();
+            connection.disconnect();
+
+            Scanner validWords = new Scanner(validWordsString.toString());
+
+            while (validWords.hasNext()) {
+                returnSet.add(validWords.next().strip());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return returnSet;
+    }
+
+    public static void main(String[] args) {
+        ScrabbleGame game = new ScrabbleGame(2);
     }
 }
