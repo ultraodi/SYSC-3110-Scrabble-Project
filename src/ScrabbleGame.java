@@ -44,17 +44,11 @@ public class ScrabbleGame {
         // The URL class throws the MalformedURLException so the program is required to handle it.
         try {
             validWordsURL = new URL("https://www.mit.edu/~ecprice/wordlist.10000");
-            /*validWords = getValidWordsFromUrl();*/
+            validWords = getValidWordsFromUrl();
         } catch (Exception e) {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
-
-        List<String> _list = new ArrayList<String>(validWords);
-        Collections.sort(_list);
-        System.out.println(_list);
-        System.out.println(_list.size());
-
         /*String name = "";
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
