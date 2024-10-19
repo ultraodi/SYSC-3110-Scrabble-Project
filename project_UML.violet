@@ -91,21 +91,17 @@
    <object class="com.horstmann.violet.ClassNode" id="ClassNode2">
     <void property="attributes">
      <void property="text">
-      <string>+&lt;u&gt;TRIPLE_WORD: int = 4&lt;/u&gt;
-+&lt;u&gt;DOUBLE_WORD: int = 3&lt;/u&gt;
-+&lt;u&gt;TRIPLE_LETTER: int = 2&lt;/u&gt;
-+&lt;u&gt;DOUBLE_LETTER: int = 1&lt;/u&gt;
-+&lt;u&gt;NORMAL: int = 0&lt;/u&gt;
+      <string>+Types: enum
 -placedTile: Tile
--squareType: int</string>
+-squareType: Square.Type</string>
      </void>
     </void>
     <void property="methods">
      <void property="text">
-      <string>+Square(type: Int)
+      <string>+Square(type: Square.Types)
 +Square()
 +placeTile(tile: Tile): void
-+getType(): int
++getType(): Square.Types
 </string>
      </void>
     </void>
