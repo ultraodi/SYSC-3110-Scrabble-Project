@@ -135,6 +135,11 @@ public class ScrabbleBoard {
     @Override
     public String toString() {
         String boardString = "";
+        boardString = boardString.concat("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
+
+        for (int i = 1; i <= SIZE; i++) {
+
+        }
 
         return boardString;
     }
