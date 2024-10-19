@@ -87,7 +87,7 @@ public class ScrabbleBoard {
         // Double Word Squares
         for (int i = 0; i < 4; i++) {
             board[1 + i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
-            board[1 + i][13 - 1] = new Square(Square.Types.DOUBLE_WORD);
+            board[1 + i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
             board[13 - i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
             board[13 - i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
         }
@@ -117,6 +117,9 @@ public class ScrabbleBoard {
         board[6][8] = new Square(Square.Types.DOUBLE_LETTER);
         board[8][8] = new Square(Square.Types.DOUBLE_LETTER);
         board[12][8] = new Square(Square.Types.DOUBLE_LETTER);
+
+        // Center Square
+        board[7][7] = new Square(Square.Types.CENTER);
 
         // Normal Squares
         for (int row = 0; row < SIZE; row++) {
@@ -158,6 +161,9 @@ public class ScrabbleBoard {
                         break;
                     case TRIPLE_WORD:
                         stringRep = "TWD";
+                        break;
+                    case CENTER:
+                        stringRep = "[+]";
                         break;
                     default:
                         System.out.println("No Square type of that type.");

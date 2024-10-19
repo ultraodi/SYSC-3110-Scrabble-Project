@@ -19,7 +19,9 @@ public class Square {
         /** Represents Double Letter on the board*/
         DOUBLE_LETTER,
         /** Represents normal squares on the board*/
-        NORMAL
+        NORMAL,
+        /** Represents the center square on the board*/
+        CENTER
     }
     /**
      * The tile on this square on the board.
