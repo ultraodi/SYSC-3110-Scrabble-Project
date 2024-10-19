@@ -42,6 +42,10 @@ public class ScrabbleGame {
     private String playerInputWord;
     /** Board Position to place the played word*/
     private String playerInputBoardPosition;
+    /** Possible play directions*/
+    private enum Directions {HORIZONTAL, VERTICAL}
+    /** Play direction of a played word either horizontal or vertical*/
+    private Directions playerInputPlayDirection;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -64,12 +68,13 @@ public class ScrabbleGame {
         currentValidWord = "";
         playerInputWord = "";
         playerInputBoardPosition = "";
+        playerInputPlayDirection = Directions.HORIZONTAL;
 
         while (true) {
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
-                    System.out.println(String.format("Word: %s | Position: %s", playerInputWord, playerInputBoardPosition));
+                    System.out.println(String.format("Word: %s | Position: %s | Direction: %s", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Directions.HORIZONTAL)? "Horizontal":"Vertical"));
                 } else {
                     System.out.println("Valid Word it is not.");
                 }
@@ -175,31 +180,42 @@ public class ScrabbleGame {
     private boolean parseInputPlay() {
         String _tempWord = "";
         String _tempPosition = "";
+        String _tempDirection = "";
         String row = "";
         String col = "";
         Scanner tokenizer = new Scanner(playerInput);
-        if (tokenizer.hasNext()) {
-            _tempWord = tokenizer.next();
-            if (tokenizer.hasNext()) {
+        if (tokenizer.hasNext()) { // Checks that the play has a word
+            _tempWord = tokenizer.next(); // This allows any type of input be it numbers or special characters. A String of characters
+                                          // containing numbers or special characters will not be considered a valid word.
+            if (tokenizer.hasNext()) { // Checks that they play has coordinates
                 _tempPosition = tokenizer.next();
-                if (_tempPosition.length() != 2) {
+                if (_tempPosition.length() != 2) { // Checks that the coordinates given are exactly 2 (e.g. ff)
                     return false;
                 }
                 row = valueOf(_tempPosition.charAt(0));
                 col = valueOf(_tempPosition.charAt(1));
                 try {
-                    if (!((Integer.parseInt(row, 16) > 0) && (Integer.parseInt(col, 16) > 0))) {
+                    if (!((Integer.parseInt(row, 16) > 0) && (Integer.parseInt(col, 16) > 0))) { // Checks that the converted number is within the range of 1 to 15 (0xF)
                         return false;
                     }
-                    Integer.parseInt(row, 16);
+                    Integer.parseInt(row, 16); // Attempts to convert to Decimal and gives an error if unsuccessful
                     Integer.parseInt(col, 16);
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }
+                } catch (Exception e) {return false;} // Any issues with exceptions will result in the play made invalid
+
+                if (tokenizer.hasNext()) {
+                    _tempDirection = tokenizer.next().toLowerCase();
+                    String dir = valueOf(_tempDirection.charAt(0)); // First letter of the argument in the parameter for direction so v, vertical, and any word starting with v would work.
+                                                                    // A similar logic applies for h and horizontal
+                    if (dir.equals("h") || dir.equals("v")) {
+                        _tempDirection = dir;
+                    } else return false;
+                } else return false;
+            } else return false;
+        } else return false;
+
         playerInputWord = _tempWord.toLowerCase();
         playerInputBoardPosition = _tempPosition.toUpperCase();
+        playerInputPlayDirection = (_tempDirection.equals("h"))? Directions.HORIZONTAL : Directions.VERTICAL;
         return true;
     }
 
