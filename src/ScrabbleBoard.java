@@ -54,9 +54,9 @@ public class ScrabbleBoard {
         board = new Square[SIZE][SIZE];
 
         // Set all squares as null
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                board[i][j] = null;
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                board[row][col] = null;
             }
         }
 
@@ -119,10 +119,10 @@ public class ScrabbleBoard {
         board[12][8] = new Square(Square.Types.DOUBLE_LETTER);
 
         // Normal Squares
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (board[i][j] == null) {
-                    board[i][j] = new Square(Square.Types.NORMAL);
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (board[row][col] == null) {
+                    board[row][col] = new Square(Square.Types.NORMAL);
                 }
             }
         }
