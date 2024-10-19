@@ -3,6 +3,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+import static java.lang.String.*;
+
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
  * game Scrabble.
@@ -29,7 +31,15 @@ public class ScrabbleGame {
     /** Holds a set of valid words*/
     private HashSet<String> validWords;
     /** Holds the current word played*/
-    private String currentWord;
+    private String currentValidWord;
+    /** Input prompt for the user interface*/
+    private final String inputPrompt = "Word to play >> ";
+    /** Player input for each play*/
+    private String playerInput;
+    /** Word to play in players' input*/
+    private String playerInputWord;
+    /** Board Position to place the played word*/
+    private String playerInputBoardPosition;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -48,11 +58,22 @@ public class ScrabbleGame {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
-        /*String name = "";
-        for (int i = 0; i < numPlayers; i++) {
-            players.add(new Player());
-        }*/
-        System.out.println(getInputPlay());
+        playerInputWord = "";
+        playerInputBoardPosition = "";
+
+        while (true) {
+            getInputPlay();
+            if (parseInputPlay()) {
+                if (isValidWord(playerInputWord)) {
+                    System.out.println(String.format("Word: %s | Position: %s", playerInputWord, playerInputBoardPosition));
+                } else {
+                    System.out.println("Valid Word it is not.");
+                }
+            } else {
+                System.out.println("Not a valid Entry");
+            }
+
+        }
     }
 
     /**
@@ -134,10 +155,49 @@ public class ScrabbleGame {
         return returnSet;
     }
 
-    private String getInputPlay() {
+    /**
+     * Gets the players' input
+     */
+    private void getInputPlay() {
         Scanner inputWord = new Scanner(System.in);
-        System.out.print("Word to play >> ");
-        return inputWord.nextLine();
+        System.out.print(inputPrompt);
+        playerInput = inputWord.nextLine();
+    }
+
+    private boolean parseInputPlay() {
+        String _tempWord = "";
+        String _tempPosition = "";
+        String row = "";
+        String col = "";
+        Scanner tokenizer = new Scanner(playerInput);
+        if (tokenizer.hasNext()) {
+            _tempWord = tokenizer.next();
+            if (tokenizer.hasNext()) {
+                _tempPosition = tokenizer.next();
+                if (_tempPosition.length() != 2) {
+                    return false;
+                }
+                row = valueOf(_tempPosition.charAt(0));
+                col = valueOf(_tempPosition.charAt(1));
+                try {
+                    if (!((Integer.parseInt(row, 16) > 0) && (Integer.parseInt(col, 16) > 0))) {
+                        return false;
+                    }
+                    Integer.parseInt(row, 16);
+                    Integer.parseInt(col, 16);
+                } catch (Exception e) {
+                    System.out.println("There's an issue here.");
+                    return false;
+                }
+            }
+        }
+        playerInputWord = _tempWord.toLowerCase();
+        playerInputBoardPosition = _tempPosition.toUpperCase();
+        return true;
+    }
+
+    private boolean isValidWord(String word) {
+        return validWords.contains(word.toLowerCase());
     }
 
     public static void main(String[] args) {
