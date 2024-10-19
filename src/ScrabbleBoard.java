@@ -4,9 +4,14 @@
  * @version October 18, 2024
  */
 public class ScrabbleBoard {
+    /** The array model of the scrabble board*/
     private Square[][] board;
+    /** The dimension of the board. Since the board is a square the size is singular.*/
     public static final int SIZE = 15;
 
+    /**
+     * Constructor for the ScrabbleBoard.
+     */
     public ScrabbleBoard() {
         /*
             The concept of the board.
@@ -131,10 +136,17 @@ public class ScrabbleBoard {
         }
     }
 
+    /**
+     * Draw the board in the stdout area.
+     */
     public void drawBoard() {
         System.out.println(this);
     }
 
+    /**
+     * A string representation of the board.
+     * @return The string representation of the board.
+     */
     @Override
     public String toString() {
         String stringRep = "";
@@ -173,7 +185,6 @@ public class ScrabbleBoard {
             }
             boardString = boardString.concat("\n");
         }
-
         return boardString;
     }
 
