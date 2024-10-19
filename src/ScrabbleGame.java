@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -53,6 +52,7 @@ public class ScrabbleGame {
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
         }*/
+        System.out.println(getInputPlay());
     }
 
     /**
@@ -132,6 +132,12 @@ public class ScrabbleGame {
             System.out.println("Could not complete IO operations on " + validWordsFile);
         }
         return returnSet;
+    }
+
+    private String getInputPlay() {
+        Scanner inputWord = new Scanner(System.in);
+        System.out.print("Word to play >> ");
+        return inputWord.nextLine();
     }
 
     public static void main(String[] args) {
