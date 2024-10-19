@@ -138,11 +138,11 @@ public class ScrabbleBoard {
         String boardString = "";
         boardString = boardString.concat("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
-        for (int i = 1; i <= SIZE; i++) {
+        for (int row = 1; row <= SIZE; row++) {
             boardString = boardString.concat("   -------------------------------------------------------------------------------------------\n");
-            boardString = boardString.concat(" ".concat(Integer.toHexString(i).toUpperCase() + " |"));
-            for (int j = 0; j < SIZE; j++) {
-                Square.Types type = board[i - 1][j].getType();
+            boardString = boardString.concat(" ".concat(Integer.toHexString(row).toUpperCase() + " |"));
+            for (int col = 0; col < SIZE; col++) {
+                Square.Types type = board[row - 1][col].getType();
                 switch (type) {
                     case NORMAL:
                         stringRep = "   ";
