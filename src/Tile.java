@@ -1,3 +1,11 @@
+/**
+ * The Tile class simulates the individual tiles that can be interacted with by the users.
+ * @author Clinton Odinamadu
+ * @author Abdul Babatunde
+ * @author Marvel Adotse-ogah
+ * @version October 20, 2024
+ */
+
 public class Tile {
     private String letter;
     private int value;
@@ -9,5 +17,9 @@ public class Tile {
 
     public String getLetter() {
         return letter;
+    }
+
+    public int getValue(){
+        return value;
     }
 }
