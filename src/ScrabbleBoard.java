@@ -139,12 +139,30 @@ public class ScrabbleBoard {
 
     /**
      * Gets the tile on the square in the given position.
-     * @param row The row location of the required square
-     * @param col The column location of the required square
+     * @param row The row location of the required square tile
+     * @param col The column location of the required square tile
      * @return The tile placed on the square at the given position. Null if there is no tile on that square.
      */
     public Tile getTileOnSquare(int row, int col) {
+        if (-1 >= row || row > 14 || -1 >= col || col > 14) {
+            System.out.println("ScrabbleBoard->getTileOnSquare: invalid array access");
+            return null;
+        }
         return board[row][col].getPlacedTile();
+    }
+
+    /**
+     * Gets the square in the given position
+     * @param row The row locations of the required square
+     * @param col The column location of the required square
+     * @return The square at the given position.
+     */
+    public Square getSquare(int row, int col) {
+        if (-1 >= row || row > 14 || -1 >= col || col > 14) {
+            System.out.println("ScrabbleBoard->getSquare: invalid array access");
+            return null;
+        }
+        return board[row][col];
     }
 
     /**

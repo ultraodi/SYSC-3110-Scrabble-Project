@@ -110,7 +110,6 @@ public class ScrabbleGame {
         *   - Are there enough squares to play the word?
         *   - The letters on the board in the area of play are in the word played
         *   - The letters on the board in the area of play are already in the desired position
-        *   - Are the letters, already on the board, in the word played?
         *   - Does the player making the play have the needed tiles to complete the word given the
         *     letters already on the board?
         * - Making the play.
@@ -150,6 +149,35 @@ public class ScrabbleGame {
         }
 
         // The letters on the board in the area of play are already in the desired position
+        String dupPlayerInputWord = "".concat(playerInputWord);
+        for (Tile letter:lettersOnTheBoard) {
+            if (letter != null) {
+                if (dupPlayerInputWord.indexOf(letter.getLetter()) != lettersOnTheBoard.indexOf(letter)) {
+                    return false;
+                }
+                dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter(), "-");
+            }
+        }
+
+        // Does the player making the play have the needed tiles to complete the word given the
+        // letters already on the board?
+        String playerTiles;
+        StringBuilder playerTilesStringBuilder = new StringBuilder();
+
+        for (Tile _tile :playerTurn.getTiles()) {
+            playerTilesStringBuilder.append(_tile.getLetter());
+        }
+        playerTiles = playerTilesStringBuilder.toString();
+        for (int i = 0; i < dupPlayerInputWord.length(); i++) {
+            if (dupPlayerInputWord.charAt(i) != '-') {
+                if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)))) {
+                    playerTiles = playerTiles.replaceFirst(valueOf(dupPlayerInputWord.charAt(i)), "-");
+                } else return false;
+            }
+        }
+
+        // Making the play
+        // Taking the necessary letters from the player's tile deck when needed
 
         return true;
     }
