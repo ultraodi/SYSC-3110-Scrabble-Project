@@ -25,7 +25,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "EditableTileBag"
+        mainClass = "MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
