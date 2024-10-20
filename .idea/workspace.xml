@@ -7,6 +7,7 @@
     <list default="true" id="03a1d6c4-b4e2-4be5-a674-4e8fbe681133" name="Changes" comment="Added Javadoc comments. The code here is irrelevant to the project as of now">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/.gradle/8.7/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/demo/.gradle/8.7/checksums/checksums.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +19,11 @@
     <option name="PRINT_LINE_NUMBERS" value="true" />
     <option name="OPEN_IN_BROWSER" value="true" />
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/demo">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -35,30 +41,33 @@
     &quot;assignee&quot;: &quot;Marvel1754&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Marvel1754/Group_4_SYSC3110_Project.git&quot;,
-    &quot;accountId&quot;: &quot;7e01ab86-3a26-46ed-b750-8e739a6f7d9f&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Marvel1754/Group_4_SYSC3110_Project",
+    "accountId": "95386a79-e43c-4a2d-9dd2-30273d1938a0"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="2naZzQ3eMvyrbMGla2Dw8nRBQm5" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project/src/src/Main.java&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project",
+    "onboarding.tips.debug.path": "/Users/Marvel/Documents/Education/University/Software engineering/Third year/Fall/SYSC 3110 A - Software development project/Term work/Project/Group_4_SYSC3110_Project/src/src/Main.java",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -128,7 +137,8 @@
     <MESSAGE value="Testing remote commits" />
     <MESSAGE value="Removed test text" />
     <MESSAGE value="Added Javadoc comments. The code here is irrelevant to the project as of now" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Javadoc comments. The code here is irrelevant to the project as of now" />
+    <MESSAGE value="random" />
+    <option name="LAST_COMMIT_MESSAGE" value="random" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
