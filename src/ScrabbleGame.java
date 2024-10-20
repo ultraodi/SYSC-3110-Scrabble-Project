@@ -104,6 +104,53 @@ public class ScrabbleGame {
      * @return True if the play could be made. False if the play would not be made.
      */
     public boolean playWord() {
+        /*
+        * To implement this, initial design is to go through:
+        * - Checking if making the play is possible.
+        *   - Are there enough squares to play the word?
+        *   - The letters on the board in the area of play are in the word played
+        *   - The letters on the board in the area of play are already in the desired position
+        *   - Are the letters, already on the board, in the word played?
+        *   - Does the player making the play have the needed tiles to complete the word given the
+        *     letters already on the board?
+        * - Making the play.
+        *   - Taking the necessary letters from the player's tile deck when needed
+        *
+        * If any of the checks fail, the play cannot be made.
+        */
+        // Are there enough squares to play the word
+        Direction dir = playerInputPlayDirection;
+        int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)));
+        int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)));
+        if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) <= playerInputWord.length())) {
+            return false;
+        }
+
+        // The letters on the board in the area of play are in the word played
+        ArrayList<Tile> lettersOnTheBoard = new ArrayList<>();
+        int row;
+        int col;
+        Tile tile;
+        for (int i = 0; i < playerInputWord.length(); i++) {
+            row = dir.equals(Direction.HORIZONTAL)? rowNum + i:rowNum;
+            col = dir.equals(Direction.VERTICAL)? colNum + i:colNum;
+            tile = scrabbleBoard.getTileOnSquare(row, col);
+            if (tile != null) {
+                lettersOnTheBoard.add(tile);
+            } else {
+                lettersOnTheBoard.add(null);
+            }
+        }
+        for (Tile letter:lettersOnTheBoard) {
+            if (letter != null) {
+                if (!playerInputWord.contains(letter.getLetter())) {
+                    return false;
+                }
+            }
+        }
+
+        // The letters on the board in the area of play are already in the desired position
+
         return true;
     }
 

@@ -138,6 +138,16 @@ public class ScrabbleBoard {
     }
 
     /**
+     * Gets the tile on the square in the given position.
+     * @param row The row location of the required square
+     * @param col The column location of the required square
+     * @return The tile placed on the square at the given position. Null if there is no tile on that square.
+     */
+    public Tile getTileOnSquare(int row, int col) {
+        return board[row][col].getPlacedTile();
+    }
+
+    /**
      * Draw the board in the stdout area.
      */
     public void drawBoard() {
