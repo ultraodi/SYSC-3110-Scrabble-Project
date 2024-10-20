@@ -86,17 +86,24 @@ public class TileBag {
         // Logic to get a specific number of tiles (if needed)
         return tiles;
     }
-        public static void main(String[] args) {
-            // Create an instance of TileBag
-            TileBag tileBag = new TileBag();
 
-            // Create tiles from the specified text file
-            tileBag.createTiles();
 
-            // Retrieve and display the tiles generated
-            System.out.println("Tiles in the bag:");
-            for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
-                System.out.println("Letter: " + tile.getLetter() + ", Value: " + tile.getValue());
+    public int getNumTilesLeft() {
+        return 4;
+    }
+
+    public static void main(String[] args) {
+        // Create an instance of TileBag
+        TileBag tileBag = new TileBag();
+
+        // Create tiles from the specified text file
+        tileBag.createTiles();
+
+        // Retrieve and display the tiles generated
+        System.out.println("Tiles in the bag:");
+        for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
+            System.out.println("Letter: " + tile.getLetter() + ", Value: " + tile.getValue());
         }
     }
+
 }

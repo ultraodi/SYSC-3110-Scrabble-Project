@@ -178,7 +178,11 @@ public class ScrabbleGame {
 
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
-        for ()
+        for (int i = 0; i < playerInputWord.length(); i++) {
+            row = dir.equals(Direction.HORIZONTAL)? rowNum + i:rowNum;
+            col = dir.equals(Direction.VERTICAL)? colNum + i:colNum;
+
+        }
         return true;
     }
 
