@@ -3,6 +3,6 @@ public class Main {
         EditableTileBag tileBag = new EditableTileBag();
         tileBag.setFrequency("A", 10); // Example of editing frequency
         tileBag.setValue("A", 2); // Example of editing value
-        tileBag.printTileBagToFile("TileBag.txt");
+        tileBag.printTileBagToFile("TileBagText.txt");
     }
 }
