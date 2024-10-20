@@ -193,7 +193,9 @@
 -inputPrompt: String
 -playerInput: String
 -playerInputWord: String
--playerInputBoardPosition: String</string>
+-playerInputBoardPosition: String
+-Direction: enum = {HORIZONTAL, VERTICAL}
+-playerInputPlayDirection: Direction</string>
      </void>
     </void>
     <void property="methods">
@@ -221,19 +223,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>320.0</double>
+      <double>290.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>320.0</double>
+      <double>250.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>320.0</double>
-     <double>320.0</double>
+     <double>290.0</double>
+     <double>250.0</double>
     </void>
    </object>
   </void>
