@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ * Represents a player in the Scrabble game.
+ * Each player has a name, a set of tiles, a score, and access to the tile bag.
+ */
 public class Player {
 
     // Tile Bag
@@ -16,7 +20,12 @@ public class Player {
 
     private ArrayList<Integer> scoreHistory;
 
-    // player constructor
+    /**
+     * Constructs a new Player with the specified name.
+     * Initializes the player's score to 0 and sets up the tile bag and tile list.
+     *
+     * @param name The name of the player.
+     */
     public Player(String name){
         this.name = name;
         scoreHistory= new ArrayList<>();
@@ -25,15 +34,38 @@ public class Player {
         tiles = new ArrayList<>();
     }
 
-    // get Player Name
+    /**
+     * Gets the name of the player.
+     *
+     * @return The player's name.
+     */
     public String getPlayerName(){
         return name;
     }
 
+    /**
+     * Gets the list of tiles currently held by the player.
+     *
+     * @return An ArrayList of tiles.
+     */
+    public ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
+    /**
+     * Gets the current score of the player.
+     *
+     * @return The player's score.
+     */
     public int getScore(){
         return score;
     }
 
+    /**
+     * Sets the player's score to the specified value.
+     *
+     * @param score The new score to be set for the player.
+     */
     public void setScore(int score){
         this.score = score;
     }
