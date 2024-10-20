@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,17 +12,18 @@ public class TileBag {
     private ArrayList<Tile> tiles;
 
     public TileBag() {
-        MAX_NO_TILES = 100;
+        MAX_NO_TILES = 100; // Adjust as needed
         LETTER_FREQUENCY = new HashMap<>();
         LETTER_VALUE = new HashMap<>();
         numTilesLeft = 0;
         tiles = new ArrayList<>();
 
+        // Initialize the letter value (based on Scrabble values or your custom logic)
         initializeLetterValues();
     }
 
     private void initializeLetterValues() {
-        // Scrabble-like letter values
+        // Example Scrabble-like letter values
         LETTER_VALUE.put("A", 1);
         LETTER_VALUE.put("B", 3);
         LETTER_VALUE.put("C", 3);
@@ -53,7 +53,7 @@ public class TileBag {
     }
 
     public void createTiles() {
-        String fileName = "TileBagText.txt";
+        String fileName = "TileBag.txt"; // Adjust the file path accordingly
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -86,25 +86,17 @@ public class TileBag {
         // Logic to get a specific number of tiles (if needed)
         return tiles;
     }
+        public static void main(String[] args) {
+            // Create an instance of TileBag
+            TileBag tileBag = new TileBag();
 
-    public int getNumTilesLeft() {
-        return numTilesLeft;
-    }
+            // Create tiles from the specified text file
+            tileBag.createTiles();
 
-    public static void main(String[] args) {
-        // Create an instance of TileBag
-        TileBag tileBag = new TileBag();
-
-        // Create tiles from the specified text file
-        tileBag.createTiles();
-
-        // Write the tiles generated to a file called TileBags.java
-        try (PrintWriter writer = new PrintWriter("TileBags.txt")) {
+            // Retrieve and display the tiles generated
+            System.out.println("Tiles in the bag:");
             for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
-                writer.println("Letter: " + tile.getLetter() + ", Value: " + tile.getValue());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+                System.out.println("Letter: " + tile.getLetter() + ", Value: " + tile.getValue());
         }
     }
 }

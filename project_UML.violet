@@ -12,6 +12,8 @@
     <void property="methods">
      <void property="text">
       <string>+ScrabbleBoard()
++getTileOnSquare(row int, col:int): Tile
++getSquare(row: int, col: int): Square
 +drawBoard(): void
 +toString(): String</string>
      </void>
@@ -303,6 +305,7 @@ version: October 19, 2024
     <void property="attributes">
      <void property="text">
       <string>+&lt;u&gt;MAX_TILES: int = 7&lt;/u&gt;
+-name: String
 -tileBag: TileBag
 -tiles: ArrayList&lt;Tile&gt;
 -score: int
@@ -313,6 +316,7 @@ version: October 19, 2024
      <void property="text">
       <string>+Player(name: String)
 +playerMove(): ArrayList&lt;Tile&gt;
++getTiles(): ArrayList&lt;Tile&gt;
 +getMoreTiles(): void</string>
      </void>
     </void>

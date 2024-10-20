@@ -166,6 +166,22 @@ public class ScrabbleBoard {
     }
 
     /**
+     * Places tile in the given position
+     * @param row The row location of the square to place the tile
+     * @param col The column location of the square to place the tile
+     * @param tile The tile to be placed on the square given
+     */
+    public void placeTile(int row, int col, Tile tile) {
+        if (-1 >= row || row > 14 || -1 >= col || col > 14) {
+            System.out.println("ScrabbleBoard->placeTile: invalid array access");
+            return;
+        }
+        if (board[row][col].getPlacedTile() == null) {
+            board[row][col].placeTile(tile);
+        } else return;
+    }
+
+    /**
      * Draw the board in the stdout area.
      */
     public void drawBoard() {
