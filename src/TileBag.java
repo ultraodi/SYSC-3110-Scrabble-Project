@@ -19,6 +19,7 @@ public class TileBag {
         LETTER_VALUE = new HashMap<>();
         numTilesLeft = 0;
         tiles = new ArrayList<>();
+        createTiles();
 
         // Initialize the letter value (based on Scrabble values or your custom logic)
         initializeLetterValues();
