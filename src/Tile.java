@@ -11,7 +11,7 @@ public class Tile {
     private int value;
 
     public Tile(String letter, int value) {
-        this.letter = letter;
+        this.letter = letter.toUpperCase();
         this.value = value;
     }
 
@@ -25,7 +25,10 @@ public class Tile {
 
     @Override
     public boolean equals(Object obj) {
-        Tile t = (Tile) obj;
-        return letter.equals(t.letter);
+        if (obj instanceof Tile) {
+            Tile t = (Tile) obj;
+            return letter.equals(t.letter);
+        }
+        return false;
     }
 }

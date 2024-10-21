@@ -1,3 +1,5 @@
+import java.sql.SQLInvalidAuthorizationSpecException;
+
 /**
  * The Square class models the squares on a Scrabble Board.
  *
@@ -70,5 +72,14 @@ public class Square {
      */
     public Tile getPlacedTile() {
         return placedTile;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Square) {
+            Square square = (Square) obj;
+            return getPlacedTile().equals(square.getPlacedTile()) && squareType.equals(square.squareType);
+        }
+        return false;
     }
 }

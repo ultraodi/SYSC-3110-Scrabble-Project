@@ -29,6 +29,28 @@ public class Play {
     }
 
     /**
+     * Gets the list of squares that contain the word played.
+     * @return The list of square containing the word played.
+     */
+    public ArrayList<Square> getWord() {
+        return word;
+    }
+
+    /**
+     * The string contained of the squares in the play.
+     * @return The string representation of the squares in the play.
+     */
+    public String getWordString() {
+        StringBuilder returnString = new StringBuilder();
+        Tile tile;
+        for (Square square: word) {
+            tile = square.getPlacedTile();
+            returnString.append(tile.getLetter());
+        }
+        return returnString.toString();
+    }
+
+    /**
      * Gets the player associated with this play.
      *
      * @return The Player object representing the player making the play.
@@ -49,5 +71,14 @@ public class Play {
         int currScore = player.getScore() + points;
         player.setScore(currScore);
         return currScore;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Play) {
+            Play play = (Play) obj;
+            return word.equals(play.word);
+        }
+        return false;
     }
 }
