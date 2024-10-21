@@ -70,7 +70,33 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
         playerTurn = new Player("Jack");
+    }
 
+    /**
+     * Initiates a new game of Scrabble.
+     */
+    public void game() {
+        /*
+         * Game flow
+         * - Program decides who goes first by randomly drawing one tile from the bag for the players
+         *  - The player that is closest to the letter A goes first
+         * - Player makes a play given the tiles they have
+         *  - If the play is invalid, they are prompted again
+         *      - A play is invalid if:
+         *          - There is not enough space in the direction they want to play
+         *          - They do not have the required tiles
+         *          - One or more of the words formed by their play is not a valid word
+         *          - The play cannot be made if the tiles on the board, that are in the direction they chose to play, do not fit the word played. E.g. APPLE is played but the board has something
+         *            like -- |   |   | P | E  |   |   |   | --, apple will not be able to be played with those letters.
+         *  - The tiles a player has will be given above the input area
+         *  - If the play is valid, the player's tiles are automatically restocked/replaced
+         * - Points are calculated and the player's score updated
+         * - Play(s) are recorded.
+         * - Switches player
+         * - Repeats until one of the following conditions is met:
+         *  - There are no tiles left in the tile bag
+         *  - No players can make a play after 6 turns
+         */
         scrabbleBoard.drawBoard();
         while (true) {
             getInputPlay();
@@ -88,15 +114,7 @@ public class ScrabbleGame {
             } else {
                 System.out.println("Not a valid Entry");
             }
-
         }
-    }
-
-    /**
-     * Initiates a new game of Scrabble.
-     */
-    public void game() {
-
     }
 
     /**
@@ -182,7 +200,7 @@ public class ScrabbleGame {
         System.out.println("Word played: " + dupPlayerInputWord);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             if (dupPlayerInputWord.charAt(i) != '-') {
-                System.out.print(valueOf(dupPlayerInputWord.charAt(i)));
+                System.out.print(dupPlayerInputWord.charAt(i));
                 if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)).toUpperCase())) {
                     playerTiles = playerTiles.replaceFirst(valueOf(dupPlayerInputWord.charAt(i)), "-");
                 } else {
@@ -328,5 +346,6 @@ public class ScrabbleGame {
 
     public static void main(String[] args) {
         ScrabbleGame game = new ScrabbleGame(2);
+        game.game();
     }
 }

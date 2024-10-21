@@ -227,7 +227,9 @@ public class ScrabbleBoard {
                         System.out.println("No Square type of that type.");
                 }
                 Square _square = board[row -1][col];
-                boardString.append((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep));
+                boardString.append((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
+                                                                                                                                                                         // otherwise, it prints the letter on the tile placed on it.
+
             }
             boardString.append("\n");
         }
