@@ -101,8 +101,6 @@ public class EditableTileBagText {
 
     public static void main(String[] args) {
         EditableTileBagText tileBag = new EditableTileBagText();
-        tileBag.setFrequency("A", 10); // Example of editing frequency
-        tileBag.setValue("A", 2); // Example of editing value
         tileBag.printTileBagToFile("TileBagText.txt");
     }
 }

@@ -3,6 +3,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.FileWriter;
+import java.util.Random;
 
 public class TileBag {
     private int MAX_NO_TILES;
@@ -12,7 +14,7 @@ public class TileBag {
     private ArrayList<Tile> tiles;
 
     public TileBag() {
-        MAX_NO_TILES = 100; // Adjust as needed
+        MAX_NO_TILES = 100; // Set the max number of tiles allowed in the tile bag
         LETTER_FREQUENCY = new HashMap<>();
         LETTER_VALUE = new HashMap<>();
         numTilesLeft = 0;
@@ -53,33 +55,50 @@ public class TileBag {
     }
 
     public void createTiles() {
-        String fileName = "TileBag.txt"; // Adjust the file path accordingly
+        String fileName = "TileBagText.txt"; // Adjust the file path accordingly
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
-                // Split the line into letter and frequency
+                // Split the line into letter and value directly
                 String[] parts = line.split(", ");
                 if (parts.length == 2) {
                     String letter = parts[0];
-                    int frequency = Integer.parseInt(parts[1]);
+                    int value = Integer.parseInt(parts[1]);
 
-                    // Get the value for the letter from LETTER_VALUE
-                    int value = LETTER_VALUE.getOrDefault(letter, 0);
-
-                    // Create the corresponding number of tiles
-                    for (int i = 0; i < frequency; i++) {
-                        tiles.add(new Tile(letter, value));
-                        numTilesLeft++;
-                    }
-
-                    // Update LETTER_FREQUENCY
-                    LETTER_FREQUENCY.put(letter, frequency);
+                    // Create the tile for this line
+                    tiles.add(new Tile(letter, value));
+                    numTilesLeft++;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Tile> getRandomTilesFromBag(int number) {
+        // Logic to get a specific number of tiles (if needed)
+        ArrayList<Tile> randomTiles = new ArrayList<>();
+        Random rand = new Random();
+
+        // Ensure the number of tiles requested is not greater than the available tiles
+        number = Math.min(number, tiles.getNumTilesLeft());
+
+        for (int i = 0; i < number; i++) {
+            // Get a random index within the current size of the tiles list
+            int randomIndex = rand.nextInt(tiles.size());
+
+            // Add the tile at the random index to the randomTiles list
+            randomTiles.add(tiles.get(randomIndex));
+
+            // Remove the tile from the tiles list to avoid duplication
+            tiles.remove(randomIndex);
+
+            // Decrements the remaining tile counter
+            numTilesLeft--;
+        }
+
+        return randomTiles;
     }
 
     public ArrayList<Tile> getTilesFromBag(int number) {
@@ -89,7 +108,7 @@ public class TileBag {
 
 
     public int getNumTilesLeft() {
-        return 4;
+        return numTilesLeft;
     }
 
     public static void main(String[] args) {
@@ -99,10 +118,26 @@ public class TileBag {
         // Create tiles from the specified text file
         tileBag.createTiles();
 
-        // Retrieve and display the tiles generated
-        System.out.println("Tiles in the bag:");
-        for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
-            System.out.println("Letter: " + tile.getLetter() + ", Value: " + tile.getValue());
+        // Write the tiles to "TileBags.txt"
+        try (FileWriter writer = new FileWriter("TileBags.txt")) {
+            // Write the number of tiles left to the file
+            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
+
+            for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
+                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
+            }
+            // Get random tiles (e.g., 5 random tiles) and write them to the file
+            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(99);
+            writer.write("\nRandomly selected tiles:\n");
+            for (Tile tile : randomTiles) {
+                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
+            }
+            // Write the number of tiles left to the file
+            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
