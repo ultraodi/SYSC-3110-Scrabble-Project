@@ -142,6 +142,7 @@ public class ScrabbleGame {
         *   - The letters on the board in the area of play are already in the desired position
         *   - Does the player making the play have the needed tiles to complete the word given the
         *     letters already on the board?
+        *   - All words formed as a result of the played word are valid
         * - Making the play.
         *   - Taking the necessary letters from the player's tile deck when needed
         *
@@ -217,6 +218,12 @@ public class ScrabbleGame {
         }
         System.out.print("\n");
 
+        // All words formed as a result of the played word are valid
+        // Create list of plays
+        // Iterate over list and check all words are valid
+            // Check if the play already exists and remove it from the list of plays if it does.
+        //
+
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
         Tile playTile;
@@ -230,6 +237,10 @@ public class ScrabbleGame {
         return true;
     }
 
+    /**
+     * Gets the order of play for the players.
+     * @return The order of play for the players.
+     */
     public ArrayList<Player> determinePlayerTurns() {
         ArrayList<Player> returnTurns = new ArrayList<>();
         ArrayList<Player> dupPlayers = players;
