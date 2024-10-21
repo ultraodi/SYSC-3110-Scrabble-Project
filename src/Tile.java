@@ -22,4 +22,10 @@ public class Tile {
     public int getValue(){
         return value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Tile t = (Tile) obj;
+        return letter.equals(t.letter);
+    }
 }

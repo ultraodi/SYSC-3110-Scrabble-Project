@@ -69,12 +69,19 @@ public class ScrabbleGame {
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
+        playerTurn = new Player("Jack");
 
+        scrabbleBoard.drawBoard();
         while (true) {
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
                     System.out.println(String.format("Word: %s | Position: %s | Direction: %s", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical"));
+                    if (playWord()) {
+                        scrabbleBoard.drawBoard();
+                    } else {
+                        System.out.println("Couldn't play word");
+                    }
                 } else {
                     System.out.println("Valid Word it is not.");
                 }
@@ -101,7 +108,7 @@ public class ScrabbleGame {
 
     /**
      * Plays the player's word on the game board if it is valid.
-     * @return True if the play could be made. False if the play would not be made.
+     * @return True if the play could be made. False if the play could not be made.
      */
     public boolean playWord() {
         /*
@@ -121,7 +128,8 @@ public class ScrabbleGame {
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)));
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)));
-        if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) <= playerInputWord.length())) {
+        if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
+            System.out.println(String.format("playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
             return false;
         }
 
@@ -143,6 +151,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (!playerInputWord.contains(letter.getLetter())) {
+                    System.out.println("playWord: Letters are not in the word played");
                     return false;
                 }
             }
@@ -153,6 +162,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (dupPlayerInputWord.indexOf(letter.getLetter()) != lettersOnTheBoard.indexOf(letter)) {
+                    System.out.println("playWord: Letter are not in desired position");
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter(), "-");
@@ -168,20 +178,29 @@ public class ScrabbleGame {
             playerTilesStringBuilder.append(_tile.getLetter());
         }
         playerTiles = playerTilesStringBuilder.toString();
+        System.out.println(playerTiles);
+        System.out.println(dupPlayerInputWord);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             if (dupPlayerInputWord.charAt(i) != '-') {
-                if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)))) {
+                System.out.print(valueOf(dupPlayerInputWord.charAt(i)));
+                if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)).toUpperCase())) {
                     playerTiles = playerTiles.replaceFirst(valueOf(dupPlayerInputWord.charAt(i)), "-");
-                } else return false;
+                } else {
+                    System.out.println("playWord: Player does not have the needed tiles");
+                    return false;
+                }
             }
         }
 
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
+        Tile playTile;
         for (int i = 0; i < playerInputWord.length(); i++) {
-            row = dir.equals(Direction.HORIZONTAL)? rowNum + i:rowNum;
-            col = dir.equals(Direction.VERTICAL)? colNum + i:colNum;
-
+            row = dir.equals(Direction.HORIZONTAL)? rowNum:rowNum + i;
+            col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
+            ArrayList<Tile> playerTurnTiles = playerTurn.getTiles();
+            playTile = playerTurn.takeTile(valueOf(playerInputWord.charAt(i)).toUpperCase());
+            scrabbleBoard.placeTile(row - 1, col - 1, playTile);
         }
         return true;
     }

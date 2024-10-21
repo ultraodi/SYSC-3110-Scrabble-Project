@@ -32,6 +32,16 @@ public class Player {
         score = 0;
         tilebag = new TileBag();
         tiles = new ArrayList<>();
+        Tile a = new Tile("A", 1);
+        Tile p = new Tile("P", 1);
+        Tile p2 = new Tile("P", 1);
+        Tile l = new Tile("L", 1);
+        Tile e = new Tile("E", 1);
+        tiles.add(a);
+        tiles.add(p);
+        tiles.add(p2);
+        tiles.add(l);
+        tiles.add(e);
     }
 
     /**
@@ -68,6 +78,17 @@ public class Player {
      */
     public void setScore(int score){
         this.score = score;
+    }
+
+    public Tile takeTile(String letter) {
+        Tile tile = new Tile(letter, 1);
+        Tile returnTile;
+        if (tiles.contains(tile)) {
+            returnTile = tiles.get(tiles.indexOf(tile));
+            tiles.remove(tile);
+            return returnTile;
+        }
+        return null;
     }
 
     //

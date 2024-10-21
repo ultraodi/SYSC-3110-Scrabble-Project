@@ -178,6 +178,7 @@ public class ScrabbleBoard {
         }
         if (board[row][col].getPlacedTile() == null) {
             board[row][col].placeTile(tile);
+            System.out.println("Played this letter: " + tile.getLetter());
         } else return;
     }
 
