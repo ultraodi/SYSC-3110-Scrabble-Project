@@ -107,7 +107,7 @@ public class ScrabbleGame {
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
-                    System.out.println(String.format("Word: %s | Position: %s | Direction: %s", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical"));
+                    System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
                     if (playWord()) {
                         scrabbleBoard.drawBoard();
                     } else {
@@ -152,7 +152,7 @@ public class ScrabbleGame {
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
         if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
-            System.out.println(String.format("playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
+            System.out.println(String.format("ScrabbleGame->playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
             return false;
         }
 
@@ -174,7 +174,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (!playerInputWord.contains(letter.getLetter())) {
-                    System.out.println("playWord: Letters are not in the word played");
+                    System.out.println("ScrabbleGame->playWord: Letters on the board are not in the word played");
                     return false;
                 }
             }
@@ -185,7 +185,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (dupPlayerInputWord.indexOf(letter.getLetter()) != lettersOnTheBoard.indexOf(letter)) {
-                    System.out.println("playWord: Letter are not in desired position");
+                    System.out.println("ScrabbleGame->playWord: Letters on the board are not in the correct position for the word played");
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter(), "-");
@@ -201,19 +201,21 @@ public class ScrabbleGame {
             playerTilesStringBuilder.append(_tile.getLetter());
         }
         playerTiles = playerTilesStringBuilder.toString();
-        System.out.println("Player's Tiles: " + playerTiles);
-        System.out.println("Word played: " + dupPlayerInputWord);
+        System.out.println("ScrabbleGame->playWord: Player's Tiles: " + playerTiles);
+        System.out.println("ScrabbleGame->playWord: Word played: " + dupPlayerInputWord);
+        System.out.print("ScrabbleGame->playWord: ");
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             if (dupPlayerInputWord.charAt(i) != '-') {
                 System.out.print(dupPlayerInputWord.charAt(i));
                 if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)).toUpperCase())) {
                     playerTiles = playerTiles.replaceFirst(valueOf(dupPlayerInputWord.charAt(i)), "-");
                 } else {
-                    System.out.println("\nplayWord: Player does not have the needed tiles");
+                    System.out.println("\nScrabbleGame->playWord: Player does not have the needed tiles");
                     return false;
                 }
             }
         }
+        System.out.print("\n");
 
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
