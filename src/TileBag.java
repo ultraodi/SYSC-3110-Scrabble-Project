@@ -111,6 +111,7 @@ public class TileBag {
         Random rand = new Random();
         int maxNumber = getNumTilesLeft();
 
+        System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
         // Ensure the number of tiles requested is not greater than the available tiles
         if (number > maxNumber){
             throw new IllegalArgumentException("Bound must be positive");
@@ -152,34 +153,34 @@ public class TileBag {
         return numTilesLeft;
     }
 
-    public static void main(String[] args) {
-        // Create an instance of TileBag
-        TileBag tileBag = new TileBag();
-
-        // Create tiles from the specified text file
-        tileBag.createTiles();
-
-        // Write the tiles to "TileBags.txt"
-        try (FileWriter writer = new FileWriter("TileBags.txt")) {
-            // Write the number of tiles left to the file
-            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
-
-            for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
-                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
-            }
-            // Get random tiles (e.g., 5 random tiles) and write them to the file
-            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(97);
-            writer.write("\nRandomly selected tiles:\n");
-            for (Tile tile : randomTiles) {
-                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
-            }
-            // Write the number of tiles left to the file
-            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        // Create an instance of TileBag
+//        TileBag tileBag = new TileBag();
+//
+//        // Create tiles from the specified text file
+//        tileBag.createTiles();
+//
+//        // Write the tiles to "TileBags.txt"
+//        try (FileWriter writer = new FileWriter("TileBags.txt")) {
+//            // Write the number of tiles left to the file
+//            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
+//
+//            for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
+//                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
+//            }
+//            // Get random tiles (e.g., 5 random tiles) and write them to the file
+//            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(97);
+//            writer.write("\nRandomly selected tiles:\n");
+//            for (Tile tile : randomTiles) {
+//                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
+//            }
+//            // Write the number of tiles left to the file
+//            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
