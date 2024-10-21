@@ -224,39 +224,80 @@ public class ScrabbleGame {
         // Iterate over list and check all words are valid
             // Check if the play already exists and remove it from the list of plays if it does.
         //
-
         putPlayOnBoard(dir, rowNum, colNum);
+        if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
+            return false;
+        }
         return true;
     }
 
-    /*public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
+    /**
+     * Checks if all words formed by the play are valid.
+     * @param dir The direction of the play.
+     * @param rowNum The row number coordinate of the play
+     * @param colNum The column number coordinate of the play
+     * @param word The word played.
+     * @return True if all the words are valid. False otherwise
+     */
+    public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
         int row, col, row2, col2;
-        ArrayList<Square> tileWord = null;
-        ArrayList<Play> plays;
+        ArrayList<Square> tileWord;
+        ArrayList<Play> _plays = new ArrayList<>();
         for (int i = 0; i < word.length(); i++) {
             row = dir.equals(Direction.HORIZONTAL)? rowNum:rowNum + i;
             col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
+            tileWord = new ArrayList<>();
 
             if (dir.equals(Direction.VERTICAL)) {
-
-            } else if (dir.equals(Direction.HORIZONTAL)) {
+                System.out.println("Got in here.");
                 row2 = rowNum + i;
-                col2 = colNum;
+                col2 = colNum + i - 1;
+                while (scrabbleBoard.getSquare(row2, col2- 1).getPlacedTile() != null) {
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
+                    col2--;
+                }
+                while (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() != null) {
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
+                    tileWord.add(scrabbleBoard.getSquare(row2, col2));
+                    col2++;
+                }
+                _plays.add(new Play(new Player("nil"), tileWord));
+            } else if (dir.equals(Direction.HORIZONTAL)) {
+                System.out.println("Got in here 2.");
+                row2 = rowNum - 1;
+                col2 = colNum  + i - 1;
+
+                if ((scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() == null) && (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() == null)) {
+                    System.out.println("Got in here 3.");
+                    tileWord.add(scrabbleBoard.getSquare(row2, col2));
+                }
                 while (scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() != null) {
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 1");
                     row2--;
                 }
                 while (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() != null) {
-                    if (tileWord != null) {
-                        tileWord.add(scrabbleBoard.getSquare(row2, col2));
-                    }
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 2");
+                    tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     row2++;
                 }
-                plays.add(new Play("nil", tileWord));
+                _plays.add(new Play(new Player("nil"), tileWord));
+            }
+        }
+        for (Play _pl: _plays) {
+            System.out.println(String.format("ScrabbleGame->allPlayWordsValid: word is %s", _pl.getWordString()));
+            if (!isValidWord(_pl.getWordString())) {
+                return false;
             }
         }
         return true;
-    }*/
+    }
 
+    /**
+     * Puts a play on the board.
+     * @param dir The direction of the play.
+     * @param rowNum The row number coordinate of the play.
+     * @param colNum The column number coordinate of the play.
+     */
     public void putPlayOnBoard(Direction dir, int rowNum, int colNum) {
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
