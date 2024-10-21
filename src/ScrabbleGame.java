@@ -126,8 +126,8 @@ public class ScrabbleGame {
         */
         // Are there enough squares to play the word
         Direction dir = playerInputPlayDirection;
-        int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)));
-        int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)));
+        int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
+        int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
         if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
             System.out.println(String.format("playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
             return false;
@@ -178,15 +178,15 @@ public class ScrabbleGame {
             playerTilesStringBuilder.append(_tile.getLetter());
         }
         playerTiles = playerTilesStringBuilder.toString();
-        System.out.println(playerTiles);
-        System.out.println(dupPlayerInputWord);
+        System.out.println("Player's Tiles: " + playerTiles);
+        System.out.println("Word played: " + dupPlayerInputWord);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             if (dupPlayerInputWord.charAt(i) != '-') {
                 System.out.print(valueOf(dupPlayerInputWord.charAt(i)));
                 if (playerTiles.contains(valueOf(dupPlayerInputWord.charAt(i)).toUpperCase())) {
                     playerTiles = playerTiles.replaceFirst(valueOf(dupPlayerInputWord.charAt(i)), "-");
                 } else {
-                    System.out.println("playWord: Player does not have the needed tiles");
+                    System.out.println("\nplayWord: Player does not have the needed tiles");
                     return false;
                 }
             }
