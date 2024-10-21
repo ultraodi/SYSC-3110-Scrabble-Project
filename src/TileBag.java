@@ -80,9 +80,12 @@ public class TileBag {
         // Logic to get a specific number of tiles (if needed)
         ArrayList<Tile> randomTiles = new ArrayList<>();
         Random rand = new Random();
+        int maxNumber = getNumTilesLeft();
 
         // Ensure the number of tiles requested is not greater than the available tiles
-        number = Math.min(number, tiles.getNumTilesLeft());
+        if (number > maxNumber){
+            throw new IllegalArgumentException("Bound must be positive");
+        }
 
         for (int i = 0; i < number; i++) {
             // Get a random index within the current size of the tiles list
@@ -127,7 +130,7 @@ public class TileBag {
                 writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
             }
             // Get random tiles (e.g., 5 random tiles) and write them to the file
-            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(99);
+            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(97);
             writer.write("\nRandomly selected tiles:\n");
             for (Tile tile : randomTiles) {
                 writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
