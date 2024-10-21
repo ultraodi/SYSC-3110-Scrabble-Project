@@ -148,6 +148,7 @@ public class ScrabbleGame {
         *
         * If any of the checks fail, the play cannot be made.
         */
+
         // Are there enough squares to play the word
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
@@ -224,17 +225,37 @@ public class ScrabbleGame {
             // Check if the play already exists and remove it from the list of plays if it does.
         //
 
+        putPlayOnBoard(dir, rowNum, colNum);
+        return true;
+    }
+
+    /*public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
+        int row, col;
+        for (int i = 0; i < word.length(); i++) {
+            row = dir.equals(Direction.HORIZONTAL)? rowNum:rowNum + i;
+            col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
+        }
+        return true;
+    }*/
+
+    public void putPlayOnBoard(Direction dir, int rowNum, int colNum) {
         // Making the play
         // Taking the necessary letters from the player's tile deck when needed
         Tile playTile;
+        int row, col;
         for (int i = 0; i < playerInputWord.length(); i++) {
             row = dir.equals(Direction.HORIZONTAL)? rowNum:rowNum + i;
             col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
             ArrayList<Tile> playerTurnTiles = playerTurn.getTiles();
-            playTile = playerTurn.takeTile(valueOf(playerInputWord.charAt(i)).toUpperCase());
-            scrabbleBoard.placeTile(row - 1, col - 1, playTile);
+            if (scrabbleBoard.getSquare(row - 1, col - 1).getPlacedTile() == null) {
+                playTile = playerTurn.takeTile(valueOf(playerInputWord.charAt(i)).toUpperCase());
+                scrabbleBoard.placeTile(row - 1, col - 1, playTile);
+            } else continue;
         }
-        return true;
+    }
+
+    public void removePlayFromBoard(Play play) {
+
     }
 
     /**
@@ -248,7 +269,7 @@ public class ScrabbleGame {
         ArrayList<String> sortedPlayerDraws = new ArrayList<>();
         ArrayList<Tile> tile;
         for (int i = 0; i < players.size(); i++) {
-            tile = tileBag.getTilesFromBag(1);
+            tile = tileBag.getRandomTilesFromBag(1);
             playerDraws.add(tile.get(0).getLetter());
         }
 
