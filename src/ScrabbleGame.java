@@ -230,10 +230,29 @@ public class ScrabbleGame {
     }
 
     /*public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
-        int row, col;
+        int row, col, row2, col2;
+        ArrayList<Square> tileWord = null;
+        ArrayList<Play> plays;
         for (int i = 0; i < word.length(); i++) {
             row = dir.equals(Direction.HORIZONTAL)? rowNum:rowNum + i;
             col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
+
+            if (dir.equals(Direction.VERTICAL)) {
+
+            } else if (dir.equals(Direction.HORIZONTAL)) {
+                row2 = rowNum + i;
+                col2 = colNum;
+                while (scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() != null) {
+                    row2--;
+                }
+                while (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() != null) {
+                    if (tileWord != null) {
+                        tileWord.add(scrabbleBoard.getSquare(row2, col2));
+                    }
+                    row2++;
+                }
+                plays.add(new Play("nil", tileWord));
+            }
         }
         return true;
     }*/
