@@ -178,7 +178,7 @@ public class ScrabbleBoard {
         }
         if (board[row][col].getPlacedTile() == null) {
             board[row][col].placeTile(tile);
-            System.out.println("ScrabbleBoard->placeTile: Played this letter: " + tile.getLetter());
+            System.out.printf("ScrabbleBoard->placeTile: Played this letter: %s @ [%d] [%d]%n", tile.getLetter(), row, col);
         } else return;
     }
 

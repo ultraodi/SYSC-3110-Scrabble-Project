@@ -153,7 +153,7 @@ public class ScrabbleGame {
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
-        if (!((15 - (dir.equals(Direction.VERTICAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
+        if (!((15 - (dir.equals(Direction.HORIZONTAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
             System.out.println(String.format("ScrabbleGame->playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
             return false;
         }
@@ -256,17 +256,22 @@ public class ScrabbleGame {
                 if ((col2 == 0) || (col2 == 15)) {
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                 } else {
-                    if ((scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() == null) && (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() == null)) {
+                    if (((scrabbleBoard.getSquare(row2, col2 - 1) != null) ||
+                            (scrabbleBoard.getSquare(row2, col2 + 1) != null)) &&
+                            ((scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() == null) ||
+                            (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() == null))) {
                         System.out.println("Got in here 4.");
                         tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     }
                 }
 
-                while ((scrabbleBoard.getSquare(row2, col2 - 1) != null) && (scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() != null)) {
+                while ((scrabbleBoard.getSquare(row2, col2 - 1) != null) &&
+                        (scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() != null)) {
                     System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
                     col2--;
                 }
-                while ((scrabbleBoard.getSquare(row2, col2 + 1) != null) && (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() != null)) {
+                while ((scrabbleBoard.getSquare(row2, col2 + 1) != null) &&
+                        (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() != null)) {
                     System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     col2++;
@@ -278,18 +283,24 @@ public class ScrabbleGame {
                 col2 = colNum + i - 1;
 
                 if ((row2 == 0) || (row2 == 15)) {
+                    System.out.println("Got in here 21.");
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                 } else {
-                    if ((scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() == null) && (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() == null)) {
+                    if (((scrabbleBoard.getSquare(row2 - 1, col2) != null) ||
+                            (scrabbleBoard.getSquare(row2 + 1, col2) != null)) &&
+                            ((scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() == null) ||
+                            (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() == null))) {
                         System.out.println("Got in here 3.");
                         tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     }
                 }
-                while ((scrabbleBoard.getSquare(row2 - 1, col2) != null) && (scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() != null)) {
+                while ((scrabbleBoard.getSquare(row2 - 1, col2) != null) &&
+                        (scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() != null)) {
                     System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 1");
                     row2--;
                 }
-                while ((scrabbleBoard.getSquare(row2 + 1, col2) != null) && (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() != null)) {
+                while ((scrabbleBoard.getSquare(row2 + 1, col2) != null) &&
+                        (scrabbleBoard.getSquare(row2 + 1, col2).getPlacedTile() != null)) {
                     System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 2");
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     row2++;
@@ -298,7 +309,7 @@ public class ScrabbleGame {
             }
         }
         for (Play _pl: _plays) {
-            System.out.println(String.format("ScrabbleGame->allPlayWordsValid: word is %s", _pl.getWordString()));
+            System.out.printf("ScrabbleGame->allPlayWordsValid: word is %s%n", _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 return false;
             }
