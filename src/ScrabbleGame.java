@@ -70,6 +70,10 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
         playerTurn = new Player("Jack");
+
+        for (int i = 0; i < numPlayers; i++) {
+            players.add(new Player("John Doe " + i));
+        }
     }
 
     /**
@@ -98,6 +102,7 @@ public class ScrabbleGame {
          *  - No players can make a play after 6 turns
          */
         scrabbleBoard.drawBoard();
+        ArrayList<Player> playerOrder = determinePlayerTurns();
         while (true) {
             getInputPlay();
             if (parseInputPlay()) {
@@ -223,6 +228,41 @@ public class ScrabbleGame {
         return true;
     }
 
+    public ArrayList<Player> determinePlayerTurns() {
+        ArrayList<Player> returnTurns = new ArrayList<>();
+        ArrayList<Player> dupPlayers = players;
+        ArrayList<String> playerDraws = new ArrayList<>();
+        ArrayList<String> sortedPlayerDraws = new ArrayList<>();
+        ArrayList<Tile> tile;
+        for (int i = 0; i < players.size(); i++) {
+            tile = tileBag.getTilesFromBag(1);
+            playerDraws.add(tile.get(0).getLetter());
+        }
+
+        int lowestIndex = 0;
+        String minChar;
+        for (Player player: players) {
+            minChar = playerDraws.getFirst();
+            lowestIndex = 0;
+            int i;
+            for (i = 0; i < players.size(); i++) {
+                if (minChar.charAt(0) > playerDraws.get(i).charAt(0)) {
+                    minChar = playerDraws.get(i);
+                    lowestIndex = i;
+                }
+            }
+            sortedPlayerDraws.add(minChar);
+            playerDraws.remove(lowestIndex);
+            playerDraws.add(lowestIndex, "a");
+            returnTurns.add(players.get(lowestIndex));
+        }
+
+        for (int j = 0; j < returnTurns.size(); j++) {
+            System.out.println(String.format("Player: %s Tile Drawn: %s", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j)));
+        }
+        return returnTurns;
+    }
+
     /**
      * Retrieves a set of valid words from the url given in validWordsURL.
      * This function was mostly to practice the HttpURLConnection, BufferedReader, and Scanner classes.
@@ -345,7 +385,7 @@ public class ScrabbleGame {
     }
 
     public static void main(String[] args) {
-        ScrabbleGame game = new ScrabbleGame(2);
+        ScrabbleGame game = new ScrabbleGame(4);
         game.game();
     }
 }
