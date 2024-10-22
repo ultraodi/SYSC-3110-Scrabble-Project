@@ -239,7 +239,7 @@ public class ScrabbleGame {
      * @param word The word played.
      * @return True if all the words are valid. False otherwise
      */
-    public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
+    private boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
         int row, col, row2, col2;
         ArrayList<Square> tileWord;
         ArrayList<Play> _plays = new ArrayList<>();
@@ -351,7 +351,7 @@ public class ScrabbleGame {
      * Gets the order of play for the players.
      * @return The order of play for the players.
      */
-    public ArrayList<Player> determinePlayerTurns() {
+    private ArrayList<Player> determinePlayerTurns() {
         ArrayList<Player> returnTurns = new ArrayList<>();
         ArrayList<Player> dupPlayers = players;
         ArrayList<String> playerDraws = new ArrayList<>();
