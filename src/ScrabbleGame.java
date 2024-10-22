@@ -507,8 +507,8 @@ public class ScrabbleGame {
         return validWords.contains(word.toLowerCase());
     }
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         ScrabbleGame game = new ScrabbleGame(4);
         game.game();
-    }*/
+    }
 }
