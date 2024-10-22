@@ -25,7 +25,6 @@ public class Player {
     /**
      * Constructs a new Player with the specified name.
      * Initializes the player's score to 0 and sets up the tile bag and tile list.
-     *
      * @param name The name of the player.
      */
     public Player(String name){
@@ -68,7 +67,6 @@ public class Player {
 
     /**
      * Gets the name of the player.
-     *
      * @return The player's name.
      */
     public String getPlayerName(){
@@ -77,7 +75,6 @@ public class Player {
 
     /**
      * Gets the list of tiles currently held by the player.
-     *
      * @return An ArrayList of tiles.
      */
     public ArrayList<Tile> getTiles() {
@@ -86,7 +83,6 @@ public class Player {
 
     /**
      * Gets the current score of the player.
-     *
      * @return The player's score.
      */
     public int getScore(){
@@ -95,7 +91,6 @@ public class Player {
 
     /**
      * Sets the player's score to the specified value.
-     *
      * @param score The new score to be set for the player.
      */
     public void setScore(int score){
@@ -113,11 +108,15 @@ public class Player {
         return null;
     }
 
-    //
     // players move
     //public ArrayList<Tile> playersMove(){}
 
     // get more tiles
+
+    /**
+     * Get more tiles from the tile bag
+     * @param tileBag The tile bag to take the tiles from
+     */
     public void getMoreTiles(TileBag tileBag) {
         tiles.addAll(tileBag.getTilesFromBag(MAX_TILES - tiles.size()));
     }
@@ -137,7 +136,11 @@ public class Player {
     //        return  tiles;
     //    }
 
-
+    /**
+     * Compares for equality between Players
+     * @param obj The object holding the player
+     * @return True if the player is the same. False otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Player) {
