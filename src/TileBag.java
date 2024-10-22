@@ -111,7 +111,7 @@ public class TileBag {
         Random rand = new Random();
         int maxNumber = getNumTilesLeft();
 
-        System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
+        //System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
         // Ensure the number of tiles requested is not greater than the available tiles
         if (number > maxNumber){
             throw new IllegalArgumentException("Bound must be positive");
