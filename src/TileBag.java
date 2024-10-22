@@ -102,7 +102,7 @@ public class TileBag {
     /**
      * Allows players to take tiles from the bag and add to their inventory
      * @param number The number determines the amount of tiles returned to the player
-     * @return ArrayList<Tile> A list of tiles is returned to the player
+     * @return A list of tiles is returned to the player
      * */
     public ArrayList<Tile> getRandomTilesFromBag(int number) {
         // Logic to get a specific number of tiles (if needed)
