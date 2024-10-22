@@ -126,7 +126,7 @@ public class ScrabbleGame {
      * Changes over to the appropriate player's turn.
      */
     public void changeTurns() {
-
+        // Stub method
     }
 
     /**
