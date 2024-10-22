@@ -145,7 +145,7 @@ public class ScrabbleBoard {
      */
     public Tile getTileOnSquare(int row, int col) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->getTileOnSquare: invalid array access");
+            System.out.println("ScrabbleBoard->getTileOnSquare: invalid array access (null)");
             return null;
         }
         return board[row][col].getPlacedTile();
@@ -159,7 +159,7 @@ public class ScrabbleBoard {
      */
     public Square getSquare(int row, int col) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->getSquare: invalid array access");
+            System.out.println("ScrabbleBoard->getSquare: invalid array access (null)");
             return null;
         }
         return board[row][col];
@@ -173,7 +173,7 @@ public class ScrabbleBoard {
      */
     public void placeTile(int row, int col, Tile tile) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->placeTile: invalid array access");
+            System.out.println("ScrabbleBoard->placeTile: invalid array access (null)");
             return;
         }
         if (board[row][col].getPlacedTile() == null) {

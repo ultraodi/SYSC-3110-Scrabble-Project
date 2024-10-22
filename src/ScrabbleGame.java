@@ -11,7 +11,7 @@ import static java.lang.String.*;
  * @author Clinton Odinamadu
  * @author Abdul Babatunde
  * @author Marvel Adotse-ogah
- * @version October 19, 2024
+ * @version October 22, 2024
  */
 public class ScrabbleGame {
     /** Players of the game*/
@@ -43,7 +43,7 @@ public class ScrabbleGame {
     /** Board Position to place the played word*/
     private String playerInputBoardPosition;
     /** Possible play directions*/
-    private enum Direction {HORIZONTAL, VERTICAL}
+    public enum Direction {HORIZONTAL, VERTICAL}
     /** Play direction of a played word either horizontal or vertical*/
     private Direction playerInputPlayDirection;
 
@@ -154,7 +154,7 @@ public class ScrabbleGame {
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
         if (!((15 - (dir.equals(Direction.HORIZONTAL)? colNum:rowNum) + 1) >= playerInputWord.length())) {
-            System.out.println(String.format("ScrabbleGame->playWord: Word is too long. row: %d col: %d word length: %d", rowNum, colNum, playerInputWord.length()));
+            System.out.printf("ScrabbleGame->playWord: Word is too long. row: %d col: %d word length: %d%n", rowNum, colNum, playerInputWord.length());
             return false;
         }
 
@@ -254,6 +254,7 @@ public class ScrabbleGame {
                 col2 = colNum - 1;
 
                 if ((col2 == 0) || (col2 == 15)) {
+                    System.out.println("Got in here 01.");
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                 } else {
                     if (((scrabbleBoard.getSquare(row2, col2 - 1) != null) ||
@@ -264,15 +265,14 @@ public class ScrabbleGame {
                         tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     }
                 }
-
                 while ((scrabbleBoard.getSquare(row2, col2 - 1) != null) &&
                         (scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() != null)) {
-                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move 1");
                     col2--;
                 }
                 while ((scrabbleBoard.getSquare(row2, col2 + 1) != null) &&
                         (scrabbleBoard.getSquare(row2, col2 + 1).getPlacedTile() != null)) {
-                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move");
+                    System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move 2");
                     tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     col2++;
                 }
@@ -339,8 +339,12 @@ public class ScrabbleGame {
         }
     }
 
+    /**
+     * Removes a play from the board
+     * @param play The play to be removed from the board
+     */
     public void removePlayFromBoard(Play play) {
-
+        // Stub method
     }
 
     /**
@@ -355,7 +359,7 @@ public class ScrabbleGame {
         ArrayList<Tile> tile;
         for (int i = 0; i < players.size(); i++) {
             tile = tileBag.getRandomTilesFromBag(1);
-            playerDraws.add(tile.get(0).getLetter());
+            playerDraws.add(tile.getFirst().getLetter());
         }
 
         int lowestIndex = 0;
@@ -377,7 +381,7 @@ public class ScrabbleGame {
         }
 
         for (int j = 0; j < returnTurns.size(); j++) {
-            System.out.println(String.format("Player: %s Tile Drawn: %s", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j)));
+            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
         }
         return returnTurns;
     }

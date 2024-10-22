@@ -3,6 +3,8 @@ import java.util.ArrayList;
 /**
  * Represents a player in the Scrabble game.
  * Each player has a name, a set of tiles, a score, and access to the tile bag.
+ * @author Clinton Odinamadu
+ * @version October 22, 2024
  */
 public class Player {
     private static final int MAX_TILES = 7;
