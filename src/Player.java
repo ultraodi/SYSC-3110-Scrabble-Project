@@ -118,7 +118,7 @@ public class Player {
      * @param tileBag The tile bag to take the tiles from
      */
     public void getMoreTiles(TileBag tileBag) {
-        tiles.addAll(tileBag.getTilesFromBag(MAX_TILES - tiles.size()));
+        tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
     }
 
     //    public ArrayList<Tile> getTiles() {
