@@ -73,12 +73,21 @@ public class ScrabbleGame {
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
-        playerTurn = new Player("Jack");
+        //playerTurn = new Player("Jack");
 
         for (int i = 0; i < numPlayers; i++) {
-            players.add(new Player("John Doe " + i));
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Player " + (i + 1) + ": What is your name: ");
+            String name = scanner.nextLine();
+            players.add(new Player(name));
         }
+        playerTurn = players.get(0);
+
+//        for (int i = 0; i < numPlayers; i++) {
+//            players.add(new Player("John Doe " + i));
+//        }
     }
+
 
     /**
      * Initiates a new game of Scrabble.
@@ -369,43 +378,62 @@ public class ScrabbleGame {
      */
     private ArrayList<Player> determinePlayerTurns() {
         ArrayList<Player> returnTurns = new ArrayList<>();
-        ArrayList<Player> dupPlayers = players;
         ArrayList<String> playerDraws = new ArrayList<>();
         ArrayList<String> sortedPlayerDraws = new ArrayList<>();
         ArrayList<Tile> tile;
-        for (int i = 0; i < players.size(); i++) {
-            tile = tileBag.getRandomTilesFromBag(1);
-            playerDraws.add(tile.getFirst().getLetter());
+
+        // Initialize each player's tiles
+        for (Player player : players) {
+            player.setPlayerTiles(player.getMoreTilesStart(tileBag));
+            tile = tileBag.getRandomTilesFromBagStart(7);
+            playerDraws.add(tile.get(0).getLetter()); // Use get(0) to access the first tile
         }
+
+//        // Draw tiles for each player
+//        for (int i = 0; i < players.size(); i++) {
+//            tile = tileBag.getRandomTilesFromBagStart(1);
+//            playerDraws.add(tile.get(0).getLetter()); // Use get(0) to access the first tile
+//        }
+
 
         int lowestIndex = 0;
         String minChar;
-        for (Player player: players) {
-            minChar = playerDraws.getFirst();
+
+        // Determine player turns based on drawn tiles
+        for (Player player : players) {
+            minChar = playerDraws.get(0); // Use get(0) to access the first element
             lowestIndex = 0;
-            int i;
-            for (i = 0; i < players.size(); i++) {
+
+            for (int i = 0; i < playerDraws.size(); i++) {
                 if (minChar.charAt(0) > playerDraws.get(i).charAt(0)) {
                     minChar = playerDraws.get(i);
                     lowestIndex = i;
                 }
             }
+
             sortedPlayerDraws.add(minChar);
-            playerDraws.remove(lowestIndex);
-            playerDraws.add(lowestIndex, "a");
-            returnTurns.add(players.get(lowestIndex));
+            playerDraws.remove(lowestIndex); // Remove the drawn tile for that player
+            playerDraws.add(lowestIndex, "a"); // Mark as used
+            returnTurns.add(players.get(lowestIndex)); // Add player to return list
         }
 
-        for (int j = 0; j < returnTurns.size(); j++) {
-            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
-        }
+//        // Debug output for player turns
+//        for (int j = 0; j < returnTurns.size(); j++) {
+//            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
+//        }
 
+        // Print player order
         System.out.print("\nPlayer order is ");
-
-        for (int j = 0; j < returnTurns.size(); j++) {
-            System.out.printf(returnTurns.get(j).getPlayerName() + " --> ");
+        for (Player player : returnTurns) {
+            System.out.printf(player.getPlayerName() + " --> ");
         }
         System.out.print("Repeat\n\n");
+
+        // Set the first player in the returnTurns as playerTurn
+        if (!returnTurns.isEmpty()) {
+            playerTurn = returnTurns.get(0);
+        }
+
         return returnTurns;
     }
 
@@ -520,19 +548,25 @@ public class ScrabbleGame {
         return true;
     }
 
-    public void printAllPlayerTiles(){
+    public void printAllPlayerTiles() {
+        for (Player player : players) {
+            // Print the player's name
 
-        for (int j = 0; j < players.size(); j++) {
-            String playerTiles;
-            StringBuilder playerTilesStringBuilder = new StringBuilder();
-            for (Tile _tile :playerTurn.getTiles()) {
-                playerTilesStringBuilder.append(_tile.getLetter());
+
+            System.out.print(player.getPlayerName());
+            // Get the player's tiles
+            ArrayList<Tile> playerTiles = player.getTiles();
+
+            // Print each tile
+            System.out.print("'s tiles: ");
+            for (Tile tile : playerTiles) {
+                System.out.print(tile.getLetter() + " "); // Assuming getLetter() returns a char or String
             }
-            playerTiles = playerTilesStringBuilder.toString();
-            System.out.println(players.get(j).getPlayerName() + "'s letters: " +playerTiles + "\n");
+            System.out.println(); // Move to the next line after printing all tiles of the current player
         }
-
+        System.out.println();
     }
+
 
     /**
      * Determines if a word is in the list of valid words.
@@ -545,7 +579,19 @@ public class ScrabbleGame {
     }
 
     public static void main(String[] args) {
-        ScrabbleGame game = new ScrabbleGame(4);
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("How many players will play (Lowest 2, Highest 4): ");
+        int numberOfPlayers = scanner.nextInt();
+
+        while(numberOfPlayers < 2 || numberOfPlayers > 4){
+            System.out.println("Please put in a valid number");
+            System.out.print("How many players will play (Lowest 2, Highest 4): ");
+            numberOfPlayers = scanner.nextInt();
+            continue;
+        }
+
+        ScrabbleGame game = new ScrabbleGame(numberOfPlayers);
         game.game();
     }
+
 }
