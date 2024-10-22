@@ -60,6 +60,14 @@ public class Play {
     }
 
     /**
+     * Gets the points that this play had
+     * @return The points this play had
+     */
+    public int getPoints() {
+        return points;
+    }
+
+    /**
      * Calculates and updates the player's score based on the points accumulated
      * in this play.
      * @return The updated score of the player after adding the points from this play.
