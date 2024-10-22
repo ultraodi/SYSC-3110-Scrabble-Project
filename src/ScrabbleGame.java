@@ -46,6 +46,10 @@ public class ScrabbleGame {
     public enum Direction {HORIZONTAL, VERTICAL}
     /** Play direction of a played word either horizontal or vertical*/
     private Direction playerInputPlayDirection;
+    /** Holds a list of the player's order*/
+    private ArrayList<Player> playerOrder;
+    /** Holds the current index of the player's turn */
+    private int currentPlayerIndex = 0;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -103,8 +107,9 @@ public class ScrabbleGame {
          */
 
         scrabbleBoard.drawBoard();
-        ArrayList<Player> playerOrder = determinePlayerTurns();
+        playerOrder = determinePlayerTurns();
         printAllPlayerTiles();
+        System.out.println("Current player: " + playerTurn.getPlayerName());
 
         while (true) {
             getInputPlay();
@@ -114,6 +119,8 @@ public class ScrabbleGame {
                     if (playWord()) {
                         scrabbleBoard.drawBoard();
                         printAllPlayerTiles();
+                        changeTurns();
+                        System.out.println("Current player: " + playerTurn.getPlayerName());
                     } else {
                         System.out.println("Couldn't play word");
                     }
@@ -130,7 +137,12 @@ public class ScrabbleGame {
      * Changes over to the appropriate player's turn.
      */
     public void changeTurns() {
-        // Stub method
+        // Increment the current player index
+        currentPlayerIndex = (currentPlayerIndex + 1) % playerOrder.size();
+
+        // Update playerTurn to the next player
+        playerTurn = playerOrder.get(currentPlayerIndex);
+
     }
 
     /**
