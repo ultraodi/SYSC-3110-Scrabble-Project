@@ -14,6 +14,7 @@
       <string>+ScrabbleBoard()
 +getTileOnSquare(row int, col:int): Tile
 +getSquare(row: int, col: int): Square
++placeTile(row: int, col: int, tile: Tile)
 +drawBoard(): void
 +toString(): String</string>
      </void>
@@ -29,19 +30,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>1640.0</double>
+      <double>1710.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>1200.0</double>
+      <double>1300.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1640.0</double>
-     <double>1200.0</double>
+     <double>1710.0</double>
+     <double>1300.0</double>
     </void>
    </object>
   </void>
@@ -53,14 +54,16 @@
 -&lt;u&gt;LETTER_FREQUENCY: HashMap&lt;String, Integer&gt;&lt;/u&gt;
 -&lt;u&gt;LETTER_VALUE: HashMap&lt;String, Integer&gt;&lt;/u&gt;
 -numTilesLeft: int
--tiles: ArrayList&lt;Tiles&gt;</string>
+-tiles: ArrayList&lt;Tile&gt;</string>
      </void>
     </void>
     <void property="methods">
      <void property="text">
       <string>+TileBag()
-+getTilesFromBag(number: int): ArrayList&lt;Tiles&gt;
--createTiles(): void</string>
+-initializeLetterValues(): void
++createTiles(): void
++getRandomTilesFromBag(number: int): ArrayList&lt;Tiles&gt;
++getNumTilesLeft(): int</string>
      </void>
     </void>
     <void property="name">
@@ -74,19 +77,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>1480.0</double>
+      <double>1540.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>640.0</double>
+      <double>720.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1480.0</double>
-     <double>640.0</double>
+     <double>1540.0</double>
+     <double>720.0</double>
     </void>
    </object>
   </void>
@@ -96,7 +99,7 @@
      <void property="text">
       <string>+Types: enum
 -placedTile: Tile
--squareType: Square.Type</string>
+-squareType: Square.Types</string>
      </void>
     </void>
     <void property="methods">
@@ -106,6 +109,7 @@
 +placeTile(tile: Tile): void
 +getType(): Square.Types
 +getPlacedTile(): Tile
++equals(obj: Object): boolean
 </string>
      </void>
     </void>
@@ -120,19 +124,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>1620.0</double>
+      <double>1740.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>910.0</double>
+      <double>1080.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1620.0</double>
-     <double>910.0</double>
+     <double>1740.0</double>
+     <double>1080.0</double>
     </void>
    </object>
   </void>
@@ -148,7 +152,8 @@
      <void property="text">
       <string>+Tile(letter: String, value: int)
 +getLetter(): String
-+getValue(): int</string>
++getValue(): int
++equals(obj: Object): boolean</string>
      </void>
     </void>
     <void property="name">
@@ -162,19 +167,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>1920.0</double>
+      <double>1990.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>660.0</double>
+      <double>760.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1920.0</double>
-     <double>660.0</double>
+     <double>1990.0</double>
+     <double>760.0</double>
     </void>
    </object>
   </void>
@@ -192,7 +197,7 @@
 -validWordsFile: String = &quot;valid_words.txt&quot;;
 -validWords: HashSet&lt;String&gt;
 -currentValidWord: String
--inputPrompt: String
+-inputPrompt: String = &quot;Word to play &gt;&gt; &quot;
 -playerInput: String
 -playerInputWord: String
 -playerInputBoardPosition: String
@@ -206,6 +211,10 @@
 +game(): void
 +changeTurns(): void
 +playWord(word: ArrayList&lt;Tile&gt;): boolean
+-allPlayWordsValid(dir: Direction, rowNum: int, colNum: int, word: String): boolean
++putPlayOnBoard(dir: Direction, rowNum: int, colNum: int): void
++removePlayFromBoard(play: Play): void
+-determinePlayerTurns(): ArrayList&lt;Player&gt;
 -getValidWordsFromUrl(): HashSet&lt;String&gt;
 -getValidWordsFromFile(): HashSet&lt;String&gt;
 -getInputPlay(): void
@@ -245,10 +254,17 @@
    <object class="com.horstmann.violet.NoteNode" id="NoteNode0">
     <void id="Rectangle2D$Double0" property="bounds">
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
+      <string>x</string>
+      <void method="set">
+       <object idref="Rectangle2D$Double0"/>
+       <double>30.0</double>
+      </void>
+     </void>
+     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>10.0</double>
+       <double>20.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -281,22 +297,29 @@
      <void property="text">
       <string>author: Marvel Adotse-ogah
 team: Group 4
-version: October 19, 2024
+version: October 22, 2024
 </string>
      </void>
     </void>
    </object>
    <object class="java.awt.geom.Point2D$Double" id="Point2D$Double5">
     <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double5"/>
+      <double>30.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>10.0</double>
+      <double>20.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>0.0</double>
-     <double>10.0</double>
+     <double>30.0</double>
+     <double>20.0</double>
     </void>
    </object>
   </void>
@@ -315,9 +338,14 @@ version: October 19, 2024
     <void property="methods">
      <void property="text">
       <string>+Player(name: String)
-+playerMove(): ArrayList&lt;Tile&gt;
++getPlayerName(): String
 +getTiles(): ArrayList&lt;Tile&gt;
-+getMoreTiles(): void</string>
++getScore(): int
++setScore(score: int): void
++takeTile(letter: String)
++playerMove(): ArrayList&lt;Tile&gt;
++getMoreTiles(tileBag: TileBag): void
++equals(obj: Object): boolean</string>
      </void>
     </void>
     <void property="name">
@@ -338,12 +366,12 @@ version: October 19, 2024
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>820.0</double>
+      <double>790.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>910.0</double>
-     <double>820.0</double>
+     <double>790.0</double>
     </void>
    </object>
   </void>
@@ -351,7 +379,7 @@ version: October 19, 2024
    <object class="com.horstmann.violet.ClassNode" id="ClassNode6">
     <void property="attributes">
      <void property="text">
-      <string>-player: String
+      <string>-player: Player
 -word: ArrayList&lt;Square&gt;
 -points: int</string>
      </void>
@@ -359,8 +387,9 @@ version: October 19, 2024
     <void property="methods">
      <void property="text">
       <string>+Play(player: Player, word: ArrayList&lt;Square&gt;)
-+getPlayer(): String
-+getWord(): String
++getWord(): ArrayList&lt;Square&gt;
++getWordString(): String
++getPlayer(): Player
 +getPoints(): int
 -calculatePoints(): int</string>
      </void>
@@ -383,12 +412,12 @@ version: October 19, 2024
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>1240.0</double>
+      <double>1340.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>910.0</double>
-     <double>1240.0</double>
+     <double>1340.0</double>
     </void>
    </object>
   </void>
