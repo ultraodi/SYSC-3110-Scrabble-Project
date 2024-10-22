@@ -29,7 +29,7 @@ public class ScrabbleGame {
     /** URL string*/
     private final String validWordsURLString = "https://www.mit.edu/~ecprice/wordlist.10000";
     /** Holds the file path for the text file containing the valid words*/
-    private final String validWordsFile = "valid_words.txt";
+    private final String validWordsFile = "resources/valid_words.txt";
     /** Holds a set of valid words*/
     private HashSet<String> validWords;
     /** Holds the current word played*/

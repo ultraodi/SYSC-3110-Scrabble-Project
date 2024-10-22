@@ -78,7 +78,7 @@ public class TileBag {
      * Creates the tiles by reading from a file that stores information about the bag
      * */
     public void createTiles() {
-        String fileName = "TileBagText.txt"; // Adjust the file path accordingly
+        String fileName = "resources/TileBagText.txt"; // Adjust the file path accordingly
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
