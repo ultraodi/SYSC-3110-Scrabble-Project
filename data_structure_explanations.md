@@ -1,0 +1,12 @@
+### This file contains the explanations for the main data structures used in the project
+  - HashSet<String> validWords: ScrabbleGame
+    - A hash set prevents duplicate values while allowing for quick search through a large number of values.
+	- Ordered values are not required
+	- The collection will not be iterated through
+  - Square[][] board: ScrabbleBoard
+	- Allows for an easier and more logical access to the square of the board in a [row][column] format
+	- Game logic in reality transfers well to programming
+  - HashMap<String, Integer> LETTER_FREQUENCY: TileBag
+	- Allows for the frequencies for each tile to be found and accessed easily and at constant time
+  - HashMap<String, Integer> LETTER_VALUE: TileBag
+	- Allows for the values for each tile to be found and accessed easily and at constant time

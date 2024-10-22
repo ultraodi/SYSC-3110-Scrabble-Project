@@ -7,4 +7,11 @@
 - The game decides who goes first based on the rules of scrabble (Closest to A goes first)
 - The game runs until a winner is determined under the rules of scrabble.
 
-## 
+
+---
+#### Explanation for the use of data structures
+- See data_structure_explanations.md
+  - HashSet<String> validWords: ScrabbleGame
+  - Square[][] board: ScrabbleBoard
+  - HashMap<String, Integer> LETTER_FREQUENCY: TileBag
+  - HashMap<String, Integer> LETTER_VALUE: TileBag

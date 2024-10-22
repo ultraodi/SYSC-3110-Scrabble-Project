@@ -111,8 +111,6 @@ public class Player {
     // players move
     //public ArrayList<Tile> playersMove(){}
 
-    // get more tiles
-
     /**
      * Get more tiles from the tile bag
      * @param tileBag The tile bag to take the tiles from
