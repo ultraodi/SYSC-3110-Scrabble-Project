@@ -110,7 +110,7 @@ public class TileBag {
         Random rand = new Random();
         int maxNumber = getNumTilesLeft();
 
-        //System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
+        // System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
         // Ensure the number of tiles requested is not greater than the available tiles
         if (number > maxNumber){
             throw new IllegalArgumentException("Bound must be positive");
@@ -131,17 +131,6 @@ public class TileBag {
         }
 
         return randomTiles;
-    }
-
-    /**
-     * Returns a number of tiles to be printed to a txt file
-     * @param number The number determines the amount of tiles returned to the player
-     * @return ArrayList<Tile> A list of tiles is returned to the txt file
-     */
-
-    public ArrayList<Tile> getTilesFromBag(int number) {
-        // Logic to get a specific number of tiles (if needed)
-        return tiles;
     }
 
     /**
