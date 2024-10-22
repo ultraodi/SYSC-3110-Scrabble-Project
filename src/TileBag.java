@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * The TileBag class simulatest as at this version the librady for all available
+ * The TileBag class simulates as at this version the library for all available
  * tiles that the players can interact with
  * @author Clinton Odinamadu
  * @author Abdul Babatunde
@@ -25,6 +25,7 @@ public class TileBag {
     private int numTilesLeft;
     /** An array list representing the bag*/
     private ArrayList<Tile> tiles;
+
 
     /**
      * Constructor for the TileBag class.

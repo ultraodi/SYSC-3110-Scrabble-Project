@@ -101,8 +101,11 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
+
         scrabbleBoard.drawBoard();
         ArrayList<Player> playerOrder = determinePlayerTurns();
+        printAllPlayerTiles();
+
         while (true) {
             getInputPlay();
             if (parseInputPlay()) {
@@ -110,11 +113,12 @@ public class ScrabbleGame {
                     System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
                     if (playWord()) {
                         scrabbleBoard.drawBoard();
+                        printAllPlayerTiles();
                     } else {
                         System.out.println("Couldn't play word");
                     }
                 } else {
-                    System.out.println("Valid Word it is not.");
+                    System.out.println("Valid Word it is not."); // Blud is NOT yoda
                 }
             } else {
                 System.out.println("Not a valid Entry");
@@ -383,6 +387,13 @@ public class ScrabbleGame {
         for (int j = 0; j < returnTurns.size(); j++) {
             System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
         }
+
+        System.out.print("\nPlayer order is ");
+
+        for (int j = 0; j < returnTurns.size(); j++) {
+            System.out.printf(returnTurns.get(j).getPlayerName() + " --> ");
+        }
+        System.out.print("Repeat\n\n");
         return returnTurns;
     }
 
@@ -495,6 +506,20 @@ public class ScrabbleGame {
         playerInputBoardPosition = _tempPosition.toUpperCase();
         playerInputPlayDirection = (_tempDirection.equals("h"))? Direction.HORIZONTAL : Direction.VERTICAL;
         return true;
+    }
+
+    public void printAllPlayerTiles(){
+
+        for (int j = 0; j < players.size(); j++) {
+            String playerTiles;
+            StringBuilder playerTilesStringBuilder = new StringBuilder();
+            for (Tile _tile :playerTurn.getTiles()) {
+                playerTilesStringBuilder.append(_tile.getLetter());
+            }
+            playerTiles = playerTilesStringBuilder.toString();
+            System.out.println(players.get(j).getPlayerName() + "'s letters: " +playerTiles + "\n");
+        }
+
     }
 
     /**

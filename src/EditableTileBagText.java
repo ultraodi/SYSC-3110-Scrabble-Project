@@ -101,6 +101,6 @@ public class EditableTileBagText {
 
     public static void main(String[] args) {
         EditableTileBagText tileBag = new EditableTileBagText();
-        tileBag.printTileBagToFile("TileBagText.txt");
+        tileBag.printTileBagToFile("resources/TileBagText.txt");
     }
 }
