@@ -2,8 +2,7 @@
 
 #### Notes
 - The project is not complete as yet
-  - It will not run by running the JAR file. It must be extracted and run in IntellliJ
-  - The words that currently work (due to testing) are 'apple', 'easy', 'manga'
+  - It will not run by running the JAR file. It must be extracted and run in IntelliJ
   - The following still need to be done
     - Enforcements of Scrabble rules still need to be implemented
     - Allowing words to be built off of each other also need to be implemented 
