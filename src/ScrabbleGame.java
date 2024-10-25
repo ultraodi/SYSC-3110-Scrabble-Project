@@ -184,12 +184,9 @@ public class ScrabbleGame {
             row = dir.equals(Direction.HORIZONTAL)? rowNum_program:rowNum_program + i;
             col = dir.equals(Direction.VERTICAL)? colNum_program:colNum_program + i;
             tile = scrabbleBoard.getTileOnSquare(row, col);
-            if (tile != null) {
-                lettersOnTheBoard.add(tile);
-            } else {
-                lettersOnTheBoard.add(null);
-            }
+            lettersOnTheBoard.add(tile); // Tile can be an actual tile or null
         }
+        System.out.print("ScrabbleGame->playWord: Letters on the board in the area of play: ");
         for (Tile _letter: lettersOnTheBoard) {
             if (_letter == null) {
                 System.out.print("-");
