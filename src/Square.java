@@ -58,6 +58,17 @@ public class Square {
     }
 
     /**
+     * Remove the placed tile from the square.
+     * @return The tile removed from the square.
+     */
+    public Tile removePlacedTile() {
+        Tile temp;
+        temp = getPlacedTile();
+        placedTile = null;
+        return temp;
+    }
+
+    /**
      * Gets the type of this square.
      * @return The type of square.
      */

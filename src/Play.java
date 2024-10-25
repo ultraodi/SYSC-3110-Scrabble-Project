@@ -51,6 +51,10 @@ public class Play {
         return returnString.toString();
     }
 
+    public void setWord(ArrayList<Square> word) {
+        this.word = word;
+    }
+
     /**
      * Gets the player associated with this play.
      * @return The Player object representing the player making the play.
@@ -82,7 +86,7 @@ public class Play {
     public boolean equals(Object obj) {
         if (obj instanceof Play) {
             Play play = (Play) obj;
-            return word.equals(play.word);
+            return getWordString().equals(play.getWordString());
         }
         return false;
     }

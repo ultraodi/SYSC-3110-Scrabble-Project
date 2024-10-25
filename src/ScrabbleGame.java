@@ -23,7 +23,7 @@ public class ScrabbleGame {
     /** The tile bag for the game*/
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private ArrayList<Play> plays;
+    private HashSet<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** URL string*/
@@ -50,6 +50,8 @@ public class ScrabbleGame {
     private ArrayList<Player> playerOrder;
     /** Holds the current index of the player's turn */
     private int currentPlayerIndex = 0;
+    /** Current play being worked with*/
+    private Play currentPlay;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -59,7 +61,7 @@ public class ScrabbleGame {
         players = new ArrayList<>();
         scrabbleBoard = new ScrabbleBoard();
         tileBag = new TileBag();
-        plays = new ArrayList<>();
+        plays = new HashSet<>();
         playerTurn = null;
         // The URL class throws the MalformedURLException so the program is required to handle it.
         try {
@@ -81,6 +83,7 @@ public class ScrabbleGame {
             players.add(new Player(name));
         }
         playerTurn = players.getFirst();
+        currentPlay = new Play(playerTurn, null);
     }
 
 
@@ -249,6 +252,7 @@ public class ScrabbleGame {
         //
         putPlayOnBoard(dir, rowNum, colNum);
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
+            removePlayFromBoard(currentPlay);
             return false;
         }
         return true;
@@ -320,6 +324,7 @@ public class ScrabbleGame {
      * @param colNum The column number coordinate of the play.
      */
     public void putPlayOnBoard(Direction dir, int rowNum, int colNum) {
+        ArrayList<Square> _word = new ArrayList<>();
         rowNum -= 1;
         colNum -= 1; // Convert numbers from board coordinates to program usable coordinates. Indexes of arrays start at 0.
         // Making the play
@@ -331,10 +336,12 @@ public class ScrabbleGame {
             col = dir.equals(Direction.VERTICAL)? colNum:colNum + i;
             ArrayList<Tile> playerTurnTiles = playerTurn.getTiles();
             if (scrabbleBoard.getSquare(row, col).getPlacedTile() == null) {
+                _word.add(scrabbleBoard.getSquare(row, col));
                 playTile = playerTurn.takeTile(valueOf(playerInputWord.charAt(i)).toUpperCase());
                 scrabbleBoard.placeTile(row, col, playTile);
-            } else continue;
+            } else _word.add(scrabbleBoard.getSquare(row, col));
         }
+        currentPlay= new Play(playerTurn, _word);
     }
 
     /**
@@ -342,7 +349,19 @@ public class ScrabbleGame {
      * @param play The play to be removed from the board
      */
     public void removePlayFromBoard(Play play) {
-        // Stub method
+        Tile tile;
+        for (Square square: play.getWord()) {
+            if (square == null) {
+                System.out.println("ScrabbleGame->removePlayFromBoard: Square cannot be interacted with. Unavailable");
+                return;
+            }
+            tile = square.getPlacedTile();
+            if (tile.getPlayer().equals(play.getPlayer())) {
+                playerTurn.returnTile(square.removePlacedTile());
+                System.out.printf("ScrabbleGame->removePlayFromBoard: Letter removed: %s, Player was %s", tile.getLetter(), tile.getPlayer().getPlayerName());
+            } else System.out.printf("ScrabbleGame->removePlayFromBoard: Letter not removed: %s, Player was %s", tile.getLetter(), tile.getPlayer().getPlayerName());
+            System.out.println("-");
+        }
     }
 
     /**
@@ -357,24 +376,18 @@ public class ScrabbleGame {
 
         // Initialize each player's tiles
         for (Player player : players) {
-            player.setPlayerTiles(player.getMoreTilesStart(tileBag));
-            tile = tileBag.getRandomTilesFromBagStart(7);
-            playerDraws.add(tile.getFirst().getLetter()); // Use get(0) to access the first tile
+            tile = tileBag.getRandomTilesFromBag(1);
+            player.setPlayerTiles(tile);
+            playerDraws.add(tile.getFirst().getLetter()); // Use getFirst() to access the first tile
+            player.getMoreTiles(tileBag); // Take the number of necessary tiles needed.
         }
-
-//        // Draw tiles for each player
-//        for (int i = 0; i < players.size(); i++) {
-//            tile = tileBag.getRandomTilesFromBagStart(1);
-//            playerDraws.add(tile.get(0).getLetter()); // Use get(0) to access the first tile
-//        }
-
 
         int lowestIndex = 0;
         String minChar;
 
         // Determine player turns based on drawn tiles
         for (Player player : players) {
-            minChar = playerDraws.get(0); // Use get(0) to access the first element
+            minChar = playerDraws.getFirst(); // Use getFirst() to access the first element
             lowestIndex = 0;
 
             for (int i = 0; i < playerDraws.size(); i++) {

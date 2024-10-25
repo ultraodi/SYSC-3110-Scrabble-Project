@@ -108,6 +108,14 @@ public class Player {
         return null;
     }
 
+    public boolean returnTile(Tile tile) {
+        if (tiles.size() < MAX_TILES){
+            tiles.add(tile);
+            return true;
+        }
+        return false;
+    }
+
     // players move
     //public ArrayList<Tile> playersMove(){}
 
@@ -115,15 +123,15 @@ public class Player {
         this.tiles = tiles;
     }
 
-    /**
-     * Get more tiles from the tile bag at the start of the game
-     * @param tileBag The tile bag to take the tiles from
-     */
-    public ArrayList<Tile> getMoreTilesStart(TileBag tileBag) {
-        tiles = tileBag.getRandomTilesFromBagStart(MAX_TILES - tiles.size());
-        return tiles;
-
-    }
+//    /**
+//     * Get more tiles from the tile bag at the start of the game
+//     * @param tileBag The tile bag to take the tiles from
+//     */
+//    public ArrayList<Tile> getMoreTilesStart(TileBag tileBag) {
+//        tiles = tileBag.getRandomTilesFromBagStart(MAX_TILES - tiles.size());
+//        return tiles;
+//
+//    }
 
     /**
      * Get more tiles from the tile bag
@@ -131,6 +139,9 @@ public class Player {
      */
     public void getMoreTiles(TileBag tileBag) {
         tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
+        for (Tile tile: tiles) {
+            tile.setPlayer(this);
+        }
     }
 
     //    public ArrayList<Tile> getTiles() {
@@ -155,10 +166,12 @@ public class Player {
      */
     @Override
     public boolean equals(Object obj) {
+        Player player = null;
         if (obj instanceof Player) {
-            Player player = (Player) obj;
+            player = (Player) obj;
             return name.equals(player.name);
         }
+        System.out.printf("Player->equals: Player not equal: %s %s", name, player);
         return false;
     }
 }

@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class TileBag {
     /** The max number of tiles allowed in the bag*/
-    private int MAX_NO_TILES;
+    private static int MAX_NO_TILES = 100;
     /** The frequency of the letters*/
     private HashMap<String, Integer> LETTER_FREQUENCY;
     /** The value of the letter*/
@@ -32,14 +32,13 @@ public class TileBag {
      * Constructor for the TileBag class.
      * */
     public TileBag() {
-        MAX_NO_TILES = 100; // Set the max number of tiles allowed in the tile bag
         LETTER_FREQUENCY = new HashMap<>();
         LETTER_VALUE = new HashMap<>();
         numTilesLeft = 0;
         tiles = new ArrayList<>();
         createTiles();
 
-        // Initialize the letter value (based on Scrabble values or your custom logic)
+        // Initialize the letter value
         initializeLetterValues();
     }
 
@@ -134,39 +133,40 @@ public class TileBag {
 
         return randomTiles;
     }
-    /**
-     * Allows players to take tiles from the bag and add to their inventory
-     * @param number The number determines the amount of tiles returned to the player
-     * @return A list of tiles is returned to the player
-     * */
-    public ArrayList<Tile> getRandomTilesFromBagStart(int number) {
-        // Logic to get a specific number of tiles (if needed)
-        ArrayList<Tile> randomTiles = new ArrayList<>();
-        Random rand = new Random();
-        int maxNumber = getNumTilesLeft();
 
-        // System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
-        // Ensure the number of tiles requested is not greater than the available tiles
-        if (number > maxNumber){
-            throw new IllegalArgumentException("Bound must be positive");
-        }
-
-        for (int i = 0; i < number; i++) {
-            // Get a random index within the current size of the tiles list
-            int randomIndex = rand.nextInt(tiles.size());
-
-            // Add the tile at the random index to the randomTiles list
-            randomTiles.add(tiles.get(randomIndex));
-
-//            // Remove the tile from the tiles list to avoid duplication
-//            tiles.remove(randomIndex);
+//    /**
+//     * Allows players to take tiles from the bag and add to their inventory
+//     * @param number The number determines the amount of tiles returned to the player
+//     * @return A list of tiles is returned to the player
+//     * */
+//    public ArrayList<Tile> getRandomTilesFromBagStart(int number) {
+//        // Logic to get a specific number of tiles (if needed)
+//        ArrayList<Tile> randomTiles = new ArrayList<>();
+//        Random rand = new Random();
+//        int maxNumber = getNumTilesLeft();
 //
-//            // Decrements the remaining tile counter
-//            numTilesLeft--;
-        }
-
-        return randomTiles;
-    }
+//        // System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
+//        // Ensure the number of tiles requested is not greater than the available tiles
+//        if (number > maxNumber){
+//            throw new IllegalArgumentException("Bound must be positive");
+//        }
+//
+//        for (int i = 0; i < number; i++) {
+//            // Get a random index within the current size of the tiles list
+//            int randomIndex = rand.nextInt(tiles.size());
+//
+//            // Add the tile at the random index to the randomTiles list
+//            randomTiles.add(tiles.get(randomIndex));
+//
+////            // Remove the tile from the tiles list to avoid duplication
+////            tiles.remove(randomIndex);
+////
+////            // Decrements the remaining tile counter
+////            numTilesLeft--;
+//        }
+//
+//        return randomTiles;
+//    }
 
     /**
      * Returns the number of tiles left in the bag
@@ -176,9 +176,10 @@ public class TileBag {
         return numTilesLeft;
     }
 
-    public ArrayList<Tile> getTilesFromBag(int number) {
-        // Logic to get a specific number of tiles (if needed)
-        return tiles;
+    public void returnTile(Tile tile) {
+        tile.unsetPlayer();
+        tiles.add(tile);
+        numTilesLeft++;
     }
 
     /*public static void main(String[] args) {
