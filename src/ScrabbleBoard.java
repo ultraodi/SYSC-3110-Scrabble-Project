@@ -4,6 +4,12 @@
  * @version October 18, 2024
  */
 public class ScrabbleBoard {
+    public static final String RESET = "\033[0m";  // Text Reset
+    public static final String RED = "\033[0;31m"; // Red
+    public static final String GREEN = "\033[0;32m"; // Green
+    public static final String YELLOW = "\033[0;33m"; // Yellow
+    public static final String BLUE = "\033[0;34m"; // Blue
+
     /** The array model of the scrabble board*/
     private Square[][] board;
     /** The dimension of the board. Since the board is a square the size is singular.*/
@@ -227,7 +233,7 @@ public class ScrabbleBoard {
                         System.out.println("No Square type of that type.");
                 }
                 Square _square = board[row -1][col];
-                boardString.append((_square.getPlacedTile() != null)? String.format(" (%s) |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
+                boardString.append((_square.getPlacedTile() != null)? String.format(YELLOW + " (%s) " + RESET + "|",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
                                                                                                                                                                          // otherwise, it prints the letter on the tile placed on it.
 
             }
