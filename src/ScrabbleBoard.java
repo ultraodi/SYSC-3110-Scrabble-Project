@@ -7,9 +7,11 @@ public class ScrabbleBoard {
     // The following are ANSI codes for console text. Might not be portable on Windows computers.
     public static final String RESET = "\033[0m"; // Colour Reset
     public static final String RED = "\033[0;31m"; // Red
+    public static final String MAGENTA = "\033[0;35m"; // Magenta
     public static final String GREEN = "\033[0;32m"; // Green
     public static final String YELLOW = "\033[0;33m"; // Yellow
     public static final String BLUE = "\033[0;34m"; // Blue
+    public static final String CYAN = "\033[0;36m"; // Cyan
 
     /** The array model of the scrabble board*/
     private Square[][] board;
@@ -216,19 +218,19 @@ public class ScrabbleBoard {
                         stringRep = "   ";
                         break;
                     case DOUBLE_LETTER:
-                        stringRep = "DLR";
+                        stringRep = CYAN + "DLR" + RESET;
                         break;
                     case DOUBLE_WORD:
                         stringRep = BLUE + "DWD" + RESET;
                         break;
                     case TRIPLE_LETTER:
-                        stringRep = "TLR";
+                        stringRep = MAGENTA + "TLR" + RESET;
                         break;
                     case TRIPLE_WORD:
                         stringRep = RED + "TWD" + RESET;
                         break;
                     case CENTER:
-                        stringRep = "[+]";
+                        stringRep = GREEN + "[+]" + RESET;
                         break;
                     default:
                         System.out.println("No Square type of that type.");
