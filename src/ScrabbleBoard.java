@@ -4,7 +4,8 @@
  * @version October 18, 2024
  */
 public class ScrabbleBoard {
-    public static final String RESET = "\033[0m";  // Text Reset
+    // The following are ANSI codes for console text. Might not be portable on Windows computers.
+    public static final String RESET = "\033[0m"; // Colour Reset
     public static final String RED = "\033[0;31m"; // Red
     public static final String GREEN = "\033[0;32m"; // Green
     public static final String YELLOW = "\033[0;33m"; // Yellow
@@ -218,13 +219,13 @@ public class ScrabbleBoard {
                         stringRep = "DLR";
                         break;
                     case DOUBLE_WORD:
-                        stringRep = "DWD";
+                        stringRep = BLUE + "DWD" + RESET;
                         break;
                     case TRIPLE_LETTER:
                         stringRep = "TLR";
                         break;
                     case TRIPLE_WORD:
-                        stringRep = "TWD";
+                        stringRep = RED + "TWD" + RESET;
                         break;
                     case CENTER:
                         stringRep = "[+]";
@@ -234,7 +235,7 @@ public class ScrabbleBoard {
                 }
                 Square _square = board[row -1][col];
                 boardString.append((_square.getPlacedTile() != null)? String.format(YELLOW + " (%s) " + RESET + "|",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
-                                                                                                                                                                         // otherwise, it prints the letter on the tile placed on it.
+                                                                                                                                                                                               // otherwise, it prints the letter on the tile placed on it.
 
             }
             boardString.append("\n");
