@@ -78,12 +78,17 @@ public class Square {
 
     /**
      * Gets the tile placed on this square.
-     * @return The tile placed on this square
+     * @return The tile placed on this square.
      */
     public Tile getPlacedTile() {
         return placedTile;
     }
 
+    /**
+     * Compares Square objects by tile and square type.
+     * @param obj The square to be compared against.
+     * @return True if they match. False otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Square) {

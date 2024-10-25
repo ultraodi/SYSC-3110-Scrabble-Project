@@ -108,6 +108,11 @@ public class Player {
         return null;
     }
 
+    /**
+     * Returns a tile to the player's tile deck.
+     * @param tile The tile to be returned to the tile deck.
+     * @return True if the tile could be returned. False otherwise.
+     */
     public boolean returnTile(Tile tile) {
         if (tiles.size() < MAX_TILES){
             tiles.add(tile);
@@ -116,9 +121,10 @@ public class Player {
         return false;
     }
 
-    // players move
-    //public ArrayList<Tile> playersMove(){}
-
+    /**
+     * Gives the player a predetermined set of tiles.
+     * @param tiles The set of tiles assigned to the player.
+     */
     public void setPlayerTiles(ArrayList<Tile> tiles){
         this.tiles = tiles;
     }
@@ -171,7 +177,7 @@ public class Player {
             player = (Player) obj;
             return name.equals(player.name);
         }
-        System.out.printf("Player->equals: Player not equal: %s %s", name, player);
+        if (ScrabbleGame.DEBUG) System.out.printf("Player->equals: Player not equal: %s %s", name, player);
         return false;
     }
 }

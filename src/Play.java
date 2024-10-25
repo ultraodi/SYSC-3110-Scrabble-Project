@@ -8,11 +8,14 @@ import java.util.ArrayList;
  */
 public class Play {
 
-   /** Represents a player*/
+    /** Represents a player*/
     private Player player;
 
     /** The generated word of the user*/
     private ArrayList<Square> word;
+
+    /** The letter contributed by player in this play*/
+    private ArrayList<Square> contributedLetters;
 
     /** The points of the current game*/
     private int points;
@@ -26,6 +29,20 @@ public class Play {
     public Play(Player player, ArrayList<Square> word) {
         this.player = player; // Assign the passed Player object
         this.word = word;
+        this.contributedLetters = null;
+        this.points = 0; // Initialize points, or calculate based on word, etc.
+    }
+
+    /**
+     * Constructs a new Play with the specified Player and word.
+     * Initializes the points to 0.
+     * @param player The player making the play.
+     * @param word   An ArrayList of Squares representing the word being played.
+     */
+    public Play(Player player, ArrayList<Square> word, ArrayList<Square> contributedLetters) {
+        this.player = player; // Assign the passed Player object
+        this.word = word;
+        this.contributedLetters = contributedLetters;
         this.points = 0; // Initialize points, or calculate based on word, etc.
     }
 
@@ -51,6 +68,18 @@ public class Play {
         return returnString.toString();
     }
 
+    /**
+     * Gets the letters the player contributed to the word in this play.
+     * @return The letters contributed.
+     */
+    public ArrayList<Square> getContributedLetters() {
+        return contributedLetters;
+    }
+
+    /**
+     * Sets the word assigned to this play
+     * @param word The word assigned to this play.
+     */
     public void setWord(ArrayList<Square> word) {
         this.word = word;
     }
