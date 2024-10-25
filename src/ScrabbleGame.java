@@ -14,7 +14,7 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -541,21 +541,25 @@ public class ScrabbleGame {
         return true;
     }
 
+    /**
+     * Prints all
+     */
     public void printAllPlayerTiles() {
         for (Player player : players) {
             // Print the player's name
-
-
             System.out.print(player.getPlayerName());
             // Get the player's tiles
             ArrayList<Tile> playerTiles = player.getTiles();
 
             // Print each tile
-            System.out.print("'s tiles: ");
+            System.out.print("'s tiles: \n");
+            System.out.println("-" + "------".repeat(player.getTiles().size()));
+            System.out.print("|");
             for (Tile tile : playerTiles) {
-                System.out.print(tile.getLetter() + " "); // Assuming getLetter() returns a char or String
+                System.out.print(" " + ScrabbleBoard.YELLOW  + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
             }
             System.out.println(); // Move to the next line after printing all tiles of the current player
+            System.out.println("-" + "------".repeat(player.getTiles().size()));
         }
         System.out.println();
     }
