@@ -440,7 +440,7 @@ public class ScrabbleGame {
 
         // Debug output for player turns
         for (int j = 0; j < returnTurns.size(); j++) {
-            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
+            System.out.printf("\nPlayer: %s Tile Drawn: %s", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
         }
 
         // Print player order
