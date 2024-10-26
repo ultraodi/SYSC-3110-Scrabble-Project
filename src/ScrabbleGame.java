@@ -14,7 +14,7 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -77,8 +77,9 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
 
+        // Get player names
+        Scanner scanner = new Scanner(System.in);
         for (int i = 0; i < numPlayers; i++) {
-            Scanner scanner = new Scanner(System.in);
             System.out.print("Player " + (i + 1) + ": What is your name: ");
             String name = scanner.nextLine();
             players.add(new Player(name));
@@ -99,9 +100,9 @@ public class ScrabbleGame {
          * - Player makes a play given the tiles they have
          *  - If the play is invalid, they are prompted again
          *      - A play is invalid if:
-         *          - There is not enough space in the direction they want to play
-         *          - They do not have the required tiles
-         *          - One or more of the words formed by their play is not a valid word
+         *          - There is not enough space in the direction player intends to play
+         *          - Player does not have the required tiles
+         *          - One or more of the words formed by the play is not a valid word
          *          - The play cannot be made if the tiles on the board, that are in the direction they chose to play, do not fit the word played. E.g. APPLE is played but the board has something
          *            like -- |   |   | P | E  |   |   |   | --, apple will not be able to be played with those letters.
          *  - The tiles a player has will be given above the input area
@@ -113,10 +114,10 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
-
+        boolean showAllPlayerTiles = false;
         scrabbleBoard.drawBoard();
         playerOrder = determinePlayerTurns();
-        printAllPlayerTiles();
+        printPlayerTiles(showAllPlayerTiles);
         System.out.println("Current player: " + playerTurn.getPlayerName());
 
         while (true) {
@@ -127,8 +128,8 @@ public class ScrabbleGame {
                     if (playWord()) {
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
-                        printAllPlayerTiles();
                         changeTurns();
+                        printPlayerTiles(showAllPlayerTiles);
                         System.out.println("Current player: " + playerTurn.getPlayerName());
                     } else System.out.println("Couldn't play word.");
                 } else System.out.println("Valid Word it is not."); // Blud is NOT yoda
@@ -145,7 +146,6 @@ public class ScrabbleGame {
 
         // Update playerTurn to the next player
         playerTurn = playerOrder.get(currentPlayerIndex);
-
     }
 
     /**
@@ -169,13 +169,16 @@ public class ScrabbleGame {
         */
 
         // Are there enough squares to play the word
+        String debugTag;
+        debugTag = (DEBUG)? "ScrabbleGame->playWord:":"";
+
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
         int rowNum_program = rowNum - 1; // Convert to program usable coordinates. Array indexes start at 0.
         int colNum_program = colNum - 1;
         if (!((14 - (dir.equals(Direction.HORIZONTAL)? colNum_program:rowNum_program) + 1) >= playerInputWord.length())) {
-            if (DEBUG) System.out.printf("ScrabbleGame->playWord: Word is too long. row: %d col: %d word length: %d%n", rowNum, colNum, playerInputWord.length());
+            System.out.printf("\n%s Word is too long. row: %d col: %d word length: %d%n",debugTag ,rowNum, colNum, playerInputWord.length());
             return false;
         }
 
@@ -190,7 +193,7 @@ public class ScrabbleGame {
             tile = scrabbleBoard.getTileOnSquare(row, col);
             lettersOnTheBoard.add(tile); // Tile can be an actual tile or null
         }
-        if (DEBUG) System.out.print("ScrabbleGame->playWord: Letters on the board in the area of play: ");
+        if (DEBUG) System.out.printf("\n%s Letters on the board in the area of play: ", debugTag);
         for (Tile _letter: lettersOnTheBoard) {
             if (_letter == null) {
                 if (DEBUG) System.out.print("-");
@@ -201,8 +204,8 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (!(playerInputWord.contains(letter.getLetter().toLowerCase()))) {
-                    if (DEBUG) System.out.printf("ScrabbleGame->playWord: %s", playerInputWord);
-                    if (DEBUG) System.out.println("ScrabbleGame->playWord: Letters on the board are not in the word played");
+                    if (DEBUG) System.out.printf("\n%s %s",debugTag, playerInputWord);
+                    System.out.printf("\n%s Letters on the board are not in the word played", debugTag);
                     return false;
                 }
             }
@@ -213,7 +216,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (dupPlayerInputWord.indexOf(letter.getLetter().toLowerCase()) != lettersOnTheBoard.indexOf(letter)) {
-                    if (DEBUG) System.out.println("ScrabbleGame->playWord: Letters on the board are not in the correct position for the word played");
+                    System.out.printf("\n%s Letters on the board are not in the correct position for the word played", debugTag);
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter().toLowerCase(), "-");
@@ -229,9 +232,9 @@ public class ScrabbleGame {
             playerTilesStringBuilder.append(_tile.getLetter());
         }
         playerTiles = playerTilesStringBuilder.toString();
-        if (DEBUG) System.out.println("ScrabbleGame->playWord: Player's Tiles: " + playerTiles);
-        if (DEBUG) System.out.println("ScrabbleGame->playWord: Word played: " + dupPlayerInputWord);
-        if (DEBUG) System.out.print("ScrabbleGame->playWord: ");
+        if (DEBUG) System.out.printf("\n%s Player's Tiles: " + playerTiles, debugTag);
+        if (DEBUG) System.out.printf("\n%s Word played: " + dupPlayerInputWord, debugTag);
+        if (DEBUG) System.out.printf("\n%s ", debugTag);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             if (dupPlayerInputWord.charAt(i) != '-') {
                 if (DEBUG) System.out.print(dupPlayerInputWord.charAt(i));
@@ -239,7 +242,7 @@ public class ScrabbleGame {
                 if (playerTiles.contains(_letter)) {
                     playerTiles = playerTiles.replaceFirst(_letter, "-");
                 } else {
-                    if (DEBUG) System.out.println("\nScrabbleGame->playWord: Player does not have the needed tiles");
+                    System.out.printf("\n%s Player does not have the needed tiles", debugTag);
                     return false;
                 }
             }
@@ -252,7 +255,7 @@ public class ScrabbleGame {
             // Check if the play already exists and remove it from the list of plays if it does.
         //
         putPlayOnBoard(dir, rowNum, colNum);
-        plays.add(currentPlay);
+        if (!plays.contains(currentPlay)) plays.add(currentPlay);
         if (DEBUG) printPlays();
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
             removePlayFromBoard(currentPlay);
@@ -273,6 +276,9 @@ public class ScrabbleGame {
      * @return True if all the words are valid. False otherwise
      */
     private boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
+        String debugTag;
+        debugTag = (DEBUG)? "ScrabbleGame->allPlayWordsValid:":"";
+
         rowNum -= 1;
         colNum -= 1; // Convert numbers from board coordinates to program usable coordinates. Indexes of arrays start at 0.
         int row2, col2;
@@ -289,12 +295,12 @@ public class ScrabbleGame {
                 if (DEBUG) System.out.println("Got in here 0.");
                 while ((scrabbleBoard.getSquare(row2, col2 - 1) != null) &&
                         (scrabbleBoard.getSquare(row2, col2 - 1).getPlacedTile() != null)) {
-                    if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move 1");
+                    if (DEBUG) System.out.printf("\n%s Vertical move 1", debugTag);
                     col2--;
                 }
                 while ((scrabbleBoard.getSquare(row2, col2) != null) &&
                         (scrabbleBoard.getSquare(row2, col2).getPlacedTile() != null)) {
-                    if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move 2");
+                    if (DEBUG) System.out.printf("\n%s Vertical move 2", debugTag);
                     _tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     if (col2 == colNum) {
                         _contributedLetters.add(scrabbleBoard.getSquare(row2, col2));
@@ -306,12 +312,12 @@ public class ScrabbleGame {
                 if (DEBUG) System.out.println("Got in here 1.");
                 while ((scrabbleBoard.getSquare(row2 - 1, col2) != null) &&
                         (scrabbleBoard.getSquare(row2 - 1, col2).getPlacedTile() != null)) {
-                    if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 1");
+                    if (DEBUG) System.out.printf("\n%s Horizontal move 1", debugTag);
                     row2--;
                 }
                 while ((scrabbleBoard.getSquare(row2, col2) != null) &&
                         (scrabbleBoard.getSquare(row2, col2).getPlacedTile() != null)) {
-                    if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 2");
+                    if (DEBUG) System.out.printf("\n%s Horizontal move 2", debugTag);
                     _tileWord.add(scrabbleBoard.getSquare(row2, col2));
                     if (row2 == rowNum) {
                         _contributedLetters.add(scrabbleBoard.getSquare(row2, col2));
@@ -324,7 +330,7 @@ public class ScrabbleGame {
 
         // Check that all words formed are valid
         for (Play _pl: _plays) {
-            if (DEBUG) System.out.printf("ScrabbleGame->allPlayWordsValid: word is %s%n", _pl.getWordString());
+            if (DEBUG) System.out.printf("%s word is %s%n", debugTag, _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 return false;
             }
@@ -333,7 +339,7 @@ public class ScrabbleGame {
         _plays.removeIf(_pl -> (this.plays.contains(_pl) || _pl.getWordString().length() == 1));
 
         for (Play _pl: _plays) {
-            if (DEBUG) System.out.printf("ScrabbleGame->allPlayWordsValid: word left is %s%n", _pl.getWordString());
+            if (DEBUG) System.out.printf("%s word left is %s%n", debugTag, _pl.getWordString());
         }
 
         plays.addAll(_plays);
@@ -566,22 +572,39 @@ public class ScrabbleGame {
     /**
      * Prints all player tiles in a visually appealing format.
      */
-    public void printAllPlayerTiles() {
-        for (Player player : players) {
+    public void printPlayerTiles(boolean allPlayers) {
+        if (allPlayers) {
+            for (Player player : players) {
+                // Print the player's name
+                System.out.print(player.getPlayerName());
+                // Get the player's tiles
+                ArrayList<Tile> playerTiles = player.getTiles();
+
+                // Print each tile
+                System.out.print("'s tiles: \n");
+                System.out.println("-" + "------".repeat(player.getTiles().size()));
+                System.out.print("|");
+                for (Tile tile : playerTiles) {
+                    System.out.print(" " + ScrabbleBoard.YELLOW + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
+                }
+                System.out.println(); // Move to the next line after printing all tiles of the current player
+                System.out.println("-" + "------".repeat(player.getTiles().size()));
+            }
+        } else {
             // Print the player's name
-            System.out.print(player.getPlayerName());
+            System.out.print(playerTurn.getPlayerName());
             // Get the player's tiles
-            ArrayList<Tile> playerTiles = player.getTiles();
+            ArrayList<Tile> playerTiles = playerTurn.getTiles();
 
             // Print each tile
             System.out.print("'s tiles: \n");
-            System.out.println("-" + "------".repeat(player.getTiles().size()));
+            System.out.println("-" + "------".repeat(playerTurn.getTiles().size()));
             System.out.print("|");
             for (Tile tile : playerTiles) {
-                System.out.print(" " + ScrabbleBoard.YELLOW  + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
+                System.out.print(" " + ScrabbleBoard.YELLOW + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
             }
             System.out.println(); // Move to the next line after printing all tiles of the current player
-            System.out.println("-" + "------".repeat(player.getTiles().size()));
+            System.out.println("-" + "------".repeat(playerTurn.getTiles().size()));
         }
         System.out.println();
     }
