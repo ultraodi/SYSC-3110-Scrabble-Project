@@ -24,7 +24,7 @@ public class ScrabbleGame {
     /** The tile bag for the game*/
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private HashSet<Play> plays;
+    private ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** URL string*/
@@ -62,7 +62,7 @@ public class ScrabbleGame {
         players = new ArrayList<>();
         scrabbleBoard = new ScrabbleBoard();
         tileBag = new TileBag();
-        plays = new HashSet<>();
+        plays = new ArrayList<>();
         playerTurn = null;
         // The URL class throws the MalformedURLException so the program is required to handle it.
         try {
@@ -149,7 +149,7 @@ public class ScrabbleGame {
     }
 
     /**
-     * Plays the player's word on the game board if it is valid.
+     * Plays the player's word on the game board if it is valid. Adds the word to play history if the word itself and all words formed by it are valid.
      * @return True if the play could be made. False if the play could not be made.
      */
     public boolean playWord() {
@@ -252,15 +252,20 @@ public class ScrabbleGame {
             // Check if the play already exists and remove it from the list of plays if it does.
         //
         putPlayOnBoard(dir, rowNum, colNum);
+        plays.add(currentPlay);
+        if (DEBUG) printPlays();
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
             removePlayFromBoard(currentPlay);
+            plays.remove(currentPlay);
+            if (DEBUG) printPlays();
             return false;
         }
+        if (DEBUG) printPlays();
         return true;
     }
 
     /**
-     * Checks if all words formed by the play are valid.
+     * Checks if all words formed by the play are valid. Adds all the unique (do not exist in play history) words formed to play history (instance variable "plays") if all words formed are valid.
      * @param dir The direction of the play.
      * @param rowNum The row number coordinate of the play
      * @param colNum The column number coordinate of the play
@@ -272,9 +277,11 @@ public class ScrabbleGame {
         colNum -= 1; // Convert numbers from board coordinates to program usable coordinates. Indexes of arrays start at 0.
         int row2, col2;
         ArrayList<Square> _tileWord;
+        ArrayList<Square> _contributedLetters;
         ArrayList<Play> _plays = new ArrayList<>();
         for (int i = 0; i < word.length(); i++) {
             _tileWord = new ArrayList<>();
+            _contributedLetters = new ArrayList<>();
             row2 = dir.equals(Direction.VERTICAL)? rowNum + i:rowNum;
             col2 = dir.equals(Direction.VERTICAL)? colNum: colNum + i;
 
@@ -289,9 +296,12 @@ public class ScrabbleGame {
                         (scrabbleBoard.getSquare(row2, col2).getPlacedTile() != null)) {
                     if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Vertical move 2");
                     _tileWord.add(scrabbleBoard.getSquare(row2, col2));
+                    if (col2 == colNum) {
+                        _contributedLetters.add(scrabbleBoard.getSquare(row2, col2));
+                    } else _contributedLetters.add(null);
                     col2++;
                 }
-                _plays.add(new Play(new Player("nil"), _tileWord));
+                _plays.add(new Play(new Player("nil"), _tileWord, _contributedLetters));
             } else if (dir.equals(Direction.HORIZONTAL)) {
                 if (DEBUG) System.out.println("Got in here 1.");
                 while ((scrabbleBoard.getSquare(row2 - 1, col2) != null) &&
@@ -303,18 +313,30 @@ public class ScrabbleGame {
                         (scrabbleBoard.getSquare(row2, col2).getPlacedTile() != null)) {
                     if (DEBUG) System.out.println("ScrabbleGame->allPlayWordsValid: Horizontal move 2");
                     _tileWord.add(scrabbleBoard.getSquare(row2, col2));
+                    if (row2 == rowNum) {
+                        _contributedLetters.add(scrabbleBoard.getSquare(row2, col2));
+                    } else _contributedLetters.add(null);
                     row2++;
                 }
-                _plays.add(new Play(new Player("nil"), _tileWord)); // Placeholder players that are not relevant to the game.
+                _plays.add(new Play(playerTurn, _tileWord, _contributedLetters)); // Placeholder players that are not relevant to the game.
             }
         }
 
+        // Check that all words formed are valid
         for (Play _pl: _plays) {
             if (DEBUG) System.out.printf("ScrabbleGame->allPlayWordsValid: word is %s%n", _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 return false;
             }
         }
+
+        _plays.removeIf(_pl -> (this.plays.contains(_pl) || _pl.getWordString().length() == 1));
+
+        for (Play _pl: _plays) {
+            if (DEBUG) System.out.printf("ScrabbleGame->allPlayWordsValid: word left is %s%n", _pl.getWordString());
+        }
+
+        plays.addAll(_plays);
         return true;
     }
 
@@ -542,7 +564,7 @@ public class ScrabbleGame {
     }
 
     /**
-     * Prints all
+     * Prints all player tiles in a visually appealing format.
      */
     public void printAllPlayerTiles() {
         for (Player player : players) {
@@ -562,6 +584,15 @@ public class ScrabbleGame {
             System.out.println("-" + "------".repeat(player.getTiles().size()));
         }
         System.out.println();
+    }
+
+    private void printPlays() {
+        if (DEBUG) System.out.println("Current plays in history:");
+        for (Play _p: plays) {
+            if (DEBUG) System.out.printf("%s", _p.getWordString());
+            if (DEBUG) System.out.printf("   %s\n", _p.getContributedLettersString());
+        }
+        if (DEBUG) System.out.println("Current plays in history END");
     }
 
 

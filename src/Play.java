@@ -59,13 +59,7 @@ public class Play {
      * @return The string representation of the squares in the play.
      */
     public String getWordString() {
-        StringBuilder returnString = new StringBuilder();
-        Tile tile;
-        for (Square square: word) {
-            tile = square.getPlacedTile();
-            returnString.append(tile.getLetter());
-        }
-        return returnString.toString();
+        return getString(word);
     }
 
     /**
@@ -74,6 +68,25 @@ public class Play {
      */
     public ArrayList<Square> getContributedLetters() {
         return contributedLetters;
+    }
+
+    public String getContributedLettersString() {
+        return getString(contributedLetters);
+    }
+
+    private String getString(ArrayList<Square> squares) {
+        StringBuilder returnString = new StringBuilder();
+        Tile tile;
+        if (squares == null) return "--No letters--";
+        for (Square square : squares) {
+            if (square != null) {
+                tile = square.getPlacedTile();
+                returnString.append(tile.getLetter());
+            } else {
+                returnString.append("-");
+            }
+        }
+        return returnString.toString();
     }
 
     /**
