@@ -33,8 +33,8 @@ public class ScrabbleGame {
     private final String validWordsFile = "resources/valid_words.txt";
     /** Holds a set of valid words*/
     private HashSet<String> validWords;
-    /** Holds the current word played*/
-    private String currentValidWord;
+//    /** Holds the current word played*/
+//    private String currentValidWord;
     /** Input prompt for the user interface*/
     private final String inputPrompt = "Word to play >> ";
     /** Player input for each play*/
@@ -72,7 +72,7 @@ public class ScrabbleGame {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
-        currentValidWord = "";
+//        currentValidWord = "";
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
@@ -438,10 +438,10 @@ public class ScrabbleGame {
             returnTurns.add(players.get(lowestIndex)); // Add player to return list
         }
 
-//        // Debug output for player turns
-//        for (int j = 0; j < returnTurns.size(); j++) {
-//            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
-//        }
+        // Debug output for player turns
+        for (int j = 0; j < returnTurns.size(); j++) {
+            System.out.printf("Player: %s Tile Drawn: %s%n", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
+        }
 
         // Print player order
         System.out.print("\nPlayer order is ");
@@ -571,40 +571,26 @@ public class ScrabbleGame {
 
     /**
      * Prints all player tiles in a visually appealing format.
+     * @param allPlayers Decides if the tiles of all players should be shown. If true, all player tiles are shown, if false, only the current player tiles are shown.
      */
     public void printPlayerTiles(boolean allPlayers) {
-        if (allPlayers) {
-            for (Player player : players) {
-                // Print the player's name
-                System.out.print(player.getPlayerName());
-                // Get the player's tiles
-                ArrayList<Tile> playerTiles = player.getTiles();
-
-                // Print each tile
-                System.out.print("'s tiles: \n");
-                System.out.println("-" + "------".repeat(player.getTiles().size()));
-                System.out.print("|");
-                for (Tile tile : playerTiles) {
-                    System.out.print(" " + ScrabbleBoard.YELLOW + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
-                }
-                System.out.println(); // Move to the next line after printing all tiles of the current player
-                System.out.println("-" + "------".repeat(player.getTiles().size()));
-            }
-        } else {
+        ArrayList<Player> _currentPlayer = new ArrayList<>();
+        _currentPlayer.add(playerTurn); // ArrayList 'wrapper' that only contains the current player. It is for the sake of the following for loop and to avoid code duplication.
+        for (Player player : (allPlayers)? players:_currentPlayer) {
             // Print the player's name
-            System.out.print(playerTurn.getPlayerName());
+            System.out.print(player.getPlayerName());
             // Get the player's tiles
-            ArrayList<Tile> playerTiles = playerTurn.getTiles();
+            ArrayList<Tile> playerTiles = player.getTiles();
 
             // Print each tile
             System.out.print("'s tiles: \n");
-            System.out.println("-" + "------".repeat(playerTurn.getTiles().size()));
+            System.out.println("-" + "------".repeat(player.getTiles().size()));
             System.out.print("|");
             for (Tile tile : playerTiles) {
                 System.out.print(" " + ScrabbleBoard.YELLOW + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
             }
             System.out.println(); // Move to the next line after printing all tiles of the current player
-            System.out.println("-" + "------".repeat(playerTurn.getTiles().size()));
+            System.out.println("-" + "------".repeat(player.getTiles().size()));
         }
         System.out.println();
     }
@@ -617,7 +603,6 @@ public class ScrabbleGame {
         }
         if (DEBUG) System.out.println("Current plays in history END");
     }
-
 
     /**
      * Determines if a word is in the list of valid words.
