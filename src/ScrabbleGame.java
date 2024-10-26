@@ -5,6 +5,7 @@ import java.util.*;
 
 import static java.lang.String.*;
 
+// This is a test for git pull with core.sparseCheckout on 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
  * game Scrabble.
