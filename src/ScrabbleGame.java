@@ -386,8 +386,6 @@ public class ScrabbleGame {
         Tile tile;
         for (Square square: play.getContributedLetters()) {
             if (square == null) {
-                // System.out.println("ScrabbleGame->removePlayFromBoard: Square cannot be interacted with. Unavailable");
-                // return;
                 continue;
             }
             tile = square.getPlacedTile();
