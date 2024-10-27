@@ -1,10 +1,10 @@
-### This file contains the explanations for the main data structures used in the project
+### Explanations for the data structures used in the project
   - HashSet<String> validWords: ScrabbleGame
     - A hash set prevents duplicate values while allowing for quick search through a large number of values.
 	- Ordered values are not required
 	- The collection will not be iterated through
   - Square[][] board: ScrabbleBoard
-	- Allows for an easier and more logical access to the square of the board in a [row][column] format
+	- Allows for an easier and more logical access to the square of the board in a \[row]\[column] format
 	- Game logic in reality transfers well to programming
   - HashMap<String, Integer> LETTER_FREQUENCY: TileBag
 	- Allows for the frequencies for each tile to be found and accessed easily and at constant time
@@ -12,7 +12,7 @@
 	- Allows for the values for each tile to be found and accessed easily and at constant time.
     - The values for each letter do not change.
     - Quick search access to the values is necessary for a pleasant user experience.
-- ArrayList<Plays> plays: Play history
+- ArrayList<Plays> plays: Play history (formerly HashSet<Plays> plays)
   - The data structure allowed for the Plays to be compared by the words in them (using the equals method) and not only by identity. 
   - The caveat of using this as the data structure is that it has time complexity of O(n) compared to a HashSet's O(1).
   - The time complexity is acceptable given that there will always be fewer than 100 words to compare against.

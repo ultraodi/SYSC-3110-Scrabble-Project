@@ -1,6 +1,7 @@
-# Group_4_SYSC3110_Project
+# Group_4_SYSC3110_Project - Scrabble Game
 
-#### Notes
+### Notes
+#### Disclaimer
 - The project is not complete as yet
   - It will not run by running the JAR file. It must be extracted and run in IntellliJ
   - The words that currently work (due to testing) are 'apple', 'easy', 'manga'
@@ -11,8 +12,8 @@
     - Win conditions for the game need to be implemented
     - Refactoring for clarity
     - Packaging to run in a JAR file
-
-## How to play
+---
+### How to play
 - Upon running the game, a board will show and a prompt to enter the number and names of player's pops up
 - The format of play is 
   - \[word (e.g. apple)] \[play coordinates (e.g. ff)] \[play direction (e.g. \[h | v])]  *any word starting with 'h' or 'v' would work as well
@@ -26,3 +27,4 @@
   - Square[][] board: ScrabbleBoard
   - HashMap<String, Integer> LETTER_FREQUENCY: TileBag
   - HashMap<String, Integer> LETTER_VALUE: TileBag
+  - ArrayList<Plays> plays: Play history (formerly HashSet<Plays> plays)

@@ -16,15 +16,15 @@ import static java.lang.String.*;
 public class ScrabbleGame {
     public static final boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
     /** Holds current player's turn*/
     private Player playerTurn;
     /** The scrabble board for the game*/
-    private ScrabbleBoard scrabbleBoard;
+    private final ScrabbleBoard scrabbleBoard;
     /** The tile bag for the game*/
-    private TileBag tileBag;
+    private final TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private ArrayList<Play> plays;
+    private final ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** URL string*/
@@ -72,7 +72,6 @@ public class ScrabbleGame {
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
-
         setupPlayers();
         playerTurn = players.getFirst();
         currentPlay = new Play(playerTurn, null);
@@ -376,9 +375,8 @@ public class ScrabbleGame {
 
         _plays.removeIf(_pl -> (this.plays.contains(_pl) || _pl.getWordString().length() == 1));
         boolean connects = false;
-        if (currentPlay.getContributedLettersString().contains("-")) { // The word is made by contributing a few words from the players tiles to what is already on the board.
-            connects = true;
-        }
+        connects = currentPlay.getContributedLettersString().contains("-"); // The word is made by contributing a few words from the players tiles to what is already on the board.
+
         for (Play _pl: _plays) {
             if (DEBUG) System.out.printf("%s word left is %s%n", debugTag, _pl.getWordString());
             if (_pl.getContributedLettersString().contains("-")) { // At least one of the words created as a result of the main play are created by adding letters to what is already on the board.
