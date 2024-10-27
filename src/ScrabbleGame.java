@@ -170,7 +170,7 @@ public class ScrabbleGame {
 
         // Are there enough squares to play the word
         String debugTag;
-        debugTag = (DEBUG)? "ScrabbleGame->playWord:":"";
+        debugTag = (DEBUG)? "ScrabbleGame->playWord: ":"";
 
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
@@ -178,7 +178,7 @@ public class ScrabbleGame {
         int rowNum_program = rowNum - 1; // Convert to program usable coordinates. Array indexes start at 0.
         int colNum_program = colNum - 1;
         if (!((14 - (dir.equals(Direction.HORIZONTAL)? colNum_program:rowNum_program) + 1) >= playerInputWord.length())) {
-            System.out.printf("\n%s Word is too long. row: %d col: %d word length: %d%n",debugTag ,rowNum, colNum, playerInputWord.length());
+            System.out.printf("\n%sWord is too long. row: %d col: %d word length: %d\n",debugTag ,rowNum, colNum, playerInputWord.length());
             return false;
         }
 
@@ -205,7 +205,7 @@ public class ScrabbleGame {
             if (letter != null) {
                 if (!(playerInputWord.contains(letter.getLetter().toLowerCase()))) {
                     if (DEBUG) System.out.printf("\n%s %s",debugTag, playerInputWord);
-                    System.out.printf("\n%s Letters on the board are not in the word played", debugTag);
+                    System.out.printf("\n%s Letters on the board are not in the word played\n", debugTag);
                     return false;
                 }
             }
@@ -216,7 +216,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (dupPlayerInputWord.indexOf(letter.getLetter().toLowerCase()) != lettersOnTheBoard.indexOf(letter)) {
-                    System.out.printf("\n%s Letters on the board are not in the correct position for the word played", debugTag);
+                    System.out.printf("\n%s Letters on the board are not in the correct position for the word played\n", debugTag);
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter().toLowerCase(), "-");
@@ -242,7 +242,7 @@ public class ScrabbleGame {
                 if (playerTiles.contains(_letter)) {
                     playerTiles = playerTiles.replaceFirst(_letter, "-");
                 } else {
-                    System.out.printf("\n%s Player does not have the needed tiles", debugTag);
+                    System.out.printf("\n%s Player does not have the needed tiles\n", debugTag);
                     return false;
                 }
             }
@@ -264,8 +264,8 @@ public class ScrabbleGame {
         } else return false;
         if (DEBUG) printPlays();
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
-            removePlayFromBoard(currentPlay);
             plays.remove(currentPlay);
+            removePlayFromBoard(currentPlay);
             if (DEBUG) printPlays();
             return false;
         }
@@ -355,12 +355,25 @@ public class ScrabbleGame {
         }
 
         _plays.removeIf(_pl -> (this.plays.contains(_pl) || _pl.getWordString().length() == 1));
-
+        boolean connects = false;
+        if (currentPlay.getContributedLettersString().contains("-")) { // The word is made by contributing a few words from the players tiles to what is already on the board.
+            connects = true;
+        }
         for (Play _pl: _plays) {
             if (DEBUG) System.out.printf("%s word left is %s%n", debugTag, _pl.getWordString());
+            if (_pl.getContributedLettersString().contains("-")) { // At least one of the words created as a result of the main play are created by adding letters to what is already on the board.
+                connects = true;
+            }
         }
 
-        plays.addAll(_plays);
+        if (plays.size() > 1) {
+            if (connects) plays.addAll(_plays);
+            else {
+                System.out.println("Word must connect to at least one of the letters on the board.");
+                return false;
+            }
+        }
+
         return true;
     }
 
