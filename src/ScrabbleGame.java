@@ -33,8 +33,6 @@ public class ScrabbleGame {
     private final String validWordsFile = "resources/valid_words.txt";
     /** Holds a set of valid words*/
     private HashSet<String> validWords;
-//    /** Holds the current word played*/
-//    private String currentValidWord;
     /** Input prompt for the user interface*/
     private final String inputPrompt = "Word to play >> ";
     /** Player input for each play*/
@@ -71,7 +69,6 @@ public class ScrabbleGame {
             validWords = getValidWordsFromFile();
         }
         validWords = getValidWordsFromFile();
-//        currentValidWord = "";
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
@@ -122,7 +119,6 @@ public class ScrabbleGame {
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
                         changeTurns();
-//                        System.out.println("Current player: " + playerTurn.getPlayerName());
                     } else System.out.println("Couldn't play word.");
                 } else {
                     scrabbleBoard.drawBoard();
@@ -267,11 +263,12 @@ public class ScrabbleGame {
         if (DEBUG) System.out.print("\n");
 
         // All words formed as a result of the played word are valid
-        // Create list of plays
-        // Iterate over list and check all words are valid
-            // Check if the play already exists and remove it from the list of plays if it does.
-        //
+            // Create list of plays
+            // Iterate over list and check all words are valid
+                // Check if the play already exists and remove it from the list of plays if it does.
         putPlayOnBoard(dir, rowNum, colNum);
+
+        // First play goes through the center of the board.
         if (!plays.contains(currentPlay)) {
             if (firstPlayIsThroughCenter()) plays.add(currentPlay);
             else {
@@ -279,6 +276,8 @@ public class ScrabbleGame {
                 return false;
             }
         } else return false;
+
+        // All words formed are valid
         if (DEBUG) printPlays();
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
             plays.remove(currentPlay);
