@@ -5,12 +5,11 @@
 - The project is not complete as yet
   - It will not run by running the JAR file. It must be extracted and run in IntellliJ
   - The following will be implemented in future milestones.
-    - Enforcements of Scrabble rules still need to be implemented
-    - Allowing words to be built off of each other also need to be implemented 
     - The scoring system also needs to be implemented as well
     - Win conditions for the game need to be implemented
-    - Refactoring for clarity
+    - Unit and integration tests for the project
     - Packaging to run in a JAR file
+    - Refactoring for clarity
 
 ---
 ### Updates from Milestone 1
