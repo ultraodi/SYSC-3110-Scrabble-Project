@@ -255,7 +255,13 @@ public class ScrabbleGame {
             // Check if the play already exists and remove it from the list of plays if it does.
         //
         putPlayOnBoard(dir, rowNum, colNum);
-        if (!plays.contains(currentPlay)) plays.add(currentPlay);
+        if (!plays.contains(currentPlay)) {
+            if (firstPlayIsThroughCenter()) plays.add(currentPlay);
+            else {
+                removePlayFromBoard(currentPlay);
+                return false;
+            }
+        } else return false;
         if (DEBUG) printPlays();
         if (!allPlayWordsValid(dir, rowNum, colNum, "".concat(playerInputWord))) {
             removePlayFromBoard(currentPlay);
@@ -265,6 +271,18 @@ public class ScrabbleGame {
         }
         if (DEBUG) printPlays();
         return true;
+    }
+
+    private boolean firstPlayIsThroughCenter() {
+        if (plays.isEmpty()) {
+            for (Square square : currentPlay.getWordSquares()) {
+                if (square.getType() == Square.Types.CENTER) {
+                    return true;
+                }
+            }
+        } else return true;
+        System.out.println("First play must go through the center.");
+        return false;
     }
 
     /**

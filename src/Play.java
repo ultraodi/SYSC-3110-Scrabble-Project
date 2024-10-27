@@ -50,7 +50,7 @@ public class Play {
      * Gets the list of squares that contain the word played.
      * @return The list of square containing the word played.
      */
-    public ArrayList<Square> getWord() {
+    public ArrayList<Square> getWordSquares() {
         return word;
     }
 
