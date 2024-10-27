@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents a player in the Scrabble game.
@@ -7,20 +8,28 @@ import java.util.ArrayList;
  * @version October 22, 2024
  */
 public class Player {
+    // The following are ANSI codes for console text. Might not be portable on Windows computers.
+    public static final String RED = "\033[0;31m"; // Red
+    public static final String GREEN = "\033[0;32m"; // Green
+    public static final String YELLOW = "\033[0;33m"; // Yellow
+    public static final String CYAN = "\033[0;36m"; // Cyan
+
+    private static final ArrayList<String> colour = new ArrayList<>(Arrays.asList(YELLOW, RED, GREEN, CYAN));
+
+    /** The maximum amount of tiles a player is allowed to hold*/
     private static final int MAX_TILES = 7;
-    // Tile Bag
+    /** Tile Bag*/
     private TileBag tilebag;
-
-    // Tiles
+    /** Tiles*/
     private ArrayList<Tile> tiles;
-
-    // Player Score
+    /** Player Score*/
     private int score;
-
-    // Players name
+    /** Players name*/
     private String name;
-
+    /** The score history of the player*/
     private ArrayList<Integer> scoreHistory;
+    /** Letter colour assigned to this player*/
+    private String playerColour;
 
     /**
      * Constructs a new Player with the specified name.
@@ -32,6 +41,10 @@ public class Player {
         scoreHistory= new ArrayList<>();
         score = 0;
         tiles = new ArrayList<>();
+        if (!colour.isEmpty()) {
+            playerColour = colour.getFirst();
+            colour.removeFirst();
+        } else playerColour = null;
     }
 
     /**
@@ -68,6 +81,14 @@ public class Player {
      */
     public int getScore(){
         return score;
+    }
+
+    /**
+     * Gets the colour assigned to this player.
+     * @return The colour assigned to this player.
+     */
+    public String getPlayerColour() {
+        return playerColour;
     }
 
     /**

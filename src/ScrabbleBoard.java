@@ -236,18 +236,12 @@ public class ScrabbleBoard {
                         System.out.println("No Square type of that type.");
                 }
                 Square _square = board[row -1][col];
-                boardString.append((_square.getPlacedTile() != null)? String.format(YELLOW + " (%s) " + RESET + "|",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
-                                                                                                                                                                                               // otherwise, it prints the letter on the tile placed on it.
-
+                boardString.append((_square.getPlacedTile() != null)? String.format("%s (%s) " + RESET + "|", _square.getPlacedTile().getPlayer().getPlayerColour(), _square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
+                                                                                                                                                                                                                                                  // otherwise, it prints the letter on the tile placed on it.
             }
             boardString.append("\n");
         }
         boardString.append("   -------------------------------------------------------------------------------------------\n");
         return boardString.toString();
     }
-
-    /*public static void main(String[] args) {
-        ScrabbleBoard board1 = new ScrabbleBoard();
-        board1.drawBoard();
-    }*/
 }
