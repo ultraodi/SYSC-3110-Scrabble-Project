@@ -73,7 +73,7 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
 
-        getPlayers();
+        setupPlayers();
         playerTurn = players.getFirst();
         currentPlay = new Play(playerTurn, null);
     }
@@ -128,7 +128,10 @@ public class ScrabbleGame {
         }
     }
 
-    private void getPlayers() {
+    /**
+     * Sets up the players for the game.
+     */
+    private void setupPlayers() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("How many players will play (Lowest 2, Highest 4): ");
         int numberOfPlayers = scanner.nextInt();
@@ -525,12 +528,9 @@ public class ScrabbleGame {
                                                                             // in the line above removes the trailing new line by default
 
             }
-
             inStream.close(); // Closes the simulated buffer
             connection.disconnect(); // Closes the url connection
-
             Scanner validWords = new Scanner(validWordsString.toString()); // Allows the string built by the validWordsString to be tokenized (read word by word in this case)
-
             while (validWords.hasNext()) {
                 returnSet.add(validWords.next().strip()); // Adds all the words to a hash set and removes the added new lines. The new lines were needed in order for the
                                                           // Scanner class to parse through the string for tokens.
@@ -639,6 +639,9 @@ public class ScrabbleGame {
         System.out.println();
     }
 
+    /**
+     * Prints the plays in play history. Mostly used for debug purposes.
+     */
     private void printPlays() {
         if (DEBUG) System.out.println("Current plays in history:");
         for (Play _p: plays) {
