@@ -5,8 +5,8 @@
 - The project is not complete as yet
   - It will not run by running the JAR file. It must be extracted and run in IntellliJ
   - The following will be implemented in future milestones.
-    - The scoring system also needs to be implemented as well
-    - Win conditions for the game need to be implemented
+    - The scoring system
+    - Win conditions
     - Unit and integration tests for the project
     - Packaging to run in a JAR file
     - Refactoring for clarity
