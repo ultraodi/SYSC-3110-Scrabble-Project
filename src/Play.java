@@ -124,6 +124,11 @@ public class Play {
         return currScore;
     }
 
+    /**
+     * Compares Play objects by the words they hold.
+     * @param obj The play to be compared against.
+     * @return True if they match. False otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Play) {
