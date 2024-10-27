@@ -81,6 +81,10 @@ public class Player {
         return tiles;
     }
 
+    /**
+     * Gets the string representation of the player's tiles.
+     * @return The string representation of the player's tiles.
+     */
     public String getTilesString() {
         StringBuilder playerTilesStringBuilder = new StringBuilder();
         for (Tile _tile : tiles) {
@@ -105,6 +109,11 @@ public class Player {
         this.score = score;
     }
 
+    /**
+     * Takes a tile from the players tiles if it matches the letter provided.
+     * @param letter The letter provided.
+     * @return The tile that matches the letter provided.
+     */
     public Tile takeTile(String letter) {
         Tile tile = new Tile(letter, 1);
         Tile returnTile;
