@@ -14,7 +14,7 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -114,7 +114,7 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
-        boolean showAllPlayerTiles = false;
+        boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
         scrabbleBoard.drawBoard();
         playerOrder = determinePlayerTurns();
 
