@@ -629,7 +629,11 @@ public class ScrabbleGame {
             System.out.println("-" + "------".repeat(player.getTiles().size()));
             System.out.print("|");
             for (Tile tile : playerTiles) {
-                System.out.print(" " + player.getPlayerColour() + "(" + tile.getLetter() + ")" + ScrabbleBoard.RESET + " |"); // Assuming getLetter() returns a char or String
+                System.out.print(" " +
+                        player.getPlayerColour() +
+                        "(" + tile.getLetter()  + ")"
+                        + ScrabbleBoard.RESET +
+                        " |"); // Assuming getLetter() returns a char or String
             }
             System.out.println(); // Move to the next line after printing all tiles of the current player
             System.out.println("-" + "------".repeat(player.getTiles().size()));
