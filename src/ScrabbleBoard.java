@@ -218,7 +218,7 @@ public class ScrabbleBoard {
                         stringRep = "   ";
                         break;
                     case DOUBLE_LETTER:
-                        stringRep = CYAN + "DLR" + RESET;
+                        stringRep = "DLR";
                         break;
                     case DOUBLE_WORD:
                         stringRep = BLUE + "DWD" + RESET;

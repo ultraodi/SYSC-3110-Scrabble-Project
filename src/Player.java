@@ -18,8 +18,6 @@ public class Player {
 
     /** The maximum amount of tiles a player is allowed to hold*/
     private static final int MAX_TILES = 7;
-    /** Tile Bag*/
-    private TileBag tilebag;
     /** Tiles*/
     private ArrayList<Tile> tiles;
     /** Player Score*/
