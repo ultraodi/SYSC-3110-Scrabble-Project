@@ -1,5 +1,5 @@
 # Group_4_SYSC3110_Project - Scrabble Game
-
+## Milestone 2
 ### Notes
 #### Disclaimer
 - The project is not complete as yet
