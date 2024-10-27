@@ -56,9 +56,8 @@ public class ScrabbleGame {
 
     /**
      * Constructor for the ScrabbleGame class.
-     * @param numPlayers The number of players in the game.
      */
-    public ScrabbleGame(int numPlayers) {
+    public ScrabbleGame() {
         players = new ArrayList<>();
         scrabbleBoard = new ScrabbleBoard();
         tileBag = new TileBag();
@@ -77,13 +76,7 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
 
-        // Get player names
-        Scanner scanner = new Scanner(System.in);
-        for (int i = 0; i < numPlayers; i++) {
-            System.out.print("Player " + (i + 1) + ": What is your name: ");
-            String name = scanner.nextLine();
-            players.add(new Player(name));
-        }
+        getPlayers();
         playerTurn = players.getFirst();
         currentPlay = new Play(playerTurn, null);
     }
@@ -129,10 +122,35 @@ public class ScrabbleGame {
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
                         changeTurns();
-                        System.out.println("Current player: " + playerTurn.getPlayerName());
+//                        System.out.println("Current player: " + playerTurn.getPlayerName());
                     } else System.out.println("Couldn't play word.");
-                } else System.out.println("Valid Word it is not."); // Blud is NOT yoda
-            } else System.out.println("Not a valid entry");
+                } else {
+                    scrabbleBoard.drawBoard();
+                    System.out.println("Valid word it was not."); // Blud is NOT yoda
+                }
+            } else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. lip 88 v.");
+        }
+    }
+
+    private void getPlayers() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("How many players will play (Lowest 2, Highest 4): ");
+        int numberOfPlayers = scanner.nextInt();
+
+        // Error checking
+        while(numberOfPlayers < 2 || numberOfPlayers > 4){
+            System.out.println("Please put in a valid number");
+            System.out.print("How many players will play (Lowest 2, Highest 4): ");
+            numberOfPlayers = scanner.nextInt();
+        }
+
+        // Get player names
+        String name;
+        for (int i = 0; i < numberOfPlayers; i++) {
+            System.out.print("Player " + (i + 1) + ": What is your name: ");
+            scanner = new Scanner(System.in);
+            name = scanner.nextLine();
+            players.add(new Player(name));
         }
     }
 
@@ -198,7 +216,6 @@ public class ScrabbleGame {
                 if (DEBUG) System.out.print("-");
             } else if (DEBUG) System.out.print(_letter.getLetter());
         }
-        if (DEBUG) System.out.println(" ");
 
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
@@ -211,33 +228,34 @@ public class ScrabbleGame {
         }
 
         // The letters on the board in the area of play are already in the desired position
+        String playerTiles = playerTurn.getTilesString();
         String dupPlayerInputWord = "".concat(playerInputWord);
+        String _lowCaseLetter;
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
-                if (dupPlayerInputWord.indexOf(letter.getLetter().toLowerCase()) != lettersOnTheBoard.indexOf(letter)) {
+                _lowCaseLetter = letter.getLetter().toLowerCase();
+                if (dupPlayerInputWord.contains(letter.getLetter().toUpperCase()))
+                    dupPlayerInputWord = dupPlayerInputWord.replaceFirst(_lowCaseLetter, "-");
+
+                if (dupPlayerInputWord.indexOf(_lowCaseLetter) != lettersOnTheBoard.indexOf(letter)) {
                     System.out.printf("\n%sLetters on the board are not in the correct position for the word played\n", debugTag);
                     return false;
                 }
-                dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter().toLowerCase(), "-");
+                dupPlayerInputWord = dupPlayerInputWord.replaceFirst(_lowCaseLetter, "-");
             }
         }
 
         // Does the player making the play have the needed tiles to complete the word given the
         // letters already on the board?
-        String playerTiles;
-        StringBuilder playerTilesStringBuilder = new StringBuilder();
-
-        for (Tile _tile :playerTurn.getTiles()) {
-            playerTilesStringBuilder.append(_tile.getLetter());
-        }
-        playerTiles = playerTilesStringBuilder.toString();
+        char inputChar;
         if (DEBUG) System.out.printf("\n%s Player's Tiles: " + playerTiles, debugTag);
         if (DEBUG) System.out.printf("\n%s Word played: " + dupPlayerInputWord, debugTag);
         if (DEBUG) System.out.printf("\n%s ", debugTag);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
-            if (dupPlayerInputWord.charAt(i) != '-') {
-                if (DEBUG) System.out.print(dupPlayerInputWord.charAt(i));
-                String _letter = valueOf(dupPlayerInputWord.charAt(i)).toUpperCase();
+            inputChar = dupPlayerInputWord.charAt(i);
+            if (inputChar != '-') {
+                if (DEBUG) System.out.print(inputChar);
+                String _letter = valueOf(inputChar).toUpperCase();
                 if (playerTiles.contains(_letter)) {
                     playerTiles = playerTiles.replaceFirst(_letter, "-");
                 } else {
@@ -349,6 +367,7 @@ public class ScrabbleGame {
         for (Play _pl: _plays) {
             if (DEBUG) System.out.printf("%s word is %s%n", debugTag, _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
+                System.out.printf("%s'%s' is not a word.\n", debugTag, _pl.getWordString());
                 return false;
             }
         }
@@ -605,13 +624,11 @@ public class ScrabbleGame {
         ArrayList<Player> _currentPlayer = new ArrayList<>();
         _currentPlayer.add(playerTurn); // ArrayList 'wrapper' that only contains the current player. It is for the sake of the following for loop and to avoid code duplication.
         for (Player player : (allPlayers)? players:_currentPlayer) {
-            // Print the player's name
-            System.out.print(player.getPlayerName());
             // Get the player's tiles
             ArrayList<Tile> playerTiles = player.getTiles();
 
             // Print each tile
-            System.out.print("'s tiles: \n");
+            System.out.printf("\n%s's tiles: \n", player.getPlayerName());
             System.out.println("-" + "------".repeat(player.getTiles().size()));
             System.out.print("|");
             for (Tile tile : playerTiles) {
@@ -643,18 +660,7 @@ public class ScrabbleGame {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("How many players will play (Lowest 2, Highest 4): ");
-        int numberOfPlayers = scanner.nextInt();
-
-        while(numberOfPlayers < 2 || numberOfPlayers > 4){
-            System.out.println("Please put in a valid number");
-            System.out.print("How many players will play (Lowest 2, Highest 4): ");
-            numberOfPlayers = scanner.nextInt();
-            continue;
-        }
-
-        ScrabbleGame game = new ScrabbleGame(numberOfPlayers);
+        ScrabbleGame game = new ScrabbleGame();
         game.game();
     }
 

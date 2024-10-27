@@ -81,6 +81,14 @@ public class Player {
         return tiles;
     }
 
+    public String getTilesString() {
+        StringBuilder playerTilesStringBuilder = new StringBuilder();
+        for (Tile _tile : tiles) {
+            playerTilesStringBuilder.append(_tile.getLetter());
+        }
+        return playerTilesStringBuilder.toString();
+    }
+
     /**
      * Gets the current score of the player.
      * @return The player's score.

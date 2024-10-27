@@ -206,7 +206,7 @@ public class ScrabbleBoard {
     public String toString() {
         String stringRep = "";
         StringBuilder boardString = new StringBuilder();
-        boardString.append("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
+        boardString.append("\n   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
         for (int row = 1; row <= SIZE; row++) {
             boardString.append("   -------------------------------------------------------------------------------------------\n");
