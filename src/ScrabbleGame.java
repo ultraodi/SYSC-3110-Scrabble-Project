@@ -117,10 +117,10 @@ public class ScrabbleGame {
         boolean showAllPlayerTiles = false;
         scrabbleBoard.drawBoard();
         playerOrder = determinePlayerTurns();
-        printPlayerTiles(showAllPlayerTiles);
-        System.out.println("Current player: " + playerTurn.getPlayerName());
 
         while (true) {
+            printPlayerTiles(showAllPlayerTiles);
+            System.out.println("Current player: " + playerTurn.getPlayerName());
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
@@ -129,7 +129,6 @@ public class ScrabbleGame {
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
                         changeTurns();
-                        printPlayerTiles(showAllPlayerTiles);
                         System.out.println("Current player: " + playerTurn.getPlayerName());
                     } else System.out.println("Couldn't play word.");
                 } else System.out.println("Valid Word it is not."); // Blud is NOT yoda
@@ -205,7 +204,7 @@ public class ScrabbleGame {
             if (letter != null) {
                 if (!(playerInputWord.contains(letter.getLetter().toLowerCase()))) {
                     if (DEBUG) System.out.printf("\n%s %s",debugTag, playerInputWord);
-                    System.out.printf("\n%s Letters on the board are not in the word played\n", debugTag);
+                    System.out.printf("\n%sLetters on the board are not in the word played\n", debugTag);
                     return false;
                 }
             }
@@ -216,7 +215,7 @@ public class ScrabbleGame {
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 if (dupPlayerInputWord.indexOf(letter.getLetter().toLowerCase()) != lettersOnTheBoard.indexOf(letter)) {
-                    System.out.printf("\n%s Letters on the board are not in the correct position for the word played\n", debugTag);
+                    System.out.printf("\n%sLetters on the board are not in the correct position for the word played\n", debugTag);
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(letter.getLetter().toLowerCase(), "-");
@@ -242,7 +241,7 @@ public class ScrabbleGame {
                 if (playerTiles.contains(_letter)) {
                     playerTiles = playerTiles.replaceFirst(_letter, "-");
                 } else {
-                    System.out.printf("\n%s Player does not have the needed tiles\n", debugTag);
+                    System.out.printf("\n%sPlayer does not have the needed tiles\n", debugTag);
                     return false;
                 }
             }
