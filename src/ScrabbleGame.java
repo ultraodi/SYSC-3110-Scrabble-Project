@@ -109,6 +109,7 @@ public class ScrabbleGame {
 
         while (true) {
             printPlayerTiles(showAllPlayerTiles);
+            System.out.printf("\nTiles left in bag: %d\n", tileBag.getNumTilesLeft());
             System.out.println("Current player: " + playerTurn.getPlayerName());
             getInputPlay();
             if (parseInputPlay()) {
@@ -208,7 +209,7 @@ public class ScrabbleGame {
             tile = scrabbleBoard.getTileOnSquare(row, col);
             lettersOnTheBoard.add(tile); // Tile can be an actual tile or null
         }
-        if (DEBUG) System.out.printf("\n%s Letters on the board in the area of play: ", debugTag);
+        if (DEBUG) System.out.printf("\n%sLetters on the board in the area of play: ", debugTag);
         for (Tile _letter: lettersOnTheBoard) {
             if (_letter == null) {
                 if (DEBUG) System.out.print("-");
@@ -229,13 +230,19 @@ public class ScrabbleGame {
         String playerTiles = playerTurn.getTilesString();
         String dupPlayerInputWord = "".concat(playerInputWord);
         String _lowCaseLetter;
+        int indexLetter;
+        String dupLetter;
+        String letterOnBoardLetter;
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 _lowCaseLetter = letter.getLetter().toLowerCase();
-                if (dupPlayerInputWord.contains(letter.getLetter().toUpperCase()))
-                    dupPlayerInputWord = dupPlayerInputWord.replaceFirst(_lowCaseLetter, "-");
+                indexLetter = lettersOnTheBoard.indexOf(letter);
+                dupLetter = valueOf(dupPlayerInputWord.charAt(indexLetter)).toUpperCase();
+                if (DEBUG) System.out.printf("\n%sdupLetter is %s\n", debugTag, dupLetter);
+                letterOnBoardLetter = lettersOnTheBoard.get(indexLetter).getLetter();
+                if (DEBUG) System.out.printf("\n%sletterOnBoardLetter is %s\n", debugTag, letterOnBoardLetter);
 
-                if (dupPlayerInputWord.indexOf(_lowCaseLetter) != lettersOnTheBoard.indexOf(letter)) {
+                if (!dupLetter.equals(letterOnBoardLetter)) {
                     System.out.printf("\n%sLetters on the board are not in the correct position for the word played\n", debugTag);
                     return false;
                 }

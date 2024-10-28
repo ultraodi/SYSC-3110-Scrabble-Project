@@ -110,6 +110,7 @@ public class TileBag {
         ArrayList<Tile> randomTiles = new ArrayList<>();
         Random rand = new Random();
         int maxNumber = getNumTilesLeft();
+        int randomIndex;
 
         // System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
         // Ensure the number of tiles requested is not greater than the available tiles
@@ -119,7 +120,7 @@ public class TileBag {
 
         for (int i = 0; i < number; i++) {
             // Get a random index within the current size of the tiles list
-            int randomIndex = rand.nextInt(tiles.size());
+            randomIndex = rand.nextInt(tiles.size());
 
             // Add the tile at the random index to the randomTiles list
             randomTiles.add(tiles.get(randomIndex));
