@@ -14,7 +14,7 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
-    public static final boolean DEBUG = false; // To be added to the XML 'configuration' file
+    public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
     private final ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -27,14 +27,8 @@ public class ScrabbleGame {
     private final ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
-    /** URL string*/
-    private final String validWordsURLString = "https://www.mit.edu/~ecprice/wordlist.10000";
-    /** Holds the file path for the text file containing the valid words*/
-    private final String validWordsFile = "resources/valid_words.txt";
     /** Holds a set of valid words*/
     private HashSet<String> validWords;
-    /** Input prompt for the user interface*/
-    private final String inputPrompt = "Word to play >> ";
     /** Player input for each play*/
     private String playerInput;
     /** Word to play in players' input*/
@@ -51,6 +45,12 @@ public class ScrabbleGame {
     private int currentPlayerIndex = 0;
     /** Current play being worked with*/
     private Play currentPlay;
+    /** Is true when the player's input is a command. False otherwise*/
+    private boolean isCommand;
+    /** Stores the command*/
+    private String command;
+    /** Valid commands for the game*/
+    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"debug", "noDebug", "board"}));
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -63,6 +63,8 @@ public class ScrabbleGame {
         playerTurn = null;
         // The URL class throws the MalformedURLException so the program is required to handle it.
         try {
+            /* URL string*/
+            String validWordsURLString = "https://www.mit.edu/~ecprice/wordlist.10000";
             validWordsURL = new URL(validWordsURLString);
             validWords = getValidWordsFromUrl();
         } catch (Exception e) {
@@ -124,7 +126,11 @@ public class ScrabbleGame {
                     scrabbleBoard.drawBoard();
                     System.out.println("Valid word it was not."); // Blud is NOT yoda
                 }
-            } else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. lip 88 v.");
+            } else {
+                if (isCommand)
+                    doCommand(command);
+                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. lip 88 v.");
+            }
         }
     }
 
@@ -229,17 +235,18 @@ public class ScrabbleGame {
         // The letters on the board in the area of play are already in the desired position
         String playerTiles = playerTurn.getTilesString();
         String dupPlayerInputWord = "".concat(playerInputWord);
+        ArrayList<Tile> dupLettersOnTheBoard = (ArrayList<Tile>) lettersOnTheBoard.clone();
         String _lowCaseLetter;
-        int indexLetter;
+        int letterIndex;
         String dupLetter;
         String letterOnBoardLetter;
         for (Tile letter:lettersOnTheBoard) {
             if (letter != null) {
                 _lowCaseLetter = letter.getLetter().toLowerCase();
-                indexLetter = lettersOnTheBoard.indexOf(letter);
-                dupLetter = valueOf(dupPlayerInputWord.charAt(indexLetter)).toUpperCase();
+                letterIndex = dupLettersOnTheBoard.indexOf(letter);
+                dupLetter = valueOf(dupPlayerInputWord.charAt(letterIndex)).toUpperCase();
                 if (DEBUG) System.out.printf("\n%sdupLetter is %s\n", debugTag, dupLetter);
-                letterOnBoardLetter = lettersOnTheBoard.get(indexLetter).getLetter();
+                letterOnBoardLetter = dupLettersOnTheBoard.get(letterIndex).getLetter();
                 if (DEBUG) System.out.printf("\n%sletterOnBoardLetter is %s\n", debugTag, letterOnBoardLetter);
 
                 if (!dupLetter.equals(letterOnBoardLetter)) {
@@ -247,6 +254,8 @@ public class ScrabbleGame {
                     return false;
                 }
                 dupPlayerInputWord = dupPlayerInputWord.replaceFirst(_lowCaseLetter, "-");
+                dupLettersOnTheBoard.add(letterIndex, null);
+                dupLettersOnTheBoard.remove(letterIndex + 1);
             }
         }
 
@@ -380,9 +389,20 @@ public class ScrabbleGame {
             }
         }
 
-        _plays.removeIf(_pl -> (this.plays.contains(_pl) || _pl.getWordString().length() == 1));
+        // Check that all words are unique
+//        plays.removeLast();
+//        for (Play _pl: _plays) {
+//            if (plays.contains(_pl)) {
+//                System.out.printf("\n%s'%s' has already been played.\n", debugTag, _pl.getWordString());
+//                removePlayFromBoard(currentPlay);
+//                return false;
+//            }
+//        }
+//        plays.add(currentPlay);
+
+        _plays.removeIf(_pl -> (/*this.plays.contains(_pl) ||*/ _pl.getWordString().length() == 1));
         boolean connects = false;
-        connects = currentPlay.getContributedLettersString().contains("-"); // The word is made by contributing a few words from the players tiles to what is already on the board.
+        connects = currentPlay.getContributedLettersString().contains("-"); // The word is made by contributing a few letters from the players tiles to what is already on the board.
 
         for (Play _pl: _plays) {
             if (DEBUG) System.out.printf("%s word left is %s%n", debugTag, _pl.getWordString());
@@ -552,6 +572,8 @@ public class ScrabbleGame {
      */
     private HashSet<String> getValidWordsFromFile() {
         HashSet<String> returnSet = new HashSet<>();
+        // Holds the file path for the text file containing the valid words*/
+        String validWordsFile = "resources/valid_words.txt";
         try {
             BufferedReader content = new BufferedReader(new FileReader(validWordsFile));
             String contentLine;
@@ -571,6 +593,7 @@ public class ScrabbleGame {
      */
     private void getInputPlay() {
         Scanner inputWord = new Scanner(System.in);
+        String inputPrompt = "Word to play >> ";
         System.out.print(inputPrompt);
         playerInput = inputWord.nextLine();
     }
@@ -590,6 +613,7 @@ public class ScrabbleGame {
             _tempWord = tokenizer.next(); // This allows any type of input be it numbers or special characters. A String of characters
                                           // containing numbers or special characters will not be considered a valid word.
         } else return false;
+
         if (tokenizer.hasNext()) { // Checks that they play has coordinates
             _tempPosition = tokenizer.next();
             if (_tempPosition.length() != 2) { // Checks that the coordinates given are exactly 2 (e.g. ff)
@@ -604,8 +628,13 @@ public class ScrabbleGame {
                 Integer.parseInt(row, 16); // Attempts to convert to Decimal and gives an error if unsuccessful
                 Integer.parseInt(col, 16);
             } catch (Exception e) {return false;} // Any issues with exceptions will result in the play made invalid
+        } else if (commands.contains(_tempWord)) {
+            isCommand = true;
+            command = _tempWord;
+            return false;
         } else return false;
-        if (tokenizer.hasNext()) {
+
+        if (tokenizer.hasNext()) { // Direction of the play
             _tempDirection = tokenizer.next().toLowerCase();
             String dir = valueOf(_tempDirection.charAt(0)); // First letter of the argument in the parameter for direction so v, vertical, and any word starting with v would work.
             // A similar logic applies for h and horizontal
@@ -618,6 +647,17 @@ public class ScrabbleGame {
         playerInputBoardPosition = _tempPosition.toUpperCase();
         playerInputPlayDirection = (_tempDirection.equals("h"))? Direction.HORIZONTAL : Direction.VERTICAL;
         return true;
+    }
+
+    private void doCommand(String command) {
+        if (command.equals("debug")) {
+            DEBUG = true;
+        } else if (command.equals("noDebug")) {
+            DEBUG = false;
+        } else if (command.equals("board")) {
+            scrabbleBoard.drawBoard();
+        }
+        isCommand = false;
     }
 
     /**
@@ -649,6 +689,16 @@ public class ScrabbleGame {
     }
 
     /**
+     * Determines if a word is in the list of valid words.
+     * @param word The word to check
+     * @return true if the word is valid. false otherwise.
+     */
+    private boolean isValidWord(String word) {
+        if (word == null) {return false;}
+        return validWords.contains(word.toLowerCase());
+    }
+
+    /**
      * Prints the plays in play history. Mostly used for debug purposes.
      */
     private void printPlays() {
@@ -658,16 +708,6 @@ public class ScrabbleGame {
             if (DEBUG) System.out.printf("   %s\n", _p.getContributedLettersString());
         }
         if (DEBUG) System.out.println("Current plays in history END");
-    }
-
-    /**
-     * Determines if a word is in the list of valid words.
-     * @param word The word to check
-     * @return true if the word is valid. false otherwise.
-     */
-    private boolean isValidWord(String word) {
-        if (word == null) {return false;}
-        return validWords.contains(word.toLowerCase());
     }
 
     public static void main(String[] args) {
