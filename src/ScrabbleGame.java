@@ -262,9 +262,9 @@ public class ScrabbleGame {
         // Does the player making the play have the needed tiles to complete the word given the
         // letters already on the board?
         char inputChar;
-        if (DEBUG) System.out.printf("\n%s Player's Tiles: " + playerTiles, debugTag);
-        if (DEBUG) System.out.printf("\n%s Word played: " + dupPlayerInputWord, debugTag);
-        if (DEBUG) System.out.printf("\n%s ", debugTag);
+        if (DEBUG) System.out.printf("\n%sPlayer's Tiles: " + playerTiles, debugTag);
+        if (DEBUG) System.out.printf("\n%sWord played: " + dupPlayerInputWord, debugTag);
+        if (DEBUG) System.out.printf("\n%sLetters the player has: ", debugTag);
         for (int i = 0; i < dupPlayerInputWord.length(); i++) {
             inputChar = dupPlayerInputWord.charAt(i);
             if (inputChar != '-') {
