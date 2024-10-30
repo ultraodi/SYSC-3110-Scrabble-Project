@@ -293,7 +293,10 @@ public class ScrabbleGame {
                 removePlayFromBoard(currentPlay);
                 return false;
             }
-        } else return false;
+        } else {
+            System.out.printf("%s'%s' has already been played", debugTag, currentPlay.getWordString());
+            return false;
+        }
 
         // All words formed are valid
         if (DEBUG) printPlays();
@@ -389,7 +392,7 @@ public class ScrabbleGame {
             }
         }
 
-        // Check that all words are unique
+//        // Check that all words are unique
 //        plays.removeLast();
 //        for (Play _pl: _plays) {
 //            if (plays.contains(_pl)) {
