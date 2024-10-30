@@ -180,6 +180,7 @@ public class Player {
         Player player = null;
         if (obj instanceof Player) {
             player = (Player) obj;
+            System.out.println("Player->equals: Player should be equal");
             return name.equals(player.name);
         }
         if (ScrabbleGame.DEBUG) System.out.printf("Player->equals: Player not equal: %s %s", name, player);

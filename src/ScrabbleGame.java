@@ -16,15 +16,15 @@ import static java.lang.String.*;
 public class ScrabbleGame {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
-    private final ArrayList<Player> players;
+    private ArrayList<Player> players;
     /** Holds current player's turn*/
     private Player playerTurn;
     /** The scrabble board for the game*/
     private final ScrabbleBoard scrabbleBoard;
     /** The tile bag for the game*/
-    private final TileBag tileBag;
+    private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private final ArrayList<Play> plays;
+    private ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** Holds a set of valid words*/
@@ -74,9 +74,9 @@ public class ScrabbleGame {
         playerInputWord = "";
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
-        setupPlayers();
-        playerTurn = players.getFirst();
-        currentPlay = new Play(playerTurn, null);
+        currentPlay = null;
+        isCommand = false;
+        command = "board";
     }
 
 
@@ -106,6 +106,8 @@ public class ScrabbleGame {
          *  - No players can make a play after 6 turns
          */
         boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
+        setupPlayers();
+        playerTurn = players.getFirst();
         scrabbleBoard.drawBoard();
         playerOrder = determinePlayerTurns();
 
@@ -137,7 +139,7 @@ public class ScrabbleGame {
     /**
      * Sets up the players for the game.
      */
-    private void setupPlayers() {
+    public void setupPlayers() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("How many players will play (Lowest 2, Highest 4): ");
         int numberOfPlayers = scanner.nextInt();
@@ -310,7 +312,7 @@ public class ScrabbleGame {
         return true;
     }
 
-    private boolean firstPlayIsThroughCenter() {
+    public boolean firstPlayIsThroughCenter() {
         if (plays.isEmpty()) {
             for (Square square : currentPlay.getWordSquares()) {
                 if (square.getType() == Square.Types.CENTER) {
@@ -330,7 +332,7 @@ public class ScrabbleGame {
      * @param word The word played.
      * @return True if all the words are valid. False otherwise
      */
-    private boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
+    public boolean allPlayWordsValid(Direction dir, int rowNum, int colNum, String word) {
         String debugTag;
         debugTag = (DEBUG)? "ScrabbleGame->allPlayWordsValid:":"";
 
@@ -480,7 +482,7 @@ public class ScrabbleGame {
      * Gets the order of play for the players.
      * @return The order of play for the players.
      */
-    private ArrayList<Player> determinePlayerTurns() {
+    public ArrayList<Player> determinePlayerTurns() {
         ArrayList<Player> returnTurns = new ArrayList<>();
         ArrayList<String> playerDraws = new ArrayList<>();
         ArrayList<String> sortedPlayerDraws = new ArrayList<>();
@@ -540,7 +542,7 @@ public class ScrabbleGame {
      * This function was mostly to practice the HttpURLConnection, BufferedReader, and Scanner classes.
      * @return A HashSet of the valid words from the validWordsURL
      */
-    private HashSet<String> getValidWordsFromUrl() {
+    public HashSet<String> getValidWordsFromUrl() {
         HashSet<String> returnSet = new HashSet<>();
         BufferedReader inStream; // The BufferedReader class simulates a buffer that allows a stream of
                                  // input to be read more efficiently.
@@ -573,7 +575,7 @@ public class ScrabbleGame {
      * Retrieves a set of valid words from the file given in validWordsFile.
      * @return A HashSet of the valid words from the validWordsFile.
      */
-    private HashSet<String> getValidWordsFromFile() {
+    public HashSet<String> getValidWordsFromFile() {
         HashSet<String> returnSet = new HashSet<>();
         // Holds the file path for the text file containing the valid words*/
         String validWordsFile = "resources/valid_words.txt";
@@ -594,7 +596,7 @@ public class ScrabbleGame {
     /**
      * Gets the players' input
      */
-    private void getInputPlay() {
+    public void getInputPlay() {
         Scanner inputWord = new Scanner(System.in);
         String inputPrompt = "Word to play >> ";
         System.out.print(inputPrompt);
@@ -605,7 +607,7 @@ public class ScrabbleGame {
      * Parses through the user's input and checks for errors. It updates the playerInputWord, playerInputBoardPosition, and playerInputPlayDirection fields.
      * @return Returns true if both word and board position parameters are valid. Returns false if board position is out of range.
      */
-    private boolean parseInputPlay() {
+    public boolean parseInputPlay() {
         String _tempWord = "";
         String _tempPosition = "";
         String _tempDirection = "";
@@ -652,7 +654,7 @@ public class ScrabbleGame {
         return true;
     }
 
-    private void doCommand(String command) {
+    public void doCommand(String command) {
         if (command.equals("debug")) {
             DEBUG = true;
         } else if (command.equals("noDebug")) {
@@ -696,7 +698,7 @@ public class ScrabbleGame {
      * @param word The word to check
      * @return true if the word is valid. false otherwise.
      */
-    private boolean isValidWord(String word) {
+    public boolean isValidWord(String word) {
         if (word == null) {return false;}
         return validWords.contains(word.toLowerCase());
     }
@@ -704,13 +706,117 @@ public class ScrabbleGame {
     /**
      * Prints the plays in play history. Mostly used for debug purposes.
      */
-    private void printPlays() {
+    public void printPlays() {
         if (DEBUG) System.out.println("Current plays in history:");
         for (Play _p: plays) {
             if (DEBUG) System.out.printf("%s", _p.getWordString());
             if (DEBUG) System.out.printf("   %s\n", _p.getContributedLettersString());
         }
         if (DEBUG) System.out.println("Current plays in history END");
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public Player getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public ScrabbleBoard getScrabbleBoard() {
+        return scrabbleBoard;
+    }
+
+    public ArrayList<Play> getPlays() {
+        return plays;
+    }
+
+    public String getPlayerInput() {
+        return playerInput;
+    }
+
+    public String getPlayerInputWord() {
+        return playerInputWord;
+    }
+
+    public String getPlayerInputBoardPosition() {
+        return playerInputBoardPosition;
+    }
+
+    public Direction getPlayerInputPlayDirection() {
+        return playerInputPlayDirection;
+    }
+
+    public ArrayList<Player> getPlayerOrder() {
+        return playerOrder;
+    }
+
+    public Play getCurrentPlay() {
+        return currentPlay;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public boolean isCommand() {
+        return isCommand;
+    }
+
+    public static void setDEBUG(boolean DEBUG) {
+        ScrabbleGame.DEBUG = DEBUG;
+    }
+
+    public void setPlayerInput(String playerInput) {
+        this.playerInput = playerInput;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
+    }
+
+    public void setTileBag(TileBag tileBag) {
+        this.tileBag = tileBag;
+    }
+
+    public void setPlays(ArrayList<Play> plays) {
+        this.plays = plays;
+    }
+
+    public void setPlayerInputWord(String playerInputWord) {
+        this.playerInputWord = playerInputWord;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
+
+    public void setPlayerInputBoardPosition(String playerInputBoardPosition) {
+        this.playerInputBoardPosition = playerInputBoardPosition;
+    }
+
+    public void setPlayerInputPlayDirection(Direction playerInputPlayDirection) {
+        this.playerInputPlayDirection = playerInputPlayDirection;
+    }
+
+    public void setPlayerOrder(ArrayList<Player> playerOrder) {
+        this.playerOrder = playerOrder;
+    }
+
+    public void setCurrentPlay(Play currentPlay) {
+        this.currentPlay = currentPlay;
+    }
+
+    public void setCommand(boolean command) {
+        isCommand = command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public void setPlayerTurn(Player playerTurn) {
+        this.playerTurn = playerTurn;
     }
 
     public static void main(String[] args) {
