@@ -43,7 +43,8 @@ public class ScrabbleGameTest {
     public void playWord() {
         ScrabbleBoard board = game.getScrabbleBoard();
         Player p1 = new Player("Player 1");
-        game.setPlayerInput();
+        game.setPlayerInput("read 11 h");
+
     }
 
     @org.junit.Test
