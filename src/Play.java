@@ -59,7 +59,7 @@ public class Play {
      * @return The string representation of the squares in the play.
      */
     public String getWordString() {
-        return getString(word);
+        return getSquaresString(word);
     }
 
     /**
@@ -71,10 +71,10 @@ public class Play {
     }
 
     public String getContributedLettersString() {
-        return getString(contributedLetters);
+        return getSquaresString(contributedLetters);
     }
 
-    private String getString(ArrayList<Square> squares) {
+    private String getSquaresString(ArrayList<Square> squares) {
         StringBuilder returnString = new StringBuilder();
         Tile tile;
         if (squares == null) return "--No letters--";

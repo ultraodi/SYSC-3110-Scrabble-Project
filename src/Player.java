@@ -132,6 +132,7 @@ public class Player {
      */
     public void setPlayerTiles(ArrayList<Tile> tiles){
         this.tiles = tiles;
+        ownTiles();
     }
 
 //    /**
@@ -150,6 +151,13 @@ public class Player {
      */
     public void getMoreTiles(TileBag tileBag) {
         tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
+        ownTiles();
+    }
+
+    /**
+     * Transfers ownership of the tile to a player.
+     */
+    private void ownTiles() {
         for (Tile tile: tiles) {
             tile.setPlayer(this);
         }
@@ -180,7 +188,6 @@ public class Player {
         Player player = null;
         if (obj instanceof Player) {
             player = (Player) obj;
-            System.out.println("Player->equals: Player should be equal");
             return name.equals(player.name);
         }
         if (ScrabbleGame.DEBUG) System.out.printf("Player->equals: Player not equal: %s %s", name, player);

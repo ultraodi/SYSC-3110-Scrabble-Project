@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 
 public class ScrabbleGameTest {
     ScrabbleGame game;
-    ArrayList<Player> set1;
-    ArrayList<Player> set2;
-    ArrayList<Player> set3;
+    ArrayList<Player> set2Players;
+    ArrayList<Player> set3Players;
+    ArrayList<Player> set4Players;
 
     // Test words
     ArrayList<Tile> read;
@@ -18,69 +18,100 @@ public class ScrabbleGameTest {
     ArrayList<Tile> piano;
 
     @org.junit.Test
-    public void changeTurns() {
-        game.setPlayerOrder(set3);
+    public void testChangeTurns() {
+        game.setPlayerOrder(set4Players);
         game.setCurrentPlayerIndex(0);
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(1));
+        assertEquals(game.getPlayerTurn(), set4Players.get(1));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(2));
+        assertEquals(game.getPlayerTurn(), set4Players.get(2));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(3));
+        assertEquals(game.getPlayerTurn(), set4Players.get(3));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(0));
+        assertEquals(game.getPlayerTurn(), set4Players.get(0));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(1));
+        assertEquals(game.getPlayerTurn(), set4Players.get(1));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(2));
+        assertEquals(game.getPlayerTurn(), set4Players.get(2));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(3));
+        assertEquals(game.getPlayerTurn(), set4Players.get(3));
         game.changeTurns();
-        assertEquals(game.getPlayerTurn(), set3.get(0));
+        assertEquals(game.getPlayerTurn(), set4Players.get(0));
     }
 
     @org.junit.Test
-    public void playWord() {
+    public void testPlayWord() {
+        int index = 0;
         ScrabbleBoard board = game.getScrabbleBoard();
-        Player p1 = new Player("Player 1");
+        game.setPlayerOrder(set2Players);
+        game.setCurrentPlayerIndex(index);
+        game.setPlayerTurn(set2Players.getFirst());
+
+        game.setPlayerInput("read 88 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(read);
+        assertTrue(game.playWord());
+    }
+
+    @org.junit.Test
+    public void testFirstPlayIsThroughCenter() {
+        int index = 0;
+        ScrabbleBoard board = game.getScrabbleBoard();
+        game.setPlayerOrder(set2Players);
+        game.setCurrentPlayerIndex(index);
+        game.setPlayerTurn(set2Players.getFirst());
+
         game.setPlayerInput("read 11 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(read);
+        assertFalse(game.playWord());
 
+        game.setPlayerInput("ieee ff h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(ieee);
+        assertFalse(game.playWord());
+
+        game.setPlayerInput("piano 89 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(piano);
+        assertFalse(game.playWord());
+
+        game.setPlayerInput("piano 87 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(piano);
+        assertTrue(game.playWord());
     }
 
     @org.junit.Test
-    public void firstPlayIsThroughCenter() {
+    public void testAllPlayWordsValid() {
     }
 
     @org.junit.Test
-    public void allPlayWordsValid() {
+    public void testPutPlayOnBoard() {
     }
 
     @org.junit.Test
-    public void putPlayOnBoard() {
+    public void testRemovePlayFromBoard() {
     }
 
     @org.junit.Test
-    public void removePlayFromBoard() {
+    public void testDeterminePlayerTurns() {
     }
 
     @org.junit.Test
-    public void determinePlayerTurns() {
+    public void testParseInputPlay() {
     }
 
     @org.junit.Test
-    public void parseInputPlay() {
-    }
-
-    @org.junit.Test
-    public void isValidWord() {
+    public void testIsValidWord() {
     }
 
     @Before
     public void setUp() throws Exception {
         game = new ScrabbleGame();
-        set1 = new ArrayList<>();
-        set2 = new ArrayList<>();
-        set3 = new ArrayList<>();
+        set2Players = new ArrayList<>();
+        set3Players = new ArrayList<>();
+        set4Players = new ArrayList<>();
 
         read = new ArrayList<>();
         been = new ArrayList<>();
@@ -88,20 +119,20 @@ public class ScrabbleGameTest {
         aaa = new ArrayList<>();
         piano = new ArrayList<>();
 
-        game.setPlayers(set1);
+        game.setPlayers(set2Players);
 
         // Set up players
-        set1.add(new Player("Player 1"));
-        set1.add(new Player("Player 2"));
+        set2Players.add(new Player("Player 1"));
+        set2Players.add(new Player("Player 2"));
 
-        set2.add(new Player("Player 1"));
-        set2.add(new Player("Player 3"));
-        set2.add(new Player("Player 2"));
+        set3Players.add(new Player("Player 1"));
+        set3Players.add(new Player("Player 3"));
+        set3Players.add(new Player("Player 2"));
 
-        set3.add(new Player("Player 3"));
-        set3.add(new Player("Player 1"));
-        set3.add(new Player("Player 4"));
-        set3.add(new Player("Player 2"));
+        set4Players.add(new Player("Player 3"));
+        set4Players.add(new Player("Player 1"));
+        set4Players.add(new Player("Player 4"));
+        set4Players.add(new Player("Player 2"));
 
         // Set up words
         read.add(new Tile("R", 1));
