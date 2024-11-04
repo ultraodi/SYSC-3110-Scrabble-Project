@@ -4,6 +4,15 @@
  * @version October 18, 2024
  */
 public class ScrabbleBoard {
+    // The following are ANSI codes for console text. Might not be portable on Windows computers.
+    public static final String RESET = "\033[0m"; // Colour Reset
+    public static final String RED = "\033[0;31m"; // Red
+    public static final String MAGENTA = "\033[0;35m"; // Magenta
+    public static final String GREEN = "\033[0;32m"; // Green
+    public static final String YELLOW = "\033[0;33m"; // Yellow
+    public static final String BLUE = "\033[0;34m"; // Blue
+    public static final String CYAN = "\033[0;36m"; // Cyan
+
     /** The array model of the scrabble board*/
     private Square[][] board;
     /** The dimension of the board. Since the board is a square the size is singular.*/
@@ -145,7 +154,7 @@ public class ScrabbleBoard {
      */
     public Tile getTileOnSquare(int row, int col) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->getTileOnSquare: invalid array access (null)");
+            if (ScrabbleGame.DEBUG) System.out.println("ScrabbleBoard->getTileOnSquare: invalid array access (null)");
             return null;
         }
         return board[row][col].getPlacedTile();
@@ -159,11 +168,77 @@ public class ScrabbleBoard {
      */
     public Square getSquare(int row, int col) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->getSquare: invalid array access (null)");
+            if (ScrabbleGame.DEBUG) System.out.println("ScrabbleBoard->getSquare: invalid array access (null)");
             return null;
         }
         return board[row][col];
     }
+
+    /**
+     * Gets the input type of the player square i.e TLR, DLR etc.
+     * @param length the length of the players input
+     * @param row The row locations of the required square
+     * @param col The column location of the required square
+     * @param direction the players direction
+     * @return an array of string containing the square type for each input character
+     */
+    public String[] getInputType(int length, int row, int col, ScrabbleGame.Direction direction) {
+        String[] inputSquareType = new String[length];
+
+        for (int i = 0; i < length; i++) {
+            // Calculate the correct board position based on direction
+            int boardRow = direction == ScrabbleGame.Direction.HORIZONTAL ? row : row + i;
+            int boardCol = direction == ScrabbleGame.Direction.HORIZONTAL ? col + i : col;
+
+            inputSquareType[i] = getSquareType(boardRow, boardCol);
+        }
+
+        return inputSquareType;
+    }
+
+    /**
+     * Determines the string representation of the square type
+     * at a given board position.
+     * @param row The row index of the square on the board.
+     * @param col The column index of the square on the board.
+     * @return A string representing the type of the square (e.g. "DL" for double letter, "DW" for double word, "N" for normal).
+     */
+    private String getSquareType(int row, int col) {
+        switch (board[row][col].getType()) {
+            case DOUBLE_LETTER:
+                return "DL";
+            case DOUBLE_WORD:
+                return "DW";
+            case TRIPLE_LETTER:
+                return "TL";
+            case TRIPLE_WORD:
+                return "TW";
+            case NORMAL:
+            case CENTER:
+                return "N";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Sets the square to normal after each validated player word
+     * @param input the player input word
+     * @param row the row of the word played
+     * @param col the column of the word played
+     * @param direction the direction of the word played
+     */
+    public void resetSquare(String input, int row, int col, ScrabbleGame.Direction direction){
+        for(int i = 0; i < input.length(); i++){
+            if (direction == ScrabbleGame.Direction.HORIZONTAL){
+                board[row][col + i].setSquareNormal(Square.Types.NORMAL);
+            }
+            else if (direction == ScrabbleGame.Direction.VERTICAL){
+                board[row + i][col].setSquareNormal(Square.Types.NORMAL);
+            }
+        }
+    }
+
 
     /**
      * Places tile in the given position
@@ -173,12 +248,12 @@ public class ScrabbleBoard {
      */
     public void placeTile(int row, int col, Tile tile) {
         if (-1 >= row || row > 14 || -1 >= col || col > 14) {
-            System.out.println("ScrabbleBoard->placeTile: invalid array access (null)");
+            if (ScrabbleGame.DEBUG) System.out.println("ScrabbleBoard->placeTile: invalid array access (null)");
             return;
         }
         if (board[row][col].getPlacedTile() == null) {
             board[row][col].placeTile(tile);
-            System.out.printf("ScrabbleBoard->placeTile: Played this letter: %s @ [%d] [%d]%n", tile.getLetter(), row, col);
+            if (ScrabbleGame.DEBUG) System.out.printf("ScrabbleBoard->placeTile: Played this letter: %s @ [%d] [%d]%n", tile.getLetter(), row, col);
         } else return;
     }
 
@@ -197,7 +272,7 @@ public class ScrabbleBoard {
     public String toString() {
         String stringRep = "";
         StringBuilder boardString = new StringBuilder();
-        boardString.append("   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
+        boardString.append("\n   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |\n");
 
         for (int row = 1; row <= SIZE; row++) {
             boardString.append("   -------------------------------------------------------------------------------------------\n");
@@ -212,33 +287,29 @@ public class ScrabbleBoard {
                         stringRep = "DLR";
                         break;
                     case DOUBLE_WORD:
-                        stringRep = "DWD";
+                        stringRep = BLUE + "DWD" + RESET;
                         break;
                     case TRIPLE_LETTER:
-                        stringRep = "TLR";
+                        stringRep = MAGENTA + "TLR" + RESET;
                         break;
                     case TRIPLE_WORD:
-                        stringRep = "TWD";
+                        stringRep = RED + "TWD" + RESET;
                         break;
                     case CENTER:
-                        stringRep = "[+]";
+                        stringRep = GREEN + "[+]" + RESET;
                         break;
                     default:
                         System.out.println("No Square type of that type.");
                 }
                 Square _square = board[row -1][col];
-                boardString.append((_square.getPlacedTile() != null)? String.format(" [%s] |",_square.getPlacedTile().getLetter()) : String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
-                                                                                                                                                                         // otherwise, it prints the letter on the tile placed on it.
-
+                boardString.append((_square.getPlacedTile() != null)?
+                        String.format("%s (%s) %s|", YELLOW, _square.getPlacedTile().getLetter(), RESET) :
+                        String.format(" %s |", stringRep)); // If square has no tile placed on it, it prints the default value (" ", "DWD", e.t.c)
+                // otherwise, it prints the letter on the tile placed on it.
             }
             boardString.append("\n");
         }
         boardString.append("   -------------------------------------------------------------------------------------------\n");
         return boardString.toString();
     }
-
-    /*public static void main(String[] args) {
-        ScrabbleBoard board1 = new ScrabbleBoard();
-        board1.drawBoard();
-    }*/
 }
