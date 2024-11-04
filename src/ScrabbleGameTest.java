@@ -160,4 +160,8 @@ public class ScrabbleGameTest {
         piano.add(new Tile("N", 1));
         piano.add(new Tile("O", 1));
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

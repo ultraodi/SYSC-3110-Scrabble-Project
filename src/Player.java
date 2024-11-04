@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Represents a player in the Scrabble game.
@@ -8,26 +7,20 @@ import java.util.Arrays;
  * @version October 22, 2024
  */
 public class Player {
-    // The following are ANSI codes for console text. Might not be portable on Windows computers.
-    public static final String RED = "\033[0;31m"; // Red
-    public static final String GREEN = "\033[0;32m"; // Green
-    public static final String YELLOW = "\033[0;33m"; // Yellow
-    public static final String CYAN = "\033[0;36m"; // Cyan
-
-    private static final ArrayList<String> colour = new ArrayList<>(Arrays.asList(YELLOW, RED, GREEN, CYAN));
-
-    /** The maximum amount of tiles a player is allowed to hold*/
     private static final int MAX_TILES = 7;
-    /** Tiles*/
+    // Tile Bag
+    private TileBag tilebag;
+
+    // Tiles
     private ArrayList<Tile> tiles;
-    /** Player Score*/
+
+    // Player Score
     private int score;
-    /** Players name*/
+
+    // Players name
     private String name;
-    /** The score history of the player*/
+
     private ArrayList<Integer> scoreHistory;
-    /** Letter colour assigned to this player*/
-    private String playerColour;
 
     /**
      * Constructs a new Player with the specified name.
@@ -38,11 +31,38 @@ public class Player {
         this.name = name;
         scoreHistory= new ArrayList<>();
         score = 0;
+        tilebag = new TileBag();
         tiles = new ArrayList<>();
-        if (!colour.isEmpty()) {
-            playerColour = colour.getFirst();
-            colour.removeFirst();
-        } else playerColour = null;
+        Tile a = new Tile("A", 1);
+        Tile p = new Tile("P", 1);
+        Tile p2 = new Tile("P", 1);
+        Tile l = new Tile("L", 1);
+        Tile e = new Tile("E", 1);
+        Tile m1 = new Tile("M", 1);
+        Tile a1 = new Tile("A", 1);
+        Tile n1 = new Tile("N", 1);
+        Tile g1 = new Tile("G", 1);
+        Tile a2 = new Tile("A", 1);
+        Tile e1 = new Tile("E", 1);
+        Tile e2 = new Tile("E", 1);
+        Tile a3 = new Tile("A", 1);
+        Tile s1 = new Tile("S", 1);
+        Tile y1 = new Tile("Y", 1);
+        tiles.add(a);
+        tiles.add(p);
+        tiles.add(p2);
+        tiles.add(l);
+        tiles.add(e);
+        tiles.add(m1);
+        tiles.add(a1);
+        tiles.add(n1);
+        tiles.add(g1);
+        tiles.add(a2);
+        tiles.add(e1);
+        tiles.add(e2);
+        tiles.add(a3);
+        tiles.add(s1);
+        tiles.add(y1);
     }
 
     /**
@@ -62,31 +82,11 @@ public class Player {
     }
 
     /**
-     * Gets the string representation of the player's tiles.
-     * @return The string representation of the player's tiles.
-     */
-    public String getTilesString() {
-        StringBuilder playerTilesStringBuilder = new StringBuilder();
-        for (Tile _tile : tiles) {
-            playerTilesStringBuilder.append(_tile.getLetter());
-        }
-        return playerTilesStringBuilder.toString();
-    }
-
-    /**
      * Gets the current score of the player.
      * @return The player's score.
      */
     public int getScore(){
         return score;
-    }
-
-    /**
-     * Gets the colour assigned to this player.
-     * @return The colour assigned to this player.
-     */
-    public String getPlayerColour() {
-        return playerColour;
     }
 
     /**
@@ -97,11 +97,6 @@ public class Player {
         this.score = score;
     }
 
-    /**
-     * Takes a tile from the players tiles if it matches the letter provided.
-     * @param letter The letter provided.
-     * @return The tile that matches the letter provided.
-     */
     public Tile takeTile(String letter) {
         Tile tile = new Tile(letter, 1);
         Tile returnTile;
@@ -113,27 +108,8 @@ public class Player {
         return null;
     }
 
-    /**
-     * Returns a tile to the player's tile deck.
-     * @param tile The tile to be returned to the tile deck.
-     * @return True if the tile could be returned. False otherwise.
-     */
-    public boolean returnTile(Tile tile) {
-        if (tiles.size() < MAX_TILES){
-            tiles.add(tile);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gives the player a predetermined set of tiles.
-     * @param tiles The set of tiles assigned to the player.
-     */
-    public void setPlayerTiles(ArrayList<Tile> tiles){
-        this.tiles = tiles;
-        ownTiles();
-    }
+    // players move
+    //public ArrayList<Tile> playersMove(){}
 
     /**
      * Get more tiles from the tile bag
@@ -141,17 +117,22 @@ public class Player {
      */
     public void getMoreTiles(TileBag tileBag) {
         tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
-        ownTiles();
     }
 
-    /**
-     * Transfers ownership of the tile to a player.
-     */
-    private void ownTiles() {
-        for (Tile tile: tiles) {
-            tile.setPlayer(this);
-        }
-    }
+    //    public ArrayList<Tile> getTiles() {
+    //        Tile a = new Tile("A", 1);
+    //        Tile p = new Tile("P", 1);
+    //        Tile p2 = new Tile("L", 1);
+    //        Tile l = new Tile("L", 1);
+    //        Tile e = new Tile("E", 1);
+    //        ArrayList<Tile> tiles = new ArrayList<>();
+    //        tiles.add(a);
+    //        tiles.add(p);
+    //        tiles.add(p2);
+    //        tiles.add(l);
+    //        tiles.add(e);
+    //        return  tiles;
+    //    }
 
     /**
      * Compares for equality between Players
@@ -160,12 +141,10 @@ public class Player {
      */
     @Override
     public boolean equals(Object obj) {
-        Player player = null;
         if (obj instanceof Player) {
-            player = (Player) obj;
+            Player player = (Player) obj;
             return name.equals(player.name);
         }
-        if (ScrabbleGame.DEBUG) System.out.printf("Player->equals: Player not equal: %s %s", name, player);
         return false;
     }
 }
