@@ -58,6 +58,17 @@ public class Square {
     }
 
     /**
+     * Remove the placed tile from the square.
+     * @return The tile removed from the square.
+     */
+    public Tile removePlacedTile() {
+        Tile temp;
+        temp = getPlacedTile();
+        placedTile = null;
+        return temp;
+    }
+
+    /**
      * Gets the type of this square.
      * @return The type of square.
      */
@@ -66,13 +77,25 @@ public class Square {
     }
 
     /**
+     * Sets the type of the square to normal
+     * */
+    public void setSquareNormal(Square.Types type){
+        this.squareType = type;
+    }
+
+    /**
      * Gets the tile placed on this square.
-     * @return The tile placed on this square
+     * @return The tile placed on this square.
      */
     public Tile getPlacedTile() {
         return placedTile;
     }
 
+    /**
+     * Compares Square objects by tile and square type.
+     * @param obj The square to be compared against.
+     * @return True if they match. False otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Square) {
