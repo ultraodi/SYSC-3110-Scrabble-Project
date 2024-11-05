@@ -77,6 +77,13 @@ public class Square {
     }
 
     /**
+     * Sets the type of the square to normal
+     * */
+    public void setSquareNormal(Square.Types type){
+        this.squareType = type;
+    }
+
+    /**
      * Gets the tile placed on this square.
      * @return The tile placed on this square.
      */

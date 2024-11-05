@@ -26,6 +26,8 @@ public class TileBag {
     private int numTilesLeft;
     /** An array list representing the bag*/
     private ArrayList<Tile> tiles;
+    /** Scrabble Board Instance*/
+    ScrabbleBoard gameBoard;
 
 
     /**
@@ -40,6 +42,7 @@ public class TileBag {
 
         // Initialize the letter value
         initializeLetterValues();
+        gameBoard = new ScrabbleBoard();
     }
 
     /**
@@ -135,40 +138,6 @@ public class TileBag {
         return randomTiles;
     }
 
-//    /**
-//     * Allows players to take tiles from the bag and add to their inventory
-//     * @param number The number determines the amount of tiles returned to the player
-//     * @return A list of tiles is returned to the player
-//     * */
-//    public ArrayList<Tile> getRandomTilesFromBagStart(int number) {
-//        // Logic to get a specific number of tiles (if needed)
-//        ArrayList<Tile> randomTiles = new ArrayList<>();
-//        Random rand = new Random();
-//        int maxNumber = getNumTilesLeft();
-//
-//        // System.out.println("maxNumber is: "+ maxNumber + " number is : " + number);
-//        // Ensure the number of tiles requested is not greater than the available tiles
-//        if (number > maxNumber){
-//            throw new IllegalArgumentException("Bound must be positive");
-//        }
-//
-//        for (int i = 0; i < number; i++) {
-//            // Get a random index within the current size of the tiles list
-//            int randomIndex = rand.nextInt(tiles.size());
-//
-//            // Add the tile at the random index to the randomTiles list
-//            randomTiles.add(tiles.get(randomIndex));
-//
-////            // Remove the tile from the tiles list to avoid duplication
-////            tiles.remove(randomIndex);
-////
-////            // Decrements the remaining tile counter
-////            numTilesLeft--;
-//        }
-//
-//        return randomTiles;
-//    }
-
     /**
      * Returns the number of tiles left in the bag
      * @return int The number of tiles left in the bag
@@ -177,37 +146,54 @@ public class TileBag {
         return numTilesLeft;
     }
 
+    /**
+     * Returns the total score of the players input
+     * @param  input word from the player
+     * @param row the row of the word played
+     * @param col the column of the word played
+     * @param direction the direction of the word played
+     * @return int The total score of player input
+     *
+     */
+    public int getInputScore(String input, int row, int col, ScrabbleGame.Direction direction){
+        String[] splitInput = input.split("");
+        String[] squareType = gameBoard.getInputType(input.length(), row, col, direction);
+        String specialCase = null;
+        int total = 0;
+
+        for(int i = 0; i < input.length(); i++){
+            splitInput[i] = splitInput[i].toUpperCase();
+            if(LETTER_VALUE.containsKey(splitInput[i])){
+                if(squareType[i].equals("DL")){
+                    total += LETTER_VALUE.get(splitInput[i]) * 2;
+                }
+                else if(squareType[i].equals("TL")){
+                    total += LETTER_VALUE.get(splitInput[i]) * 3;
+                }
+                else if(squareType[i].equals("N")){
+                    total += LETTER_VALUE.get(splitInput[i]);
+                }
+                else if(squareType[i].equals("TW") || squareType[i].equals("DW")){
+                    specialCase = squareType[i];
+                }
+            }
+        }
+        if (specialCase != null){
+            if (specialCase.equals("DW")){
+                total = total * 2;
+            }
+            else if (specialCase.equals("TW")){
+                total = total * 3;
+            }
+        }
+        gameBoard.resetSquare(input, row, col, direction);
+        return total;
+    }
+
     public void returnTile(Tile tile) {
         tile.unsetPlayer();
         tiles.add(tile);
         numTilesLeft++;
     }
-
-    /*public static void main(String[] args) {
-        // Create an instance of TileBag
-        TileBag tileBag = new TileBag();
-
-        // Write the tiles to "TileBags.txt"
-        try (FileWriter writer = new FileWriter("resources/TileBags.txt")) {
-            // Write the number of tiles left to the file
-            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
-
-//            for (Tile tile : tileBag.getTilesFromBag(tileBag.getNumTilesLeft())) {
-//                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
-//            }
-            // Get random tiles (e.g., 5 random tiles) and write them to the file
-//            ArrayList<Tile> randomTiles = tileBag.getRandomTilesFromBag(9);
-//            writer.write("\nRandomly selected tiles:\n");
-//            for (Tile tile : randomTiles) {
-//                writer.write("Letter: " + tile.getLetter() + ", Value: " + tile.getValue() + "\n");
-//            }
-//            // Write the number of tiles left to the file
-//            writer.write("Number of tiles left: " + tileBag.getNumTilesLeft() + "\n");
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
 }

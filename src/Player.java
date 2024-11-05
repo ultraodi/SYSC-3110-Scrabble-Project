@@ -5,6 +5,7 @@ import java.util.Arrays;
  * Represents a player in the Scrabble game.
  * Each player has a name, a set of tiles, a score, and access to the tile bag.
  * @author Clinton Odinamadu
+ * @author Abdul Babatunde
  * @version October 22, 2024
  */
 public class Player {
@@ -135,16 +136,6 @@ public class Player {
         ownTiles();
     }
 
-//    /**
-//     * Get more tiles from the tile bag at the start of the game
-//     * @param tileBag The tile bag to take the tiles from
-//     */
-//    public ArrayList<Tile> getMoreTilesStart(TileBag tileBag) {
-//        tiles = tileBag.getRandomTilesFromBagStart(MAX_TILES - tiles.size());
-//        return tiles;
-//
-//    }
-
     /**
      * Get more tiles from the tile bag
      * @param tileBag The tile bag to take the tiles from
@@ -162,21 +153,6 @@ public class Player {
             tile.setPlayer(this);
         }
     }
-
-    //    public ArrayList<Tile> getTiles() {
-    //        Tile a = new Tile("A", 1);
-    //        Tile p = new Tile("P", 1);
-    //        Tile p2 = new Tile("L", 1);
-    //        Tile l = new Tile("L", 1);
-    //        Tile e = new Tile("E", 1);
-    //        ArrayList<Tile> tiles = new ArrayList<>();
-    //        tiles.add(a);
-    //        tiles.add(p);
-    //        tiles.add(p2);
-    //        tiles.add(l);
-    //        tiles.add(e);
-    //        return  tiles;
-    //    }
 
     /**
      * Compares for equality between Players

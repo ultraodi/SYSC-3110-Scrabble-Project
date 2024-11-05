@@ -49,8 +49,13 @@ public class ScrabbleGame {
     private boolean isCommand;
     /** Stores the command*/
     private String command;
+    /** Player Coordinates*/
+    int rowNum_program;
+    int colNum_program;
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"debug", "noDebug", "board"}));
+
+    private ScrabbleGameView view = new ScrabbleGameView();
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -115,11 +120,13 @@ public class ScrabbleGame {
             printPlayerTiles(showAllPlayerTiles);
             System.out.printf("\nTiles left in bag: %d\n", tileBag.getNumTilesLeft());
             System.out.println("Current player: " + playerTurn.getPlayerName());
+            System.out.println("Current player score: " + playerTurn.getScore());
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
                     System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
                     if (playWord()) {
+                        playerTurn.setScore(playerTurn.getScore() + tileBag.getInputScore(playerInputWord, rowNum_program, colNum_program, playerInputPlayDirection));
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
                         changeTurns();
@@ -131,7 +138,7 @@ public class ScrabbleGame {
             } else {
                 if (isCommand)
                     doCommand(command);
-                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. lip 88 v.");
+                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.");
             }
         }
     }
@@ -140,25 +147,47 @@ public class ScrabbleGame {
      * Sets up the players for the game.
      */
     public void setupPlayers() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("How many players will play (Lowest 2, Highest 4): ");
-        int numberOfPlayers = scanner.nextInt();
+        // Retrieve player names from the option pane
+        List<String> playerNames = view.setupPlayersOptionPane();
 
-        // Error checking
-        while(numberOfPlayers < 2 || numberOfPlayers > 4){
-            System.out.println("Please put in a valid number");
-            System.out.print("How many players will play (Lowest 2, Highest 4): ");
-            numberOfPlayers = scanner.nextInt();
+        // Check if the list is empty (in case of invalid input)
+        if (playerNames.isEmpty()) {
+            System.out.println("Player setup was canceled or invalid.");
+            return;
         }
 
-        // Get player names
-        String name;
-        for (int i = 0; i < numberOfPlayers; i++) {
-            System.out.print("Player " + (i + 1) + ": What is your name: ");
-            scanner = new Scanner(System.in);
-            name = scanner.nextLine();
-            players.add(new Player(name));
+        // Create Player objects and set their initial scores
+        for (String name : playerNames) {
+            Player player = new Player(name);
+            player.setScore(0); // Set initial score
+            players.add(player); // Add player to the list
         }
+
+        // Everything below this line is the text version for the setup
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.print("How many players will play (Lowest 2, Highest 4): ");
+//        int numberOfPlayers = scanner.nextInt();
+//
+//        // Error checking
+//        while(numberOfPlayers < 2 || numberOfPlayers > 4){
+//            System.out.println("Please put in a valid number");
+//            System.out.print("How many players will play (Lowest 2, Highest 4): ");
+//            numberOfPlayers = scanner.nextInt();
+//        }
+//
+//        // Get player names
+//        String name;
+//        for (int i = 0; i < numberOfPlayers; i++) {
+//            System.out.print("Player " + (i + 1) + ": What is your name: ");
+//            scanner = new Scanner(System.in);
+//            name = scanner.nextLine();
+//            players.add(new Player(name));
+//        }
+//
+//        // Set the score of the players initially to 0
+//        for (Player player : players){
+//            player.setScore(0);
+//        }
     }
 
     /**
@@ -178,19 +207,19 @@ public class ScrabbleGame {
      */
     public boolean playWord() {
         /*
-        * To implement this, initial design is to go through:
-        * - Checking if making the play is possible.
-        *   - Are there enough squares to play the word?
-        *   - The letters on the board in the area of play are in the word played
-        *   - The letters on the board in the area of play are already in the desired position
-        *   - Does the player making the play have the needed tiles to complete the word given the
-        *     letters already on the board?
-        *   - All words formed as a result of the played word are valid
-        * - Making the play.
-        *   - Taking the necessary letters from the player's tile deck when needed
-        *
-        * If any of the checks fail, the play cannot be made.
-        */
+         * To implement this, initial design is to go through:
+         * - Checking if making the play is possible.
+         *   - Are there enough squares to play the word?
+         *   - The letters on the board in the area of play are in the word played
+         *   - The letters on the board in the area of play are already in the desired position
+         *   - Does the player making the play have the needed tiles to complete the word given the
+         *     letters already on the board?
+         *   - All words formed as a result of the played word are valid
+         * - Making the play.
+         *   - Taking the necessary letters from the player's tile deck when needed
+         *
+         * If any of the checks fail, the play cannot be made.
+         */
 
         // Are there enough squares to play the word
         String debugTag;
@@ -199,8 +228,8 @@ public class ScrabbleGame {
         Direction dir = playerInputPlayDirection;
         int rowNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(0)), 16);
         int colNum = Integer.parseInt(valueOf(playerInputBoardPosition.charAt(1)), 16);
-        int rowNum_program = rowNum - 1; // Convert to program usable coordinates. Array indexes start at 0.
-        int colNum_program = colNum - 1;
+        rowNum_program = rowNum - 1; // Convert to program usable coordinates. Array indexes start at 0.
+        colNum_program = colNum - 1;
         if (!((14 - (dir.equals(Direction.HORIZONTAL)? colNum_program:rowNum_program) + 1) >= playerInputWord.length())) {
             System.out.printf("\n%sWord is too long. row: %d col: %d word length: %d\n",debugTag ,rowNum, colNum, playerInputWord.length());
             return false;
@@ -283,9 +312,9 @@ public class ScrabbleGame {
         if (DEBUG) System.out.print("\n");
 
         // All words formed as a result of the played word are valid
-            // Create list of plays
-            // Iterate over list and check all words are valid
-                // Check if the play already exists and remove it from the list of plays if it does.
+        // Create list of plays
+        // Iterate over list and check all words are valid
+        // Check if the play already exists and remove it from the list of plays if it does.
         putPlayOnBoard(dir, rowNum, colNum);
 
         // First play goes through the center of the board.
@@ -545,8 +574,8 @@ public class ScrabbleGame {
     public HashSet<String> getValidWordsFromUrl() {
         HashSet<String> returnSet = new HashSet<>();
         BufferedReader inStream; // The BufferedReader class simulates a buffer that allows a stream of
-                                 // input to be read more efficiently.
-                                 // It reads larger amounts of data from the input stream rather than byte by byte.
+        // input to be read more efficiently.
+        // It reads larger amounts of data from the input stream rather than byte by byte.
         StringBuilder validWordsString = new StringBuilder(); // To build a string of valid words separated by new lines.
         try {
             HttpURLConnection connection = (HttpURLConnection) validWordsURL.openConnection();
@@ -555,7 +584,7 @@ public class ScrabbleGame {
             String inStreamLine;
             while ((inStreamLine = inStream.readLine()) != null) {
                 validWordsString.append(inStreamLine.toLowerCase()).append("\n"); // Adds a new line to each word as the 'inStream.readLine()'
-                                                                            // in the line above removes the trailing new line by default
+                // in the line above removes the trailing new line by default
 
             }
             inStream.close(); // Closes the simulated buffer
@@ -563,7 +592,7 @@ public class ScrabbleGame {
             Scanner validWords = new Scanner(validWordsString.toString()); // Allows the string built by the validWordsString to be tokenized (read word by word in this case)
             while (validWords.hasNext()) {
                 returnSet.add(validWords.next().strip()); // Adds all the words to a hash set and removes the added new lines. The new lines were needed in order for the
-                                                          // Scanner class to parse through the string for tokens.
+                // Scanner class to parse through the string for tokens.
             }
         } catch (IOException e) { // The .openConnection() method in the HttpURLConnection class throws an IOException so our program needs to handle it.
             throw new RuntimeException(e);
@@ -616,7 +645,7 @@ public class ScrabbleGame {
         Scanner tokenizer = new Scanner(playerInput);
         if (tokenizer.hasNext()) { // Checks that the play has a word
             _tempWord = tokenizer.next(); // This allows any type of input be it numbers or special characters. A String of characters
-                                          // containing numbers or special characters will not be considered a valid word.
+            // containing numbers or special characters will not be considered a valid word.
         } else return false;
 
         if (tokenizer.hasNext()) { // Checks that they play has coordinates

@@ -4,6 +4,7 @@ import java.util.ArrayList;
  * Represents a play in the Scrabble game, which consists of a player and a word
  * made up of a list of squares. This class manages the points associated with the play.
  * @author Clinton Odinamadu
+ * @author Abdul Babatunde
  * @version October 22, 2024
  */
 public class Play {
