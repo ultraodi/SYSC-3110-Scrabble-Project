@@ -55,6 +55,8 @@ public class ScrabbleGame {
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"debug", "noDebug", "board"}));
 
+    private ScrabbleGameView view = new ScrabbleGameView();
+
     /**
      * Constructor for the ScrabbleGame class.
      */
@@ -145,30 +147,47 @@ public class ScrabbleGame {
      * Sets up the players for the game.
      */
     public void setupPlayers() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("How many players will play (Lowest 2, Highest 4): ");
-        int numberOfPlayers = scanner.nextInt();
+        // Retrieve player names from the option pane
+        List<String> playerNames = view.setupPlayersOptionPane();
 
-        // Error checking
-        while(numberOfPlayers < 2 || numberOfPlayers > 4){
-            System.out.println("Please put in a valid number");
-            System.out.print("How many players will play (Lowest 2, Highest 4): ");
-            numberOfPlayers = scanner.nextInt();
+        // Check if the list is empty (in case of invalid input)
+        if (playerNames.isEmpty()) {
+            System.out.println("Player setup was canceled or invalid.");
+            return;
         }
 
-        // Get player names
-        String name;
-        for (int i = 0; i < numberOfPlayers; i++) {
-            System.out.print("Player " + (i + 1) + ": What is your name: ");
-            scanner = new Scanner(System.in);
-            name = scanner.nextLine();
-            players.add(new Player(name));
+        // Create Player objects and set their initial scores
+        for (String name : playerNames) {
+            Player player = new Player(name);
+            player.setScore(0); // Set initial score
+            players.add(player); // Add player to the list
         }
 
-        // Set the score of the players initially to 0
-        for (Player player : players){
-            player.setScore(0);
-        }
+        // Everything below this line is the text version for the setup
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.print("How many players will play (Lowest 2, Highest 4): ");
+//        int numberOfPlayers = scanner.nextInt();
+//
+//        // Error checking
+//        while(numberOfPlayers < 2 || numberOfPlayers > 4){
+//            System.out.println("Please put in a valid number");
+//            System.out.print("How many players will play (Lowest 2, Highest 4): ");
+//            numberOfPlayers = scanner.nextInt();
+//        }
+//
+//        // Get player names
+//        String name;
+//        for (int i = 0; i < numberOfPlayers; i++) {
+//            System.out.print("Player " + (i + 1) + ": What is your name: ");
+//            scanner = new Scanner(System.in);
+//            name = scanner.nextLine();
+//            players.add(new Player(name));
+//        }
+//
+//        // Set the score of the players initially to 0
+//        for (Player player : players){
+//            player.setScore(0);
+//        }
     }
 
     /**
