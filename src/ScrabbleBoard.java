@@ -175,6 +175,14 @@ public class ScrabbleBoard {
     }
 
     /**
+     * Gets the entire board
+     * @return An array grid representing the board
+     */
+    public Square[][] getBoard() {
+        return board;
+    }
+
+    /**
      * Places tile in the given position
      * @param row The row location of the square to place the tile
      * @param col The column location of the square to place the tile

@@ -16,6 +16,7 @@ public class ScrabbleGameTest {
     ArrayList<Tile> ieee;
     ArrayList<Tile> aaa;
     ArrayList<Tile> piano;
+    ArrayList<Tile> pool;
 
     @org.junit.Test
     public void testChangeTurns() {
@@ -42,15 +43,100 @@ public class ScrabbleGameTest {
     @org.junit.Test
     public void testPlayWord() {
         int index = 0;
-        ScrabbleBoard board = game.getScrabbleBoard();
+        Square[][] board = game.getScrabbleBoard().getBoard();
         game.setPlayerOrder(set2Players);
         game.setCurrentPlayerIndex(index);
         game.setPlayerTurn(set2Players.getFirst());
+
+        /*
+
+               |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |
+               -------------------------------------------------------------------------------------------
+             1 |  @  |     |     |  %  |     |     |     |  @  |     |     |     |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+             2 |     |  $  |     |     |     |  #  |     |     |     |  #  |     |     |     |  $  |     |
+               -------------------------------------------------------------------------------------------
+             3 |     |     |  $  |     |     |     |  %  |     |  %  |     |     |     |  $  |     |     |
+               -------------------------------------------------------------------------------------------
+             4 |  %  |     |     |  $  |     |     |     |  %  |     |     |     |  $  |     |     |  %  |
+               -------------------------------------------------------------------------------------------
+             5 |     |     |     |     |  $  |     |     |     |     |     |  $  |     |     |     |     |
+               -------------------------------------------------------------------------------------------
+             6 |     |  #  |     |     |     |  #  |     |     |     | (P) |     |     |     |  #  |     |
+               -------------------------------------------------------------------------------------------
+             7 |     |     |  %  |     |     |     |  %  |     |  %  | (I) | (E) | (E) | (E) |     |     |
+               -------------------------------------------------------------------------------------------
+             8 |  @  |     |     |  %  |     |     |     | (R) | (E) | (A) | (D) |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+             9 |     |     |  %  |     |     |     | (B) | (E) | (E) | (N) |     |     |  %  |     |     |
+               -------------------------------------------------------------------------------------------
+             A |     |  #  |     |     |     |  #  |     |     |     | (O) |     |     |     |  #  |     |
+               -------------------------------------------------------------------------------------------
+             B |     |     |     |     |  $  |     |     |     |     |     |  $  |     |     |     |     |
+               -------------------------------------------------------------------------------------------
+             C |  %  |     |     |  $  |     |     |     |  %  |     |     |     |  $  |     |     |  %  |
+               -------------------------------------------------------------------------------------------
+             D |     |     |  $  |     |     |     |  %  |     |  %  |     |     |     |  $  |     |     |
+               -------------------------------------------------------------------------------------------
+             E |     |  $  |     |     |     |  #  |     |     |     |  #  |     |     |     |  $  |     |
+               -------------------------------------------------------------------------------------------
+             F |  @  |     |     |  %  |     |     |     |  @  |     |     |     |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+
+         */
 
         game.setPlayerInput("read 88 h");
         game.parseInputPlay();
         set2Players.get(index).setPlayerTiles(read);
         assertTrue(game.playWord());
+        assertEquals(board[7][7].getPlacedTile().getLetter(), "R");
+        assertEquals(board[7][8].getPlacedTile().getLetter(), "E");
+        assertEquals(board[7][9].getPlacedTile().getLetter(), "A");
+        assertEquals(board[7][10].getPlacedTile().getLetter(), "D");
+
+
+        game.changeTurns();
+        game.setPlayerInput("piano 6a v");
+        game.parseInputPlay();
+        set2Players.get(index + 1).setPlayerTiles(piano);
+        assertTrue(game.playWord());
+        assertEquals(board[5][9].getPlacedTile().getLetter(), "P");
+        assertEquals(board[6][9].getPlacedTile().getLetter(), "I");
+        assertEquals(board[7][9].getPlacedTile().getLetter(), "A");
+        assertEquals(board[8][9].getPlacedTile().getLetter(), "N");
+        assertEquals(board[9][9].getPlacedTile().getLetter(), "O");
+
+
+        game.changeTurns();
+        game.setPlayerInput("been 97 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(been);
+        assertTrue(game.playWord());
+        assertEquals(board[8][6].getPlacedTile().getLetter(), "B");
+        assertEquals(board[8][7].getPlacedTile().getLetter(), "E");
+        assertEquals(board[8][8].getPlacedTile().getLetter(), "E");
+        assertEquals(board[8][9].getPlacedTile().getLetter(), "N");
+
+
+        game.changeTurns();
+        game.setPlayerInput("ieee 7a h");
+        game.parseInputPlay();
+        set2Players.get(index + 1).setPlayerTiles(ieee);
+        assertTrue(game.playWord());
+        assertEquals(board[6][9].getPlacedTile().getLetter(), "I");
+        assertEquals(board[6][10].getPlacedTile().getLetter(), "E");
+        assertEquals(board[6][11].getPlacedTile().getLetter(), "E");
+        assertEquals(board[6][12].getPlacedTile().getLetter(), "E");
+
+        game.changeTurns();
+        game.setPlayerInput("pool 6a h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(pool);
+        assertFalse(game.playWord());
+        assertEquals(board[5][9].getPlacedTile().getLetter(), "P");
+        assertNull(board[5][10].getPlacedTile());
+        assertNull(board[5][11].getPlacedTile());
+        assertNull(board[5][12].getPlacedTile());
     }
 
     @org.junit.Test
@@ -88,10 +174,106 @@ public class ScrabbleGameTest {
 
     @org.junit.Test
     public void testPutPlayOnBoard() {
+        int index = 0;
+        Square[][] board = game.getScrabbleBoard().getBoard();
+        game.setPlayerOrder(set2Players);
+        game.setCurrentPlayerIndex(index);
+        game.setPlayerTurn(set2Players.getFirst());
+
+        /*
+
+               |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  A  |  B  |  C  |  D  |  E  |  F  |
+               -------------------------------------------------------------------------------------------
+             1 |  @  |     |     |  %  |     |     |     |  @  |     |     |     |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+             2 |     |  $  |     |     |     |  #  |     |     |     |  #  |     |     |     |  $  |     |
+               -------------------------------------------------------------------------------------------
+             3 |     |     |  $  |     |     |     |  %  |     |  %  |     |     |     |  $  |     |     |
+               -------------------------------------------------------------------------------------------
+             4 |  %  |     |     |  $  |     |     |     |  %  |     |     |     |  $  |     |     |  %  |
+               -------------------------------------------------------------------------------------------
+             5 |     |     |     |     |  $  |     |     |     |     |     |  $  |     |     |     |     |
+               -------------------------------------------------------------------------------------------
+             6 |     |  #  |     |     |     |  #  |     |     |     | (P) |     |     |     |  #  |     |
+               -------------------------------------------------------------------------------------------
+             7 |     |     |  %  |     |     |     |  %  |     |  %  | (I) | (E) | (E) | (E) |     |     |
+               -------------------------------------------------------------------------------------------
+             8 |  @  |     |     |  %  |     |     |     | (R) | (E) | (A) | (D) |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+             9 |     |     |  %  |     |     |     | (B) | (E) | (E) | (N) |     |     |  %  |     |     |
+               -------------------------------------------------------------------------------------------
+             A |     |  #  |     |     |     |  #  |     |     |     | (O) |     |     |     |  #  |     |
+               -------------------------------------------------------------------------------------------
+             B |     |     |     |     |  $  |     |     |     |     |     |  $  |     |     |     |     |
+               -------------------------------------------------------------------------------------------
+             C |  %  |     |     |  $  |     |     |     |  %  |     |     |     |  $  |     |     |  %  |
+               -------------------------------------------------------------------------------------------
+             D |     |     |  $  |     |     |     |  %  |     |  %  |     |     |     |  $  |     |     |
+               -------------------------------------------------------------------------------------------
+             E |     |  $  |     |     |     |  #  |     |     |     |  #  |     |     |     |  $  |     |
+               -------------------------------------------------------------------------------------------
+             F |  @  |     |     |  %  |     |     |     |  @  |     |     |     |  %  |     |     |  @  |
+               -------------------------------------------------------------------------------------------
+
+         */
+
+        game.setPlayerInput("read 88 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(read);
+        game.putPlayOnBoard(ScrabbleGame.Direction.HORIZONTAL, 8, 8);
+        assertEquals(board[7][7].getPlacedTile().getLetter(), "R");
+        assertEquals(board[7][8].getPlacedTile().getLetter(), "E");
+        assertEquals(board[7][9].getPlacedTile().getLetter(), "A");
+        assertEquals(board[7][10].getPlacedTile().getLetter(), "D");
+
+
+        game.changeTurns();
+        game.setPlayerInput("piano 6a v");
+        game.parseInputPlay();
+        set2Players.get(index + 1).setPlayerTiles(piano);
+        game.putPlayOnBoard(ScrabbleGame.Direction.VERTICAL, 6, 10);
+        assertEquals(board[5][9].getPlacedTile().getLetter(), "P");
+        assertEquals(board[6][9].getPlacedTile().getLetter(), "I");
+        assertEquals(board[7][9].getPlacedTile().getLetter(), "A");
+        assertEquals(board[8][9].getPlacedTile().getLetter(), "N");
+        assertEquals(board[9][9].getPlacedTile().getLetter(), "O");
+
+
+        game.changeTurns();
+        game.setPlayerInput("been 97 h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(been);
+        game.putPlayOnBoard(ScrabbleGame.Direction.HORIZONTAL, 9, 7);
+        assertEquals(board[8][6].getPlacedTile().getLetter(), "B");
+        assertEquals(board[8][7].getPlacedTile().getLetter(), "E");
+        assertEquals(board[8][8].getPlacedTile().getLetter(), "E");
+        assertEquals(board[8][9].getPlacedTile().getLetter(), "N");
+
+
+        game.changeTurns();
+        game.setPlayerInput("ieee 7a h");
+        game.parseInputPlay();
+        set2Players.get(index + 1).setPlayerTiles(ieee);
+        game.putPlayOnBoard(ScrabbleGame.Direction.HORIZONTAL, 7, 10);
+        assertEquals(board[6][9].getPlacedTile().getLetter(), "I");
+        assertEquals(board[6][10].getPlacedTile().getLetter(), "E");
+        assertEquals(board[6][11].getPlacedTile().getLetter(), "E");
+        assertEquals(board[6][12].getPlacedTile().getLetter(), "E");
+
+        game.changeTurns();
+        game.setPlayerInput("pool 6a h");
+        game.parseInputPlay();
+        set2Players.get(index).setPlayerTiles(pool);
+        game.putPlayOnBoard(ScrabbleGame.Direction.HORIZONTAL, 6, 10);
+        assertEquals(board[5][9].getPlacedTile().getLetter(), "P");
+        assertEquals(board[5][10].getPlacedTile().getLetter(), "O");
+        assertEquals(board[5][11].getPlacedTile().getLetter(), "O");
+        assertEquals(board[5][12].getPlacedTile().getLetter(), "L");
     }
 
     @org.junit.Test
     public void testRemovePlayFromBoard() {
+
     }
 
     @org.junit.Test
@@ -118,6 +300,7 @@ public class ScrabbleGameTest {
         ieee = new ArrayList<>();
         aaa = new ArrayList<>();
         piano = new ArrayList<>();
+        pool = new ArrayList<>();
 
         game.setPlayers(set2Players);
 
@@ -159,5 +342,10 @@ public class ScrabbleGameTest {
         piano.add(new Tile("A", 1));
         piano.add(new Tile("N", 1));
         piano.add(new Tile("O", 1));
+
+        pool.add(new Tile("P", 1));
+        pool.add(new Tile("O", 1));
+        pool.add(new Tile("O", 1));
+        pool.add(new Tile("L", 1));
     }
 }
