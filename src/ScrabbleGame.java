@@ -15,6 +15,7 @@ import static java.lang.String.*;
  */
 public class ScrabbleGame {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
+    public static boolean TEXT_VERSION = false;
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -164,30 +165,32 @@ public class ScrabbleGame {
         }
 
         // Everything below this line is the text version for the setup
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.print("How many players will play (Lowest 2, Highest 4): ");
-//        int numberOfPlayers = scanner.nextInt();
-//
-//        // Error checking
-//        while(numberOfPlayers < 2 || numberOfPlayers > 4){
-//            System.out.println("Please put in a valid number");
-//            System.out.print("How many players will play (Lowest 2, Highest 4): ");
-//            numberOfPlayers = scanner.nextInt();
-//        }
-//
-//        // Get player names
-//        String name;
-//        for (int i = 0; i < numberOfPlayers; i++) {
-//            System.out.print("Player " + (i + 1) + ": What is your name: ");
-//            scanner = new Scanner(System.in);
-//            name = scanner.nextLine();
-//            players.add(new Player(name));
-//        }
-//
-//        // Set the score of the players initially to 0
-//        for (Player player : players){
-//            player.setScore(0);
-//        }
+        if (TEXT_VERSION) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("How many players will play (Lowest 2, Highest 4): ");
+            int numberOfPlayers = scanner.nextInt();
+
+            // Error checking
+            while (numberOfPlayers < 2 || numberOfPlayers > 4) {
+                System.out.println("Please put in a valid number");
+                System.out.print("How many players will play (Lowest 2, Highest 4): ");
+                numberOfPlayers = scanner.nextInt();
+            }
+
+            // Get player names
+            String name;
+            for (int i = 0; i < numberOfPlayers; i++) {
+                System.out.print("Player " + (i + 1) + ": What is your name: ");
+                scanner = new Scanner(System.in);
+                name = scanner.nextLine();
+                players.add(new Player(name));
+            }
+
+            // Set the score of the players initially to 0
+            for (Player player : players) {
+                player.setScore(0);
+            }
+        }
     }
 
     /**

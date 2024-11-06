@@ -98,10 +98,10 @@ public class ScrabbleGameView extends JFrame {
                 if (numPlayers >= 2 && numPlayers <= 4) {
                     validInput = true; // Valid input received
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please enter a valid number between 2 and 4.");
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
                 }
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Please enter a valid number between 2 and 4.");
+                JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
             }
         }
 
