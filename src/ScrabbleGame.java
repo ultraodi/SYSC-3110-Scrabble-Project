@@ -591,7 +591,6 @@ public class ScrabbleGame {
             while ((inStreamLine = inStream.readLine()) != null) {
                 validWordsString.append(inStreamLine.toLowerCase()).append("\n"); // Adds a new line to each word as the 'inStream.readLine()'
                 // in the line above removes the trailing new line by default
-
             }
             inStream.close(); // Closes the simulated buffer
             connection.disconnect(); // Closes the url connection

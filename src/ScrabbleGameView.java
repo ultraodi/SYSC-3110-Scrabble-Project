@@ -54,6 +54,9 @@ public class ScrabbleGameView extends JFrame {
                 button.setMargin(new Insets(0, 0, 0, 0));
                 setButtonDisplay(button, square);
 
+                // Set the action command for the button, using row and column indices
+                button.setActionCommand("BoardTile " + i + " " + j);
+
                 // Add action listener using the controller
                 button.addActionListener(sgc);
 
@@ -67,6 +70,8 @@ public class ScrabbleGameView extends JFrame {
         for (int i = 0; i < tileButtons.length; i++) {
             tileButtons[i] = new JButton("Tile " + (i + 1));
             tileButtons[i].setPreferredSize(new Dimension(50, 50));
+            tileButtons[i].setActionCommand("Tile " + (i + 1)); // Set the action command
+            tileButtons[i].addActionListener(sgc);  // Add the action listener here for tile buttons
             tilesPanel.add(tileButtons[i]);
         }
 
@@ -103,8 +108,6 @@ public class ScrabbleGameView extends JFrame {
         labelsPanel.add(tilesLeftLabel);
         labelsPanel.add(currentPlayerLabel);
         labelsPanel.add(currentPlayerScoreLabel);
-
-
 
         // Combine the labelsPanel (left) and tilesPanel (right) horizontally in a new panel
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -263,6 +266,27 @@ public class ScrabbleGameView extends JFrame {
         return playerNames; // Return list of names
     }
 
+    public void editSquare(int row, int col, String tileLetter, int tileValue) {
+        // Get the square and the button at the specified position
+        Square square = squares[row][col];
+        JButton button = buttons[row][col];
+
+        // Create a new tile with the specified letter and value
+        Tile newTile = new Tile(tileLetter, tileValue);
+
+        // Place the new tile on the square
+        square.placeTile(newTile);
+
+        // Update the button text to reflect the new tile
+        button.setText(String.valueOf(newTile.getLetter()));  // Set the button text to the tile letter
+
+        // Update the button display (color and label) based on the square type
+        setButtonDisplay(button, square);
+
+        // Optionally, update any other elements if needed (like the player’s tiles)
+        updateBoard();
+    }
+
     public void updateLabels() {
         if (model != null) {
             // Update labels with model data
@@ -282,8 +306,58 @@ public class ScrabbleGameView extends JFrame {
         }
     }
 
+    public void updateBoard() {
+        // First, check if the model is not null
+        if (model == null) {
+            System.out.println("Model is not initialized.");
+            return;
+        }
 
+        // Get the current player's tiles and their positions
+        List<Tile> playerTiles = model.getPlayerTurn().getTiles();
 
+        // Loop through all the squares on the board
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                // Get the square and its corresponding button
+                Square square = squares[row][col];
+                JButton button = buttons[row][col];
+
+                // Check if the square already has a placed tile
+                Tile placedTile = square.getPlacedTile();
+
+                if (placedTile != null) {
+                    // If a tile is placed on this square, set the button text to the tile's letter
+                    button.setText(String.valueOf(placedTile.getLetter()));
+                } else {
+                    // If no tile is placed, clear the button
+                    button.setText("");
+                }
+            }
+        }
+
+        // Re-enable or reset any special board square labels if needed
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                Square square = squares[row][col];
+                JButton button = buttons[row][col];
+
+                setButtonDisplay(button, square); // Update button display based on square type
+            }
+        }
+
+        // Ensure the layout is updated
+        SwingUtilities.invokeLater(() -> {
+            // Revalidate and repaint the panel that holds the board
+            for (int row = 0; row < SIZE; row++) {
+                for (int col = 0; col < SIZE; col++) {
+                    JButton button = buttons[row][col];
+                    button.revalidate();
+                    button.repaint();
+                }
+            }
+        });
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
