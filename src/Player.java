@@ -169,4 +169,8 @@ public class Player {
         if (ScrabbleGame.DEBUG) System.out.printf("Player->equals: Player not equal: %s %s", name, player);
         return false;
     }
+
+    public Tile getTile(int tileIndex) {
+        return tiles.get(tileIndex);
+    }
 }

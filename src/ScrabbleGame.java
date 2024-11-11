@@ -122,6 +122,9 @@ public class ScrabbleGame {
             System.out.printf("\nTiles left in bag: %d\n", tileBag.getNumTilesLeft());
             System.out.println("Current player: " + playerTurn.getPlayerName());
             System.out.println("Current player score: " + playerTurn.getScore());
+            view.setModel(this);  // assuming `this` is the ScrabbleGame instance
+            view.initializeBoard();
+
             getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
@@ -849,6 +852,16 @@ public class ScrabbleGame {
 
     public void setPlayerTurn(Player playerTurn) {
         this.playerTurn = playerTurn;
+    }
+
+    public int getNumTilesLeft() { return tileBag.getNumTilesLeft(); }
+
+    public String getCurrentPlayerName() { return playerTurn.getPlayerName(); }
+
+    public int getCurrentPlayerScore() { return playerTurn.getScore(); }
+
+    public TileBag getTileBag() {
+        return tileBag;
     }
 
     public static void main(String[] args) {

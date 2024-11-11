@@ -5,70 +5,205 @@ import java.util.ArrayList;
 
 public class ScrabbleGameView extends JFrame {
 
+    private JLabel tilesLeftLabel;
+    private JLabel currentPlayerLabel;
+    private JLabel currentPlayerScoreLabel;
     private JButton[][] buttons;
-    private ScrabbleBoard board; // Assuming this class exists
-
-    private JTextArea infoArea;
-    private int playerScore;
-    private String playerTiles;
-
-    private JOptionPane numPlayersPane;
+    private Square[][] squares;
+    private JButton[] tileButtons = new JButton[7];
+    public static final int SIZE = 15;
+    ScrabbleGame model ;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1500, 1000); // Increased width for better layout
+        this.setSize(1500, 1000);
+    }
+
+    // Move the board creation to a separate method
+    public void initializeBoard() {
+        createBoard();  // Only call this method after player setup
+        this.setVisible(true);
+        updateLabels();
+    }
+
+    // Setter method for the model
+    public void setModel(ScrabbleGame model) {
+        this.model = model;
     }
 
     private void createBoard() {
-        board = new ScrabbleBoard();
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Create the main panel with a horizontal BoxLayout
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        // Scrabble Board Panel (15x15 grid)
+        JPanel boardPanel = new JPanel(new GridLayout(15, 15));
+        buttons = new JButton[15][15];
+        squares = new Square[15][15];
 
-        // Create the board panel with a grid of buttons
-        JPanel boardPanel = new JPanel(new GridLayout(board.SIZE, board.SIZE));
-        buttons = new JButton[board.SIZE][board.SIZE];
+        // Initialize the controller here
+        ScrabbleGameController sgc = new ScrabbleGameController(model, this);  // Pass model if needed
 
-        for (int i = 0; i < board.SIZE; i++) {
-            for (int j = 0; j < board.SIZE; j++) {
-                JButton button = new JButton(" ");
-                button.setActionCommand(i + " " + j);
-                // button.addActionListener(controller); // Add your action listener
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                Square.Types type = getSquareType(i, j);  // Determine the square type based on position
+                Square square = new Square(type);
+                squares[i][j] = square;  // Store square object for each position
+
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(40, 40));
+                button.setMargin(new Insets(0, 0, 0, 0));
+                setButtonDisplay(button, square);
+
+                // Add action listener using the controller
+                button.addActionListener(sgc);
+
                 buttons[i][j] = button;
-                boardPanel.add(button); // Add button to board panel
+                boardPanel.add(button);
             }
         }
 
-        // Create the info area for displaying scores and player information
-        infoArea = new JTextArea();
-        infoArea.setEditable(false);
-        infoArea.setFont(new Font("Arial", Font.PLAIN, 14));
-        updateInfoArea(); // Initialize the text area with some info
+        // Player Tiles Panel (7 buttons for player's rack)
+        JPanel tilesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Align buttons to the right
+        for (int i = 0; i < tileButtons.length; i++) {
+            tileButtons[i] = new JButton("Tile " + (i + 1));
+            tileButtons[i].setPreferredSize(new Dimension(50, 50));
+            tilesPanel.add(tileButtons[i]);
+        }
 
-        // Create a panel for the info area
-        JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.add(new JScrollPane(infoArea), BorderLayout.CENTER);
-        infoPanel.setPreferredSize(new Dimension(300, 0)); // Fixed width for info panel
+        // Gameplay Buttons (Play, Pass, Clear, Swap)
+        JPanel gameplayButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Align buttons to the right
+        JButton playButton = new JButton("Play");
+        JButton passButton = new JButton("Pass");
+        JButton clearButton = new JButton("Clear");
+        JButton swapButton = new JButton("Swap");
 
-        // Add both panels to the main panel
-        mainPanel.add(boardPanel); // Add board panel
-        mainPanel.add(infoPanel); // Add info panel
+        gameplayButtonsPanel.add(playButton);
+        gameplayButtonsPanel.add(passButton);
+        gameplayButtonsPanel.add(clearButton);
+        gameplayButtonsPanel.add(swapButton);
 
-        // Add the main panel to the frame
+        // Add new labels to the left of the tile buttons
+        JPanel labelsPanel = new JPanel();
+        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));  // Stack vertically
+        tilesLeftLabel = new JLabel("Tiles left in bag: ");
+        currentPlayerLabel = new JLabel("Current player: ");
+        currentPlayerScoreLabel = new JLabel("Current player score: ");
+
+        // Set the font size for the labels
+        Font labelFont = new Font("Arial", Font.BOLD, 18);  // Larger font size
+        tilesLeftLabel.setFont(labelFont);
+        currentPlayerLabel.setFont(labelFont);
+        currentPlayerScoreLabel.setFont(labelFont);
+
+        // Add bottom margin to create double spacing
+        tilesLeftLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
+        currentPlayerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
+        currentPlayerScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
+
+        labelsPanel.add(tilesLeftLabel);
+        labelsPanel.add(currentPlayerLabel);
+        labelsPanel.add(currentPlayerScoreLabel);
+
+
+
+        // Combine the labelsPanel (left) and tilesPanel (right) horizontally in a new panel
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(labelsPanel, BorderLayout.WEST);  // Place labelsPanel on the left
+        bottomPanel.add(tilesPanel, BorderLayout.CENTER); // Place tilesPanel in the center
+
+        // Gameplay buttons panel added to the right of the tiles panel
+        bottomPanel.add(gameplayButtonsPanel, BorderLayout.SOUTH);  // Align gameplay buttons to the right of tiles
+
+        // Add panels to main panel
+        mainPanel.add(boardPanel, BorderLayout.CENTER);  // Board in center
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);   // Bottom panel with tiles, labels, and gameplay buttons
+
         this.add(mainPanel);
-        this.setVisible(true);
     }
 
-    private void updateInfoArea() {
-        // Update the text area with the current game information
-        StringBuilder info = new StringBuilder();
-        info.append("Player Tiles: ").append(playerTiles).append("\n");
-        info.append("Player Score: ").append(playerScore).append("\n");
-        info.append("Total Points: ").append(playerScore).append("\n");
-        infoArea.setText(info.toString());
+    /**
+     * Sets the display properties for a button based on the Square object.
+     * @param button The button to set.
+     * @param square The square associated with the button.
+     */
+    private void setButtonDisplay(JButton button, Square square) {
+        if (square.getPlacedTile() != null) {
+            button.setText(String.valueOf(square.getPlacedTile().getLetter()));
+            button.setBackground(Color.WHITE);
+        } else {
+            button.setText("");
+            switch (square.getType()) {
+                case TRIPLE_WORD -> {
+                    button.setBackground(Color.RED);
+                    button.setText("TW");
+                }
+                case DOUBLE_WORD -> {
+                    button.setBackground(Color.YELLOW);
+                    button.setText("DW");
+                }
+                case TRIPLE_LETTER -> {
+                    button.setBackground(Color.BLUE);
+                    button.setText("TL");
+                }
+                case DOUBLE_LETTER -> {
+                    button.setBackground(Color.GREEN);
+                    button.setText("DL");
+                }
+                case CENTER -> {
+                    button.setBackground(Color.MAGENTA);
+                    button.setText("*");
+                }
+                case NORMAL -> button.setBackground(Color.LIGHT_GRAY);
+            }
+        }
     }
+
+    /**
+     * Determines the type of square based on its position.
+     * This method can be customized for actual Scrabble board layout.
+     */
+    private Square.Types getSquareType(int row, int col) {
+        // Triple Word Squares
+        if ((row == 0 && col == 0) || (row == 7 && col == 0) || (row == 14 && col == 0) ||
+                (row == 0 && col == 7) || (row == 0 && col == 14) || (row == 7 && col == 14) ||
+                (row == 14 && col == 7) || (row == 14 && col == 14)) {
+            return Square.Types.TRIPLE_WORD;
+        }
+
+        // Triple Letter Squares
+        if ((row == 5 && col == 1) || (row == 5 && col == 5) || (row == 5 && col == 9) || (row == 5 && col == 13) ||
+                (row == 9 && col == 1) || (row == 9 && col == 5) || (row == 9 && col == 9) || (row == 9 && col == 13) ||
+                (row == 1 && col == 5) || (row == 1 && col == 9) || (row == 13 && col == 5) || (row == 13 && col == 9)) {
+            return Square.Types.TRIPLE_LETTER;
+        }
+
+        // Double Word Squares (diagonal positions)
+        if ((row == 1 && col == 1) || (row == 2 && col == 2) || (row == 3 && col == 3) || (row == 4 && col == 4) ||
+                (row == 1 && col == 13) || (row == 2 && col == 12) || (row == 3 && col == 11) || (row == 4 && col == 10) ||
+                (row == 13 && col == 1) || (row == 12 && col == 2) || (row == 11 && col == 3) || (row == 10 && col == 4) ||
+                (row == 13 && col == 13) || (row == 12 && col == 12) || (row == 11 && col == 11) || (row == 10 && col == 10)) {
+            return Square.Types.DOUBLE_WORD;
+        }
+
+        // Double Letter Squares
+        if ((row == 3 && col == 0) || (row == 11 && col == 0) || (row == 6 && col == 2) || (row == 8 && col == 2) ||
+                (row == 0 && col == 3) || (row == 7 && col == 3) || (row == 14 && col == 3) || (row == 2 && col == 6) ||
+                (row == 6 && col == 6) || (row == 8 && col == 6) || (row == 12 && col == 6) || (row == 3 && col == 7) ||
+                (row == 11 && col == 7) || (row == 3 && col == 14) || (row == 11 && col == 14) || (row == 6 && col == 12) ||
+                (row == 8 && col == 12) || (row == 0 && col == 11) || (row == 7 && col == 11) || (row == 14 && col == 11) ||
+                (row == 2 && col == 8) || (row == 6 && col == 8) || (row == 8 && col == 8) || (row == 12 && col == 8)) {
+            return Square.Types.DOUBLE_LETTER;
+        }
+
+        // Center Square
+        if (row == 7 && col == 7) {
+            return Square.Types.CENTER;
+        }
+
+        // Normal Squares
+        return Square.Types.NORMAL;
+    }
+
 
     public List<String> setupPlayersOptionPane() {
         List<String> playerNames = new ArrayList<>();
@@ -128,6 +263,28 @@ public class ScrabbleGameView extends JFrame {
         return playerNames; // Return list of names
     }
 
+    public void updateLabels() {
+        if (model != null) {
+            // Update labels with model data
+            tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+            currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+            currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+
+            // Print each tile to the console
+            String tilesString = model.getPlayerTurn().getTilesString();
+            for (int i = 0; i < tilesString.length(); i++) {
+                if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
+                    tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                }
+            }
+        } else {
+            System.out.println("Model is not initialized.");
+        }
+    }
+
+
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ScrabbleGameView gameView = new ScrabbleGameView();
@@ -135,7 +292,11 @@ public class ScrabbleGameView extends JFrame {
             if (playerNames == null || playerNames.isEmpty()) {
                 System.exit(0); // Terminate the application if setup failed or was closed
             }
-            gameView.createBoard(); // Create the board only if setup is successful
+
+            // Create the board only after setup is successful
+            gameView.initializeBoard();
         });
     }
+
+
 }
