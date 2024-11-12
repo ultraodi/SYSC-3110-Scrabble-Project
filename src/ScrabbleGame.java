@@ -17,7 +17,7 @@ public class ScrabbleGame {
     /** Controls the debug state of the ScrabbleGame*/
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Controls all elements concerned with the text version of the ScrabbleGame*/
-    public static boolean TEXT_VERSION = false;
+    public static boolean TEXT_VERSION = true;
     /** Shows the tiles of all players on each turn*/
     boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
@@ -60,7 +60,7 @@ public class ScrabbleGame {
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
-    private ScrabbleGameView view = new ScrabbleGameView();
+    private ScrabbleGameView view;
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -87,6 +87,7 @@ public class ScrabbleGame {
         currentPlay = null;
         isCommand = false;
         command = "board";
+        if (!TEXT_VERSION) view = new ScrabbleGameView();
     }
 
 
@@ -126,9 +127,10 @@ public class ScrabbleGame {
             System.out.printf("\nTiles left in bag: %d\n", tileBag.getNumTilesLeft());
             System.out.println("Current player: " + playerTurn.getPlayerName());
             System.out.println("Current player score: " + playerTurn.getScore());
-            view.setModel(this);  // assuming `this` is the ScrabbleGame instance
-            view.initializeBoard();
-
+            if (!TEXT_VERSION) {
+                view.setModel(this);  // assuming `this` is the ScrabbleGame instance
+                view.initializeBoard();
+            }
             if (TEXT_VERSION) getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
@@ -137,7 +139,7 @@ public class ScrabbleGame {
                         playerTurn.setScore(playerTurn.getScore() + tileBag.getInputScore(playerInputWord, rowNum_program, colNum_program, playerInputPlayDirection));
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
-                        view.updateBoard();
+                        if (!TEXT_VERSION) view.updateBoard();
                         changeTurns();
                     } else System.out.println("Couldn't play word.");
                 } else {
@@ -156,21 +158,6 @@ public class ScrabbleGame {
      * Sets up the players for the game.
      */
     public void setupPlayers() {
-        // Retrieve player names from the option pane
-        List<String> playerNames = view.setupPlayersOptionPane();
-
-        // Check if the list is empty (in case of invalid input)
-        if (playerNames.isEmpty()) {
-            System.out.println("Player setup was canceled or invalid.");
-            return;
-        }
-
-        // Create Player objects and set their initial scores
-        for (String name : playerNames) {
-            Player player = new Player(name);
-            player.setScore(0); // Set initial score
-            players.add(player); // Add player to the list
-        }
 
         // Everything below this line is the text version for the setup
         if (TEXT_VERSION) {
@@ -197,6 +184,22 @@ public class ScrabbleGame {
             // Set the score of the players initially to 0
             for (Player player : players) {
                 player.setScore(0);
+            }
+        } else {
+            // Retrieve player names from the option pane
+            List<String> playerNames = view.setupPlayersOptionPane();
+
+            // Check if the list is empty (in case of invalid input)
+            if (playerNames.isEmpty()) {
+                System.out.println("Player setup was canceled or invalid.");
+                return;
+            }
+
+            // Create Player objects and set their initial scores
+            for (String name : playerNames) {
+                Player player = new Player(name);
+                player.setScore(0); // Set initial score
+                players.add(player); // Add player to the list
             }
         }
     }
