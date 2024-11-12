@@ -125,7 +125,7 @@ public class ScrabbleGame {
             view.setModel(this);  // assuming `this` is the ScrabbleGame instance
             view.initializeBoard();
 
-            getInputPlay();
+            if (TEXT_VERSION) getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
                     System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
