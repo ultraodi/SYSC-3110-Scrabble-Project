@@ -87,6 +87,15 @@ public class ScrabbleGameView extends JFrame {
         gameplayButtonsPanel.add(clearButton);
         gameplayButtonsPanel.add(swapButton);
 
+
+        clearButton.setActionCommand("Clear");  // Set the action command for the "Clear" button
+        playButton.setActionCommand("Play");  // Set the action command for the "Clear" button
+
+
+        clearButton.addActionListener(sgc);  // Add the controller as the action listener
+        playButton.addActionListener(sgc);  // Add the controller as the action listener
+
+
         // Add new labels to the left of the tile buttons
         JPanel labelsPanel = new JPanel();
         labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));  // Stack vertically
@@ -138,23 +147,23 @@ public class ScrabbleGameView extends JFrame {
             switch (square.getType()) {
                 case TRIPLE_WORD -> {
                     button.setBackground(Color.RED);
-                    button.setText("TW");
+                    button.setText("TWD");
                 }
                 case DOUBLE_WORD -> {
                     button.setBackground(Color.YELLOW);
-                    button.setText("DW");
+                    button.setText("DWD");
                 }
                 case TRIPLE_LETTER -> {
                     button.setBackground(Color.BLUE);
-                    button.setText("TL");
+                    button.setText("TLR");
                 }
                 case DOUBLE_LETTER -> {
                     button.setBackground(Color.GREEN);
-                    button.setText("DL");
+                    button.setText("DLR");
                 }
                 case CENTER -> {
                     button.setBackground(Color.MAGENTA);
-                    button.setText("*");
+                    button.setText("+");
                 }
                 case NORMAL -> button.setBackground(Color.LIGHT_GRAY);
             }
@@ -358,6 +367,30 @@ public class ScrabbleGameView extends JFrame {
             }
         });
     }
+
+    public int getTileValueAt(int rowIndex, int colIndex) {
+        // Retrieve the square at the specified row and column
+        Square square = squares[rowIndex][colIndex];
+
+        // Check if a tile is placed on the square
+        Tile placedTile = square.getPlacedTile();
+
+        // If a tile is placed, return its value, otherwise return 0 (empty square)
+        if (placedTile != null) {
+            return placedTile.getValue();  // Get the value of the tile
+        } else {
+            return 0;  // No tile placed, return 0
+        }
+    }
+
+    public String getTileLetterAt(int rowIndex, int colIndex) {
+        // Get the button at the specified row and column
+        JButton button = buttons[rowIndex][colIndex];
+
+        // Return the text of the button, which is either the tile letter or an empty string
+        return button.getText();
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

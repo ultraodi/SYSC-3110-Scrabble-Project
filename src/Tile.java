@@ -62,11 +62,6 @@ public class Tile {
         this.player = null;
     }
 
-    /**
-     * Compares tiles for equality based on the letter on them.
-     * @param obj The tile to compare with
-     * @return True if they have thes same letters. False otherwise.
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Tile) {

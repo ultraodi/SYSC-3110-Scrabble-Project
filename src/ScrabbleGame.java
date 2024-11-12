@@ -133,6 +133,7 @@ public class ScrabbleGame {
                         playerTurn.setScore(playerTurn.getScore() + tileBag.getInputScore(playerInputWord, rowNum_program, colNum_program, playerInputPlayDirection));
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
+                        view.updateBoard();
                         changeTurns();
                     } else System.out.println("Couldn't play word.");
                 } else {
