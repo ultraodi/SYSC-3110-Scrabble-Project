@@ -61,6 +61,8 @@ public class ScrabbleGameView extends JFrame {
                 button.addActionListener(sgc);
 
                 buttons[i][j] = button;
+                button.setBackground(Color.RED);
+                button.setVisible(true);
                 boardPanel.add(button);
             }
         }

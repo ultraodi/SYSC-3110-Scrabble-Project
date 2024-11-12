@@ -54,7 +54,7 @@ public class ScrabbleGame {
     int rowNum_program;
     int colNum_program;
     /** Valid commands for the game*/
-    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"debug", "noDebug", "board"}));
+    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
     private ScrabbleGameView view = new ScrabbleGameView();
 
@@ -143,7 +143,7 @@ public class ScrabbleGame {
             } else {
                 if (isCommand)
                     doCommand(command);
-                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.\n\n\tValid Command Words are 'board', 'debug', and 'noDebug'");
+                else System.out.printf("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.\n\n\tValid Command Words are:\n\t\t| %s |\n", String.join(" | ", commands));
             }
         }
     }
@@ -690,12 +690,14 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("debug")) {
+        if (command.equals("-debug")) {
             DEBUG = true;
-        } else if (command.equals("noDebug")) {
+        } else if (command.equals("-noDebug")) {
             DEBUG = false;
-        } else if (command.equals("board")) {
+        } else if (command.equals("-board")) {
             scrabbleBoard.drawBoard();
+        } else if (command.equals("-quit")) {
+            System.exit(0);
         }
         isCommand = false;
     }
