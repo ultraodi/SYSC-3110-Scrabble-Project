@@ -54,7 +54,7 @@ public class ScrabbleGame {
     int rowNum_program;
     int colNum_program;
     /** Valid commands for the game*/
-    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"debug", "noDebug", "board"}));
+    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
     private ScrabbleGameView view = new ScrabbleGameView();
 
@@ -125,40 +125,26 @@ public class ScrabbleGame {
             view.setModel(this);  // assuming `this` is the ScrabbleGame instance
             view.initializeBoard();
 
-            // Check if input has been set already, if not, prompt for input
-            if (playerInput == null || playerInput.isEmpty()) {
-                getInputPlay();  // Prompt user for input if it's not set
-            }
-
-            // Now that we have input, parse it
+            getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
-                    System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition,
-                            playerInputPlayDirection.equals(Direction.HORIZONTAL) ? "Horizontal" : "Vertical");
-
+                    System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
                     if (playWord()) {
                         playerTurn.setScore(playerTurn.getScore() + tileBag.getInputScore(playerInputWord, rowNum_program, colNum_program, playerInputPlayDirection));
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
                         view.updateBoard();
                         changeTurns();
-                    } else {
-                        System.out.println("Couldn't play word.");
-                    }
+                    } else System.out.println("Couldn't play word.");
                 } else {
                     scrabbleBoard.drawBoard();
                     System.out.println("Valid word it was not."); // Blud is NOT yoda
                 }
             } else {
-                if (isCommand) {
+                if (isCommand)
                     doCommand(command);
-                } else {
-                    System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.");
-                }
+                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.");
             }
-
-            // Clear input after each loop iteration, reset for next input
-            playerInput = "";  // Clear input for the next iteration
         }
     }
 
@@ -650,14 +636,6 @@ public class ScrabbleGame {
         String inputPrompt = "Word to play >> ";
         System.out.print(inputPrompt);
         playerInput = inputWord.nextLine();
-    }
-
-    /**
-     * Sets the player's input to the provided string.
-     * @param input the word to set as the player's input.
-     */
-    public void setInputPlay(String input) {
-        this.playerInput = input;
     }
 
     /**
