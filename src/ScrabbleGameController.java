@@ -47,6 +47,7 @@ public class ScrabbleGameController implements ActionListener {
             if (selectedTile != null) {
                 view.editSquare(rowIndex, colIndex, selectedTile.getLetter(), selectedTile.getValue());
                 System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
+                view.disableBoardTile(rowIndex,colIndex);
 
                 // Track the first placement
                 if (firstRow == -1 && firstCol == -1) {
@@ -98,6 +99,7 @@ public class ScrabbleGameController implements ActionListener {
             if (!playedTiles.isEmpty()) {
                 // Generate and print the placement string
                 String placementString = generatePlacementString();
+                model.setInputPlay(placementString);
                 System.out.println(placementString);
             } else {
                 System.out.println("No tiles were played.");
@@ -110,6 +112,8 @@ public class ScrabbleGameController implements ActionListener {
             lastRow = -1;
             lastCol = -1;
             System.out.println("Game history cleared.");
+
+            enableAllTileButtons();
         }
     }
 
@@ -121,6 +125,18 @@ public class ScrabbleGameController implements ActionListener {
         history.push(previousState);  // Save the previous state to history stack
     }
 
+    // Method to re-enable all tile buttons after the "Play" button is clicked
+    private void enableAllTileButtons() {
+        // Assuming `view.getPlayerRackButton(index)` provides access to the buttons in the player's rack
+        for (int i = 0; i < 7; i++) {
+            JButton tileButton = view.getPlayerRackButton(i);
+            if (tileButton != null) {
+                tileButton.setEnabled(true);  // Enable the button
+            }
+        }
+        System.out.println("All tile buttons have been re-enabled.");
+    }
+
     // Method to undo the last placed tile
     private void undoLastMove() {
         if (!history.isEmpty()) {
@@ -130,6 +146,7 @@ public class ScrabbleGameController implements ActionListener {
 
             // Revert the board tile to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
+            view.enableBoardTile(lastState.getRow(), lastState.getCol());
 
             // Re-enable the corresponding tile button in the player's rack
             int tileIndex = lastState.getTileIndex();
