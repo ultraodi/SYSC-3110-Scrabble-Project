@@ -639,6 +639,15 @@ public class ScrabbleGame {
     }
 
     /**
+     * Sets the player's input to the provided string.
+     * @param input the word to set as the player's input.
+     */
+    public void setInputPlay(String input) {
+        this.playerInput = input;
+    }
+
+
+    /**
      * Parses through the user's input and checks for errors. It updates the playerInputWord, playerInputBoardPosition, and playerInputPlayDirection fields.
      * @return Returns true if both word and board position parameters are valid. Returns false if board position is out of range.
      */
