@@ -143,7 +143,7 @@ public class ScrabbleGame {
             } else {
                 if (isCommand)
                     doCommand(command);
-                else System.out.printf("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.\n\n\tValid Command Words are:\n\t\t| %s |\n", String.join(" | ", commands));
+                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.");
             }
         }
     }
@@ -690,14 +690,12 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("-debug")) {
+        if (command.equals("debug")) {
             DEBUG = true;
-        } else if (command.equals("-noDebug")) {
+        } else if (command.equals("noDebug")) {
             DEBUG = false;
-        } else if (command.equals("-board")) {
+        } else if (command.equals("board")) {
             scrabbleBoard.drawBoard();
-        } else if (command.equals("-quit")) {
-            System.exit(0);
         }
         isCommand = false;
     }
@@ -752,106 +750,54 @@ public class ScrabbleGame {
         if (DEBUG) System.out.println("Current plays in history END");
     }
 
-    /**
-     * Gets the players of the game in an ArrayList.
-     * @return The players of the game.
-     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    /**
-     * Gets the player who has the current turn.
-     * @return The Player with the current turn.
-     */
     public Player getPlayerTurn() {
         return playerTurn;
     }
 
-    /**
-     * Gets the ScrabbleBoard being used in the game
-     * @return The ScrabbleBoard being used in the game.
-     */
     public ScrabbleBoard getScrabbleBoard() {
         return scrabbleBoard;
     }
 
-    /**
-     * Gets the plays that have been made in the game.
-     * @return The plays that have been made in the game.
-     */
     public ArrayList<Play> getPlays() {
         return plays;
     }
 
-    /**
-     * Gets the input string the current player made.
-     * @return The input string the current player made
-     */
     public String getPlayerInput() {
         return playerInput;
     }
 
-    /**
-     * Gets the word played by the player with the current turn.
-     * @return The word played by the player with the current turn.
-     */
     public String getPlayerInputWord() {
         return playerInputWord;
     }
 
-    /**
-     * Gets the board position played by the player with the current turn.
-     * @return The board position played by the player with the current turn.
-     */
     public String getPlayerInputBoardPosition() {
         return playerInputBoardPosition;
     }
 
-    /**
-     * Gets the Direction played by the player with the current turn. It is either Horizontal or Vertical on the board.
-     * @return The Direction the word is played.
-     */
     public Direction getPlayerInputPlayDirection() {
         return playerInputPlayDirection;
     }
 
-    /**
-     * Gets the order in which the players are cycled through turns. E.g. Player 1 goes before Player 3 who goes before Player 2 and the cycle repeats.
-     * @return An ArrayList with the players in the determined play order.
-     */
     public ArrayList<Player> getPlayerOrder() {
         return playerOrder;
     }
 
-    /**
-     * The current Play made by the player with the current turn. The Play refers to the tiles placed on the board.
-     * @return The current Play made.
-     */
     public Play getCurrentPlay() {
         return currentPlay;
     }
 
-    /**
-     * Gets the command string made by the current player (made in the current turn). Commands are used to control the state of the game such as enabling debugging or quitting directly.
-     * @return The command string made by the current player.
-     */
     public String getCommand() {
         return command;
     }
 
-    /**
-     * Returns whether the current play was a command.
-     * @return True if the current play was a command. False otherwise.
-     */
     public boolean isCommand() {
         return isCommand;
     }
 
-    /**
-     * Changes the state of the game to debug allowing error messages not relevant to the player.
-     * @param DEBUG True to enter debug state. False to exit debug state.
-     */
     public static void setDEBUG(boolean DEBUG) {
         ScrabbleGame.DEBUG = DEBUG;
     }

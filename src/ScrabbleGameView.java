@@ -405,6 +405,28 @@ public class ScrabbleGameView extends JFrame {
 
     public JButton getPlayerRackButton(int index) { return tileButtons[index];}
 
+    // Function to disable a board tile button
+    public void disableBoardTile(int rowIndex, int colIndex) {
+        // Check if the rowIndex and colIndex are within bounds
+        if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
+            buttons[rowIndex][colIndex].setEnabled(false);  // Disable the button at the specified row and column
+            System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
+        } else {
+            System.out.println("Invalid tile coordinates.");
+        }
+    }
+
+    // Function to disable a board tile button
+    public void enableBoardTile(int rowIndex, int colIndex) {
+        // Check if the rowIndex and colIndex are within bounds
+        if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
+            buttons[rowIndex][colIndex].setEnabled(true);  // Disable the button at the specified row and column
+            System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
+        } else {
+            System.out.println("Invalid tile coordinates.");
+        }
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ScrabbleGameView gameView = new ScrabbleGameView();
