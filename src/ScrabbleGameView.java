@@ -391,6 +391,7 @@ public class ScrabbleGameView extends JFrame {
         return button.getText();
     }
 
+    public JButton getPlayerRackButton(int index) { return tileButtons[index];}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
