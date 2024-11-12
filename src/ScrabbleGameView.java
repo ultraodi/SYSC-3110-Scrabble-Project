@@ -254,22 +254,32 @@ public class ScrabbleGameView extends JFrame {
 
         // Loop to get each player's name
         for (int i = 0; i < numPlayers; i++) {
-            JOptionPane playerPane = new JOptionPane(
-                    "Player " + (i + 1) + ": What is your name?",
-                    JOptionPane.INFORMATION_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION
-            );
-            playerPane.setWantsInput(true);
+            String playerName = null;
+            boolean validNameInput = false;
 
-            JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
-            playerDialog.setVisible(true);
+            while (!validNameInput) {
+                JOptionPane playerPane = new JOptionPane(
+                        "Player " + (i + 1) + ": What is your name?",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+                playerPane.setWantsInput(true);
 
-            // Retrieve and store player name
-            Object playerInput = playerPane.getInputValue();
-            if (playerInput == JOptionPane.UNINITIALIZED_VALUE) {
-                return null; // Dialog was closed
+                JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
+                playerDialog.setVisible(true);
+
+                Object playerInput = playerPane.getInputValue();
+
+                // Check if input is valid
+                if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                    playerName = playerInput.toString().trim();
+                    validNameInput = true;  // Exit the loop if input is valid
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid name.");
+                }
             }
-            playerNames.add(playerInput != null ? playerInput.toString() : ""); // Add input or empty string
+
+            playerNames.add(playerName); // Add validated name to player names list
         }
 
         return playerNames; // Return list of names
