@@ -14,8 +14,11 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
+    /** Controls the debug state of the ScrabbleGame*/
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
+    /** Controls all elements concerned with the text version of the ScrabbleGame*/
     public static boolean TEXT_VERSION = false;
+    /** Shows the tiles of all players on each turn*/
     boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
     private ArrayList<Player> players;
