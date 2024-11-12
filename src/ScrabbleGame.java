@@ -142,7 +142,7 @@ public class ScrabbleGame {
             } else {
                 if (isCommand)
                     doCommand(command);
-                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.");
+                else System.out.println("Not a valid entry. The format of a play is\n\t[word] [coordinate] [direction]\n\te.g. school 88 v.\n\n\tValid Command Words are 'board', 'debug', and 'noDebug'");
             }
         }
     }

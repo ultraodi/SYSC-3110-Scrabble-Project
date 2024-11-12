@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public class ScrabbleGameView extends JFrame {
 
+    public static final int SIZE = 15;
     private JLabel tilesLeftLabel;
     private JLabel currentPlayerLabel;
     private JLabel currentPlayerScoreLabel;
     private JButton[][] buttons;
     private Square[][] squares;
     private JButton[] tileButtons = new JButton[7];
-    public static final int SIZE = 15;
-    ScrabbleGame model ;
+    ScrabbleGame model;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -36,15 +36,15 @@ public class ScrabbleGameView extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Scrabble Board Panel (15x15 grid)
-        JPanel boardPanel = new JPanel(new GridLayout(15, 15));
-        buttons = new JButton[15][15];
-        squares = new Square[15][15];
+        JPanel boardPanel = new JPanel(new GridLayout(SIZE, SIZE));
+        buttons = new JButton[SIZE][SIZE];
+        squares = new Square[SIZE][SIZE];
 
         // Initialize the controller here
         ScrabbleGameController sgc = new ScrabbleGameController(model, this);  // Pass model if needed
 
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 Square.Types type = getSquareType(i, j);  // Determine the square type based on position
                 Square square = new Square(type);
                 squares[i][j] = square;  // Store square object for each position
@@ -100,7 +100,7 @@ public class ScrabbleGameView extends JFrame {
         currentPlayerLabel.setFont(labelFont);
         currentPlayerScoreLabel.setFont(labelFont);
 
-        // Add bottom margin to create double spacing
+        // Add bottom margin to create double-spacing
         tilesLeftLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
         currentPlayerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
         currentPlayerScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
