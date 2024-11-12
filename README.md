@@ -36,10 +36,15 @@
       - \[word (e.g. apple)] \[play coordinates (e.g. ff)] \[play direction (e.g. \[h | v])]  *any word starting with 'h' or 'v' would work as well
       - Example
         - apple 88 h
-    - The possible commands are -debug, -board, -noDebug, -quit
-      - The commands are case-sensitive.
-      - Example
-        - -debug (This will enable the debug state of the game and error message will be printed out)
+    - The possible commands are
+      - '-debug': Enable debug messages
+      - '-board': Print out board
+      - '-noDebug': Disables debug messages
+      - '-quit': Ends the game
+      - '-skip': Skips the current player's turn
+        - The commands are case-sensitive.
+        - Example
+          - -debug (This will enable the debug state of the game and error message will be printed out)
   - The game decides who goes first based on the rules of scrabble (Closest to A goes first)
   - The game runs until a winner is determined under the rules of scrabble.
 - GUI version of the game

@@ -58,7 +58,7 @@ public class ScrabbleGame {
     int rowNum_program;
     int colNum_program;
     /** Valid commands for the game*/
-    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
+    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit", "-skip"}));
 
     private ScrabbleGameView view;
 
@@ -714,6 +714,8 @@ public class ScrabbleGame {
             scrabbleBoard.drawBoard();
         } else if (command.equals("-quit")) {
             System.exit(0);
+        } else if (command.equals("-skip")) {
+            changeTurns();
         }
         isCommand = false;
     }
