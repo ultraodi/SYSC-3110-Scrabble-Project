@@ -13,6 +13,7 @@ public class ScrabbleGameView extends JFrame {
     private JButton[] tileButtons = new JButton[7];
     public static final int SIZE = 15;
     ScrabbleGame model ;
+    ScrabbleGameController sgc;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -30,6 +31,8 @@ public class ScrabbleGameView extends JFrame {
     // Setter method for the model
     public void setModel(ScrabbleGame model) {
         this.model = model;
+        sgc = new ScrabbleGameController(model, this);  // Pass model if needed
+
     }
 
     private void createBoard() {
@@ -39,9 +42,6 @@ public class ScrabbleGameView extends JFrame {
         JPanel boardPanel = new JPanel(new GridLayout(15, 15));
         buttons = new JButton[15][15];
         squares = new Square[15][15];
-
-        // Initialize the controller here
-        ScrabbleGameController sgc = new ScrabbleGameController(model, this);  // Pass model if needed
 
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
@@ -407,10 +407,10 @@ public class ScrabbleGameView extends JFrame {
     public void disableBoardTile(int rowIndex, int colIndex) {
         // Check if the rowIndex and colIndex are within bounds
         if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
-            buttons[rowIndex][colIndex].setEnabled(false);  // Disable the button at the specified row and column
-            System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
+            buttons[rowIndex][colIndex].removeActionListener(sgc);  // Disable the button at the specified row and column
+            //System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
         } else {
-            System.out.println("Invalid tile coordinates.");
+            //System.out.println("Invalid tile coordinates.");
         }
     }
 
@@ -418,10 +418,10 @@ public class ScrabbleGameView extends JFrame {
     public void enableBoardTile(int rowIndex, int colIndex) {
         // Check if the rowIndex and colIndex are within bounds
         if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
-            buttons[rowIndex][colIndex].setEnabled(true);  // Disable the button at the specified row and column
-            System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
+            buttons[rowIndex][colIndex].addActionListener(sgc);  // Disable the button at the specified row and column
+            //System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
         } else {
-            System.out.println("Invalid tile coordinates.");
+            //System.out.println("Invalid tile coordinates.");
         }
     }
 

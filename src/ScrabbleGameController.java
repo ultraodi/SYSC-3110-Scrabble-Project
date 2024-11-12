@@ -27,14 +27,14 @@ public class ScrabbleGameController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
         String command = source.getActionCommand();
-        System.out.println("Button clicked with action command: " + command); // Debugging
+        // System.out.println("Button clicked with action command: " + command); // Debugging
 
         // Handle tile button clicks (player's rack)
         if (command.startsWith("Tile")) {
             // Extract tile index (1-based to 0-based)
             selectedTileIndex = Integer.parseInt(command.split(" ")[1]) - 1;
             selectedTile = model.getPlayerTurn().getTiles().get(selectedTileIndex);  // Get selected tile from player's rack
-            System.out.println("Selected Tile: " + selectedTile.getLetter() + " with value: " + selectedTile.getValue());
+            // System.out.println("Selected Tile: " + selectedTile.getLetter() + " with value: " + selectedTile.getValue());
         }
 
         // Handle board tile clicks
@@ -46,37 +46,36 @@ public class ScrabbleGameController implements ActionListener {
 
             if (selectedTile != null) {
                 view.editSquare(rowIndex, colIndex, selectedTile.getLetter(), selectedTile.getValue());
-                System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
-                view.disableBoardTile(rowIndex,colIndex);
+                // System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
 
                 // Track the first placement
                 if (firstRow == -1 && firstCol == -1) {
                     firstRow = rowIndex;
                     firstCol = colIndex;
-                    System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
+                    // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
                 }
 
                 // Update the last placement
                 lastRow = rowIndex;
                 lastCol = colIndex;
-                System.out.println("Last letter placed at: (" + lastRow + ", " + lastCol + ")");
+                // System.out.println("Last letter placed at: (" + lastRow + ", " + lastCol + ")");
 
                 // Add the selected tile to the played tiles list
                 playedTiles.add(selectedTile);
-                System.out.println("Played tiles: " + formatPlayedTiles());
-                System.out.println("Word was placed " + determineWordDirection());
+                // System.out.println("Played tiles: " + formatPlayedTiles());
+                // System.out.println("Word was placed " + determineWordDirection());
 
 
                 if (selectedTileIndex != -1) {
                     // Disable the tile button at the correct index
                     JButton tileButton = view.getPlayerRackButton(selectedTileIndex);
                     tileButton.setEnabled(false);
-                    System.out.println("Disabled the tile button at index: " + selectedTileIndex);
+                    // System.out.println("Disabled the tile button at index: " + selectedTileIndex);
                     selectedTileIndex = -1;  // Reset the selectedTileIndex after use
                 }
 
                 selectedTile = null;  // Clear the selected tile after placing it on the board
-
+                view.disableBoardTile(rowIndex,colIndex);
             }
         }
 
@@ -90,8 +89,8 @@ public class ScrabbleGameController implements ActionListener {
             firstCol = -1;
             lastRow = -1;
             lastCol = -1;
-            System.out.println("Played tiles after clear: " + formatPlayedTiles());
-            System.out.println("Cleared all moves.");
+            // System.out.println("Played tiles after clear: " + formatPlayedTiles());
+            // System.out.println("Cleared all moves.");
         }
 
         // Handle "Play" button action (clear the history)
@@ -100,9 +99,12 @@ public class ScrabbleGameController implements ActionListener {
                 // Generate and print the placement string
                 String placementString = generatePlacementString();
                 model.setInputPlay(placementString);
-                System.out.println(placementString);
+                model.parseInputPlay();
+                System.out.println(model.parseInputPlay());
+                System.out.println(model.isValidWord(model.getPlayerInputWord()));
+                // System.out.println(placementString);
             } else {
-                System.out.println("No tiles were played.");
+                // System.out.println("No tiles were played.");
             }
 
             clearHistory();  // Clear the history stack
@@ -111,7 +113,7 @@ public class ScrabbleGameController implements ActionListener {
             firstCol = -1;
             lastRow = -1;
             lastCol = -1;
-            System.out.println("Game history cleared.");
+            // System.out.println("Game history cleared.");
 
             enableAllTileButtons();
         }
@@ -134,15 +136,15 @@ public class ScrabbleGameController implements ActionListener {
                 tileButton.setEnabled(true);  // Enable the button
             }
         }
-        System.out.println("All tile buttons have been re-enabled.");
+        // System.out.println("All tile buttons have been re-enabled.");
     }
 
     // Method to undo the last placed tile
     private void undoLastMove() {
         if (!history.isEmpty()) {
             TileState lastState = history.pop();  // Get the last state
-            System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
-            System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
+            // System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
+            // System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
 
             // Revert the board tile to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
@@ -153,7 +155,7 @@ public class ScrabbleGameController implements ActionListener {
             if (tileIndex != -1) {
                 JButton tileButton = view.getPlayerRackButton(tileIndex);
                 tileButton.setEnabled(true);
-                System.out.println("Re-enabled the tile button at index: " + tileIndex);
+                // System.out.println("Re-enabled the tile button at index: " + tileIndex);
             }
         }
     }
