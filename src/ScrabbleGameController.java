@@ -60,6 +60,7 @@ public class ScrabbleGameController implements ActionListener {
         }
     }
 
+
     // Method to save the previous state of a tile before it is updated
     private void savePreviousState(int rowIndex, int colIndex) {
         String letter = view.getTileLetterAt(rowIndex, colIndex);
@@ -76,7 +77,6 @@ public class ScrabbleGameController implements ActionListener {
             System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
             System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
 
-            // Revert the tile on the board to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
         }
     }

@@ -147,23 +147,23 @@ public class ScrabbleGameView extends JFrame {
             switch (square.getType()) {
                 case TRIPLE_WORD -> {
                     button.setBackground(Color.RED);
-                    button.setText("TW");
+                    button.setText("TWD");
                 }
                 case DOUBLE_WORD -> {
                     button.setBackground(Color.YELLOW);
-                    button.setText("DW");
+                    button.setText("DWD");
                 }
                 case TRIPLE_LETTER -> {
                     button.setBackground(Color.BLUE);
-                    button.setText("TL");
+                    button.setText("TLR");
                 }
                 case DOUBLE_LETTER -> {
                     button.setBackground(Color.GREEN);
-                    button.setText("DL");
+                    button.setText("DLR");
                 }
                 case CENTER -> {
                     button.setBackground(Color.MAGENTA);
-                    button.setText("*");
+                    button.setText("+");
                 }
                 case NORMAL -> button.setBackground(Color.LIGHT_GRAY);
             }
