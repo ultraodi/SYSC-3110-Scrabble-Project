@@ -646,7 +646,6 @@ public class ScrabbleGame {
         this.playerInput = input;
     }
 
-
     /**
      * Parses through the user's input and checks for errors. It updates the playerInputWord, playerInputBoardPosition, and playerInputPlayDirection fields.
      * @return Returns true if both word and board position parameters are valid. Returns false if board position is out of range.
@@ -871,6 +870,24 @@ public class ScrabbleGame {
 
     public TileBag getTileBag() {
         return tileBag;
+    }
+
+    /**
+     * Gets the current row number selected in the program.
+     *
+     * @return the row number
+     */
+    public int getRowNumProgram() {
+        return rowNum_program;
+    }
+
+    /**
+     * Gets the current column number selected in the program.
+     *
+     * @return the column number
+     */
+    public int getColNumProgram() {
+        return colNum_program;
     }
 
     public static void main(String[] args) {

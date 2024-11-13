@@ -89,7 +89,7 @@ public class ScrabbleGameController implements ActionListener {
             }
         }
 
-    else if (command.startsWith("TwoClickBoardTile")) {
+        else if (command.startsWith("TwoClickBoardTile")) {
             int rowIndex = Integer.parseInt(command.split(" ")[1]);
             int colIndex = Integer.parseInt(command.split(" ")[2]);
 
