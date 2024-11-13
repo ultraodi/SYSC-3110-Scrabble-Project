@@ -1,7 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
+
+/**
+ * The ScrabbleGame class simulates as at this version a turn by turn text version of the
+ * game Scrabble.
+ * @author Abdul Babatunde
+ * @author Clinton Odinamadu
+ * @version November 12, 2024
+ */
 
 public class ScrabbleGameView extends JFrame {
 
@@ -14,11 +25,14 @@ public class ScrabbleGameView extends JFrame {
     public static final int SIZE = 15;
     ScrabbleGame model ;
     ScrabbleGameController sgc;
+    private TileBag tileBag;
+    private JButton[] tileValueButtons = new JButton[7];
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1500, 1000);
+        tileBag = new TileBag();
     }
 
     // Move the board creation to a separate method
@@ -80,21 +94,32 @@ public class ScrabbleGameView extends JFrame {
         JButton playButton = new JButton("Play");
         JButton passButton = new JButton("Pass");
         JButton clearButton = new JButton("Clear");
-        JButton swapButton = new JButton("Swap");
+        //JButton swapButton = new JButton("Swap");
 
         gameplayButtonsPanel.add(playButton);
         gameplayButtonsPanel.add(passButton);
         gameplayButtonsPanel.add(clearButton);
-        gameplayButtonsPanel.add(swapButton);
+        //gameplayButtonsPanel.add(swapButton);
 
 
         clearButton.setActionCommand("Clear");  // Set the action command for the "Clear" button
-        playButton.setActionCommand("Play");  // Set the action command for the "Clear" button
+        playButton.setActionCommand("Play");  // Set the action command for the "Play" button
+        passButton.setActionCommand("Pass");  // Set the action command for the "Pass" button
 
 
         clearButton.addActionListener(sgc);  // Add the controller as the action listener
         playButton.addActionListener(sgc);  // Add the controller as the action listener
+        passButton.addActionListener(sgc);  // Add the controller as the action listener
 
+
+        // Player tile values
+        JPanel tilesValuePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Align buttons to the right
+        for (int i = 0; i < tileButtons.length; i++) {
+            tileValueButtons[i] = new JButton("0");
+            tileValueButtons[i].setPreferredSize(new Dimension(50, 50));
+            tileValueButtons[i].setEnabled(false);
+            tilesValuePanel.add(tileValueButtons[i]);
+        }
 
         // Add new labels to the left of the tile buttons
         JPanel labelsPanel = new JPanel();
@@ -118,10 +143,14 @@ public class ScrabbleGameView extends JFrame {
         labelsPanel.add(currentPlayerLabel);
         labelsPanel.add(currentPlayerScoreLabel);
 
+        JPanel sidePanel = new JPanel(new BorderLayout());
+        sidePanel.add(tilesValuePanel, BorderLayout.NORTH);
+        sidePanel.add(tilesPanel, BorderLayout.SOUTH);
+
         // Combine the labelsPanel (left) and tilesPanel (right) horizontally in a new panel
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(labelsPanel, BorderLayout.WEST);  // Place labelsPanel on the left
-        bottomPanel.add(tilesPanel, BorderLayout.CENTER); // Place tilesPanel in the center
+        bottomPanel.add(labelsPanel, BorderLayout.WEST);// Place labelsPanel on the left
+        bottomPanel.add(sidePanel, BorderLayout.CENTER);
 
         // Gameplay buttons panel added to the right of the tiles panel
         bottomPanel.add(gameplayButtonsPanel, BorderLayout.SOUTH);  // Align gameplay buttons to the right of tiles
@@ -318,10 +347,19 @@ public class ScrabbleGameView extends JFrame {
             for (int i = 0; i < tilesString.length(); i++) {
                 if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
                     tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                    tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
                 }
             }
         } else {
             System.out.println("Model is not initialized.");
+        }
+    }
+
+    public void enableAllTileButtons() {
+        for (JButton button : tileButtons) {
+            if (button != null) {
+                button.setEnabled(true); // Re-enable each button in the rack
+            }
         }
     }
 
@@ -403,25 +441,42 @@ public class ScrabbleGameView extends JFrame {
 
     public JButton getPlayerRackButton(int index) { return tileButtons[index];}
 
-    // Function to disable a board tile button
+    // Function to make a board tile immutable
     public void disableBoardTile(int rowIndex, int colIndex) {
         // Check if the rowIndex and colIndex are within bounds
         if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
-            buttons[rowIndex][colIndex].removeActionListener(sgc);  // Disable the button at the specified row and column
-            //System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
-        } else {
-            //System.out.println("Invalid tile coordinates.");
+            JButton button = buttons[rowIndex][colIndex];
+
+            // Restore the button's properties
+            button.setFocusable(true); // Allow the button to gain focus again
+            button.setBackground(null); // Reset the background color to the default
+
+            String command = "TwoClickBoardTile " + rowIndex + " " + colIndex;
+            button.setActionCommand(command);
+
+            button.addActionListener(sgc);
         }
     }
 
-    // Function to disable a board tile button
+    // Function to make a board tile mutable again
     public void enableBoardTile(int rowIndex, int colIndex) {
         // Check if the rowIndex and colIndex are within bounds
         if (rowIndex >= 0 && rowIndex < buttons.length && colIndex >= 0 && colIndex < buttons[0].length) {
-            buttons[rowIndex][colIndex].addActionListener(sgc);  // Disable the button at the specified row and column
-            //System.out.println("Disabled the board tile at (" + rowIndex + ", " + colIndex + ")");
+            JButton button = buttons[rowIndex][colIndex];
+
+            // Restore the button's properties
+            button.setFocusable(true); // Allow the button to gain focus again
+            button.setBackground(null); // Reset the background color to the default
+
+            String command = "BoardTile " + rowIndex + " " + colIndex;
+            button.setActionCommand(command);
+
+            // Add back the original action listener (assuming `sgc` is your controller)
+            button.addActionListener(sgc);
+
         } else {
-            //System.out.println("Invalid tile coordinates.");
+            // Log or handle invalid tile coordinates
+            // System.out.println("Invalid tile coordinates.");
         }
     }
 

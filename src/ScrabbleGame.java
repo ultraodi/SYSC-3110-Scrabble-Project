@@ -14,12 +14,8 @@ import static java.lang.String.*;
  * @version October 22, 2024
  */
 public class ScrabbleGame {
-    /** Controls the debug state of the ScrabbleGame*/
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
-    /** Controls all elements concerned with the text version of the ScrabbleGame*/
     public static boolean TEXT_VERSION = false;
-    /** Shows the tiles of all players on each turn*/
-    boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -58,9 +54,9 @@ public class ScrabbleGame {
     int rowNum_program;
     int colNum_program;
     /** Valid commands for the game*/
-    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit", "-skip"}));
+    private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
-    private ScrabbleGameView view;
+    private ScrabbleGameView view = new ScrabbleGameView();
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -87,7 +83,6 @@ public class ScrabbleGame {
         currentPlay = null;
         isCommand = false;
         command = "board";
-        if (!TEXT_VERSION) view = new ScrabbleGameView();
     }
 
 
@@ -116,7 +111,7 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
-
+        boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
         setupPlayers();
         playerTurn = players.getFirst();
         scrabbleBoard.drawBoard();
@@ -127,11 +122,10 @@ public class ScrabbleGame {
             System.out.printf("\nTiles left in bag: %d\n", tileBag.getNumTilesLeft());
             System.out.println("Current player: " + playerTurn.getPlayerName());
             System.out.println("Current player score: " + playerTurn.getScore());
-            if (!TEXT_VERSION) {
-                view.setModel(this);  // assuming `this` is the ScrabbleGame instance
-                view.initializeBoard();
-            }
-            if (TEXT_VERSION) getInputPlay();
+            view.setModel(this);  // assuming `this` is the ScrabbleGame instance
+            view.initializeBoard();
+
+            getInputPlay();
             if (parseInputPlay()) {
                 if (isValidWord(playerInputWord)) {
                     System.out.printf("Word: %s | Position: %s | Direction: %s%n", playerInputWord, playerInputBoardPosition, playerInputPlayDirection.equals(Direction.HORIZONTAL)? "Horizontal":"Vertical");
@@ -139,7 +133,7 @@ public class ScrabbleGame {
                         playerTurn.setScore(playerTurn.getScore() + tileBag.getInputScore(playerInputWord, rowNum_program, colNum_program, playerInputPlayDirection));
                         playerTurn.getMoreTiles(tileBag);
                         scrabbleBoard.drawBoard();
-                        if (!TEXT_VERSION) view.updateBoard();
+                        view.updateBoard();
                         changeTurns();
                     } else System.out.println("Couldn't play word.");
                 } else {
@@ -158,6 +152,21 @@ public class ScrabbleGame {
      * Sets up the players for the game.
      */
     public void setupPlayers() {
+        // Retrieve player names from the option pane
+        List<String> playerNames = view.setupPlayersOptionPane();
+
+        // Check if the list is empty (in case of invalid input)
+        if (playerNames.isEmpty()) {
+            System.out.println("Player setup was canceled or invalid.");
+            return;
+        }
+
+        // Create Player objects and set their initial scores
+        for (String name : playerNames) {
+            Player player = new Player(name);
+            player.setScore(0); // Set initial score
+            players.add(player); // Add player to the list
+        }
 
         // Everything below this line is the text version for the setup
         if (TEXT_VERSION) {
@@ -184,22 +193,6 @@ public class ScrabbleGame {
             // Set the score of the players initially to 0
             for (Player player : players) {
                 player.setScore(0);
-            }
-        } else {
-            // Retrieve player names from the option pane
-            List<String> playerNames = view.setupPlayersOptionPane();
-
-            // Check if the list is empty (in case of invalid input)
-            if (playerNames.isEmpty()) {
-                System.out.println("Player setup was canceled or invalid.");
-                return;
-            }
-
-            // Create Player objects and set their initial scores
-            for (String name : playerNames) {
-                Player player = new Player(name);
-                player.setScore(0); // Set initial score
-                players.add(player); // Add player to the list
             }
         }
     }
@@ -706,16 +699,12 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("-debug")) {
+        if (command.equals("debug")) {
             DEBUG = true;
-        } else if (command.equals("-noDebug")) {
+        } else if (command.equals("noDebug")) {
             DEBUG = false;
-        } else if (command.equals("-board")) {
+        } else if (command.equals("board")) {
             scrabbleBoard.drawBoard();
-        } else if (command.equals("-quit")) {
-            System.exit(0);
-        } else if (command.equals("-skip")) {
-            changeTurns();
         }
         isCommand = false;
     }
@@ -770,236 +759,116 @@ public class ScrabbleGame {
         if (DEBUG) System.out.println("Current plays in history END");
     }
 
-    /**
-     * Gets the players of the game in an ArrayList.
-     * @return The players of the game.
-     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    /**
-     * Gets the player who has the current turn.
-     * @return The Player with the current turn.
-     */
     public Player getPlayerTurn() {
         return playerTurn;
     }
 
-    /**
-     * Gets the ScrabbleBoard being used in the game
-     * @return The ScrabbleBoard being used in the game.
-     */
     public ScrabbleBoard getScrabbleBoard() {
         return scrabbleBoard;
     }
 
-    /**
-     * Gets the plays that have been made in the game.
-     * @return The plays that have been made in the game.
-     */
     public ArrayList<Play> getPlays() {
         return plays;
     }
 
-    /**
-     * Gets the input string the current player made.
-     * @return The input string the current player made
-     */
     public String getPlayerInput() {
         return playerInput;
     }
 
-    /**
-     * Gets the word played by the player with the current turn.
-     * @return The word played by the player with the current turn.
-     */
     public String getPlayerInputWord() {
         return playerInputWord;
     }
 
-    /**
-     * Gets the board position played by the player with the current turn.
-     * @return The board position played by the player with the current turn.
-     */
     public String getPlayerInputBoardPosition() {
         return playerInputBoardPosition;
     }
 
-    /**
-     * Gets the Direction played by the player with the current turn. It is either Horizontal or Vertical on the board.
-     * @return The Direction the word is played.
-     */
     public Direction getPlayerInputPlayDirection() {
         return playerInputPlayDirection;
     }
 
-    /**
-     * Gets the order in which the players are cycled through turns. E.g. Player 1 goes before Player 3 who goes before Player 2 and the cycle repeats.
-     * @return An ArrayList with the players in the determined play order.
-     */
     public ArrayList<Player> getPlayerOrder() {
         return playerOrder;
     }
 
-    /**
-     * The current Play made by the player with the current turn. The Play refers to the tiles placed on the board.
-     * @return The current Play made.
-     */
     public Play getCurrentPlay() {
         return currentPlay;
     }
 
-    /**
-     * Gets the command string made by the current player (made in the current turn). Commands are used to control the state of the game such as enabling debugging or quitting directly.
-     * @return The command string made by the current player.
-     */
     public String getCommand() {
         return command;
     }
 
-    /**
-     * Returns whether the current play was a command.
-     * @return True if the current play was a command. False otherwise.
-     */
     public boolean isCommand() {
         return isCommand;
     }
 
-    /**
-     * Changes the state of the game to debug allowing error messages not relevant to the player.
-     * @param DEBUG True to enter debug state. False to exit debug state.
-     */
     public static void setDEBUG(boolean DEBUG) {
         ScrabbleGame.DEBUG = DEBUG;
     }
 
-    /**
-     * Assigns the playerInput of the current player. For interaction with the GUI.
-     * @param playerInput The input to assign to the playerInput.
-     */
     public void setPlayerInput(String playerInput) {
         this.playerInput = playerInput;
     }
 
-    /**
-     * Assigns the players of the Game. For interaction with the GUI.
-     * @param players The players to assign to the ScrabbleGame.
-     */
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
-    /**
-     * Assigns a TileBag for the ScrabbleGame
-     * @param tileBag The TileBag to assign for the game.
-     */
     public void setTileBag(TileBag tileBag) {
         this.tileBag = tileBag;
     }
 
-    /**
-     * Sets the plays for the game. For testing purposes.
-     * @param plays The plays to set.
-     */
     public void setPlays(ArrayList<Play> plays) {
         this.plays = plays;
     }
 
-    /**
-     * Sets the playerInputWord for the current play.
-     * @param playerInputWord The play to assign for the ScrabbleGame.
-     */
     public void setPlayerInputWord(String playerInputWord) {
         this.playerInputWord = playerInputWord;
     }
 
-    /**
-     * Sets the currentPlayerIndex used to loop through the order of play for the players
-     * @param currentPlayerIndex The index to set for the currentPlayerIndex.
-     */
     public void setCurrentPlayerIndex(int currentPlayerIndex) {
         this.currentPlayerIndex = currentPlayerIndex;
     }
 
-    /**
-     * Sets the playerInputBoardPosition for the current play.
-     * @param playerInputBoardPosition The board position to set.
-     */
     public void setPlayerInputBoardPosition(String playerInputBoardPosition) {
         this.playerInputBoardPosition = playerInputBoardPosition;
     }
 
-    /**
-     * Sets the playerInputPlayDirection for the current play.
-     * @param playerInputPlayDirection The Direction to set
-     */
     public void setPlayerInputPlayDirection(Direction playerInputPlayDirection) {
         this.playerInputPlayDirection = playerInputPlayDirection;
     }
 
-    /**
-     * Sets the playerOrder for the ScrabbleGame. This determines the order of play for the players in the game
-     * @param playerOrder The order of players in the ScrabbleGame.
-     */
     public void setPlayerOrder(ArrayList<Player> playerOrder) {
         this.playerOrder = playerOrder;
     }
 
-    /**
-     * Sets the currentPlay for the ScrabbleGame. Mostly for testing purposes.
-     * @param currentPlay The currentPlay of the ScrabbleGame
-     */
     public void setCurrentPlay(Play currentPlay) {
         this.currentPlay = currentPlay;
     }
 
-    /**
-     * Sets whether there is a command in the current play. Mostly for testing purposes
-     * @param command True to indicate that there is a command. False to indicate otherwise.
-     */
-    public void setIsCommand(boolean command) {
+    public void setCommand(boolean command) {
         isCommand = command;
     }
 
-    /**
-     * Sets a command as the current play.
-     * @param command The command to set to.
-     */
     public void setCommand(String command) {
         this.command = command;
     }
 
-    /**
-     * Sets the player making the current play.
-     * @param playerTurn The player to set to.
-     */
     public void setPlayerTurn(Player playerTurn) {
         this.playerTurn = playerTurn;
     }
 
-    /**
-     * Gets the number of tiles in the TileBag for this ScrabbleGame.
-     * @return The number of tiles in the TileBag.
-     */
     public int getNumTilesLeft() { return tileBag.getNumTilesLeft(); }
 
-    /**
-     * Gets the name of the current Player.
-     * @return The name of the current Player.
-     */
     public String getCurrentPlayerName() { return playerTurn.getPlayerName(); }
 
-    /**
-     * Gets the score of the current Player.
-     * @return The score of the current Player.
-     */
     public int getCurrentPlayerScore() { return playerTurn.getScore(); }
 
-    /**
-     * Gets the TileBag for this ScrabbleGame.
-     * @return The TileBag for this ScrabbleGame.
-     */
     public TileBag getTileBag() {
         return tileBag;
     }

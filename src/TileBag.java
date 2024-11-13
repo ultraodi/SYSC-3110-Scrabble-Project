@@ -196,4 +196,8 @@ public class TileBag {
         numTilesLeft++;
     }
 
+    public int getTileValue(String c) {
+        return LETTER_VALUE.get(c);
+    }
+
 }

@@ -1,19 +1,28 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+/**
+ * The ScrabbleGame class simulates as at this version a turn by turn text version of the
+ * game Scrabble.
+ * @author Abdul Babatunde
+ * @version November 12, 2024
+ */
 
 public class ScrabbleGameController implements ActionListener {
     private ScrabbleGame model;
     private ScrabbleGameView view;
     private Tile selectedTile;  // To store the selected tile from the player's rack
+    private Tile selectedBoardTile;
     private Stack<TileState> history;  // Stack to store the previous state of board tiles
     private List<Tile> playedTiles;  // List to store the tiles played on the board
     private int selectedTileIndex = -1;  // Initialize with -1 to indicate no tile selected
     private int firstRow = -1, firstCol = -1;  // Coordinates of the first letter placed
     private int lastRow = -1, lastCol = -1;    // Coordinates of the last letter placed
+    private int clickCounter = 0;
 
 
     public ScrabbleGameController(ScrabbleGame model, ScrabbleGameView view) {
@@ -21,6 +30,7 @@ public class ScrabbleGameController implements ActionListener {
         this.view = view;
         this.history = new Stack<>();  // Initialize the history stack
         this.playedTiles = new ArrayList<>();  // Initialize the list of played tiles
+
     }
 
     @Override
@@ -79,6 +89,46 @@ public class ScrabbleGameController implements ActionListener {
             }
         }
 
+    else if (command.startsWith("TwoClickBoardTile")) {
+            int rowIndex = Integer.parseInt(command.split(" ")[1]);
+            int colIndex = Integer.parseInt(command.split(" ")[2]);
+
+            // Create a new tile from the board based on the row and column
+            selectedBoardTile = createTileFromBoard(rowIndex, colIndex);
+
+            // Increment the counter
+            clickCounter++;
+
+            // Only execute the following code if the counter is odd
+            if (clickCounter % 2 != 0) {
+                // Add the selected tile to playedTiles
+                playedTiles.add(selectedBoardTile);
+                System.out.println("Added tile to playedTiles: " + selectedBoardTile.getLetter());
+                System.out.println(generatePlacementString());
+
+                // Show confirmation message
+                JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
+
+                // Check if there is more than one tile in playedTiles and remove the last one if so
+                if (playedTiles.size() > 1) {
+                    Tile mostRecentTile = playedTiles.remove(playedTiles.size() - 1);  // Remove the most recent tile
+                    System.out.println("Removed most recent tile from playedTiles: " + mostRecentTile.getLetter());
+                }
+            }
+
+            // Reset the selectedBoardTile after use
+            selectedBoardTile = null;
+        }
+
+
+        else if (command.equals("Pass")) {
+            model.changeTurns();
+
+            // Update view: refresh board and scores
+            view.updateBoard();
+            view.updateLabels();
+        }
+
         // Handle "Clear" button action (Undo action)
         else if (command.equals("Clear")) {
             while (!history.isEmpty()) {
@@ -94,29 +144,62 @@ public class ScrabbleGameController implements ActionListener {
         }
 
         // Handle "Play" button action (clear the history)
+        // Handle "Play" button action (clear the history)
         else if (command.equals("Play")) {
             if (!playedTiles.isEmpty()) {
-                // Generate and print the placement string
+                // Generate the placement string based on the GUI's state
                 String placementString = generatePlacementString();
+                System.out.println(placementString);
                 model.setInputPlay(placementString);
-                model.parseInputPlay();
-                System.out.println(model.parseInputPlay());
-                System.out.println(model.isValidWord(model.getPlayerInputWord()));
-                // System.out.println(placementString);
+
+                // Call model's parsing and validation
+                if (model.parseInputPlay()) {
+                    if (model.isValidWord(model.getPlayerInputWord())) {
+                        if (model.playWord()) {
+                            // Update model: recalculate score and get new tiles
+                            model.getPlayerTurn().setScore(
+                                    model.getPlayerTurn().getScore() +
+                                            model.getTileBag().getInputScore(
+                                                    model.getPlayerInputWord(),
+                                                    model.getRowNumProgram(),
+                                                    model.getColNumProgram(),
+                                                    model.getPlayerInputPlayDirection()
+                                            )
+                            );
+                            model.getPlayerTurn().getMoreTiles(model.getTileBag());
+
+
+                            // Clear controller's state
+                            clearHistory();
+                            playedTiles.clear();
+                            firstRow = -1;
+                            firstCol = -1;
+                            lastRow = -1;
+                            lastCol = -1;
+
+                            // Re-enable all tile buttons
+                            view.enableAllTileButtons();
+
+                            // Change turns
+                            model.changeTurns();
+
+                            // Update view: refresh board and scores
+                            view.updateBoard();
+                            view.updateLabels();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Couldn't play word.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid word.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid play format. Use: [word] [coordinate] [direction]");
+                }
             } else {
-                // System.out.println("No tiles were played.");
+                JOptionPane.showMessageDialog(null, "No tiles were played.");
             }
-
-            clearHistory();  // Clear the history stack
-            playedTiles.clear();  // Clear the played tiles list
-            firstRow = -1;
-            firstCol = -1;
-            lastRow = -1;
-            lastCol = -1;
-            // System.out.println("Game history cleared.");
-
-            enableAllTileButtons();
         }
+
     }
 
     // Method to save the previous state of a tile before it is updated
@@ -125,6 +208,19 @@ public class ScrabbleGameController implements ActionListener {
         int value = view.getTileValueAt(rowIndex, colIndex);
         TileState previousState = new TileState(letter, value, rowIndex, colIndex, selectedTileIndex);
         history.push(previousState);  // Save the previous state to history stack
+    }
+
+    // Method to create a Tile using the letter and value at the specified board index
+    private Tile createTileFromBoard(int rowIndex, int colIndex) {
+        // Get the letter and value from the specified index on the board
+        String letter = view.getTileLetterAt(rowIndex, colIndex);
+        int value = view.getTileValueAt(rowIndex, colIndex);
+
+        // Create a new Tile using the letter and value
+        Tile newTile = new Tile(letter, value);
+
+        // Return the newly created tile
+        return newTile;
     }
 
     // Method to re-enable all tile buttons after the "Play" button is clicked
