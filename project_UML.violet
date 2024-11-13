@@ -187,22 +187,29 @@
    <object class="com.horstmann.violet.ClassNode" id="ClassNode4">
     <void property="attributes">
      <void property="text">
-      <string>-players: ArrayList&lt;Player&gt;
+      <string>+&lt;u&gt;DEBUG: boolean&lt;/u&gt;
++&lt;u&gt;TEXT_VERSION: boolean&lt;/u&gt;
++showAllPlayerTiles: boolean
+-players: ArrayList&lt;Player&gt;
 -playerTurn: Player
 -scrabbleBoard: ScrabbleBoard
 -tileBag: TileBag
 -plays: ArrayList&lt;Play&gt;
 -validWordsURL: URL
--validWordsURLString: String = &quot;https://www.mit.edu/~ecprice/wordlist.10000&quot;
--validWordsFile: String = &quot;valid_words.txt&quot;;
 -validWords: HashSet&lt;String&gt;
--currentValidWord: String
--inputPrompt: String = &quot;Word to play &gt;&gt; &quot;
 -playerInput: String
 -playerInputWord: String
 -playerInputBoardPosition: String
 -Direction: enum = {HORIZONTAL, VERTICAL}
--playerInputPlayDirection: Direction</string>
+-playerInputPlayDirection: Direction
+-playerOrder: ArrayList&lt;Player&gt;
+-currentPlayerIndex: int = 0
+-currentPlay: Play
+-isCommand: boolean
+-command: String
+rowNum_program: int
+colNum_program: int
+-&lt;u&gt;commands: ArrayList&lt;String&gt; = {&quot;-debug&quot;, &quot;-noDebug&quot;, &quot;-board&quot;, &quot;-quit&quot;, &quot;-skip&quot;}&lt;/u&gt;</string>
      </void>
     </void>
     <void property="methods">
@@ -220,6 +227,37 @@
 -getInputPlay(): void
 -parseInputPlay(): boolean
 -isValidWord(word: String): boolean
++printPlays(): void 
++getPlayers(): ArrayList&lt;Player&gt; 
++getPlayerTurn(): Player 
++getScrabbleBoard(): ScrabbleBoard 
++getPlays(): ArrayList&lt;Play&gt; 
++getPlayerInput(): String
++getPlayerInputWord(): String 
++getPlayerInputBoardPosition(): String 
++getPlayerInputPlayDirection(): Direction
++getPlayerOrder(): ArrayList&lt;Player&gt;
++getCurrentPlay(): Play
++getCommand(): String
++isCommand(): boolean
++&lt;u&gt;setDEBUG(DEBUG: boolean): void&lt;/u&gt; 
++setPlayerInput(playerInput: String): void 
++setPlayers(players: ArrayList&lt;Player&gt;): void 
++setTileBag(tileBag: TileBag): void 
++setPlays(plays: ArrayList&lt;Play&gt;): void 
++setPlayerInputWord(playerInputWord: String): void
++setCurrentPlayerIndex(currentPlayerIndex: int): void 
++setPlayerInputBoardPosition(playerInputBoardPosition: String): void 
++setPlayerInputPlayDirection(playerInputPlayDirection: Direction): void 
++setPlayerOrder(playerOrder: ArrayList&lt;Play&gt;): void 
++setCurrentPlay(currentPlay: Play): void 
++setIsCommand(command: boolean): void 
++setCommand(command: String): void 
++setPlayerTurn(playerTurn: Player): void 
++getNumTilesLeft(): int
++getCurrentPlayerName(): String
++getCurrentPlayerScore(): int
++getTileBag(): TileBag
 -&lt;u&gt;main(args: String[]): void&lt;/u&gt;</string>
      </void>
     </void>
@@ -234,19 +272,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>290.0</double>
+      <double>170.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>250.0</double>
+      <double>140.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>290.0</double>
-     <double>250.0</double>
+     <double>170.0</double>
+     <double>140.0</double>
     </void>
    </object>
   </void>
@@ -297,7 +335,7 @@
      <void property="text">
       <string>author: Marvel Adotse-ogah
 team: Group 4
-version: October 22, 2024
+version: November 12, 2024
 </string>
      </void>
     </void>
@@ -359,19 +397,19 @@ version: October 22, 2024
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>910.0</double>
+      <double>920.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>790.0</double>
+      <double>850.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>910.0</double>
-     <double>790.0</double>
+     <double>920.0</double>
+     <double>850.0</double>
     </void>
    </object>
   </void>

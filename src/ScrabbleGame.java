@@ -17,7 +17,7 @@ public class ScrabbleGame {
     /** Controls the debug state of the ScrabbleGame*/
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     /** Controls all elements concerned with the text version of the ScrabbleGame*/
-    public static boolean TEXT_VERSION = true;
+    public static boolean TEXT_VERSION = false;
     /** Shows the tiles of all players on each turn*/
     boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
     /** Players of the game*/
@@ -924,7 +924,7 @@ public class ScrabbleGame {
 
     /**
      * Sets the playerInputBoardPosition for the current play.
-     * @param playerInputBoardPosition
+     * @param playerInputBoardPosition The board position to set.
      */
     public void setPlayerInputBoardPosition(String playerInputBoardPosition) {
         this.playerInputBoardPosition = playerInputBoardPosition;
@@ -932,7 +932,7 @@ public class ScrabbleGame {
 
     /**
      * Sets the playerInputPlayDirection for the current play.
-     * @param playerInputPlayDirection
+     * @param playerInputPlayDirection The Direction to set
      */
     public void setPlayerInputPlayDirection(Direction playerInputPlayDirection) {
         this.playerInputPlayDirection = playerInputPlayDirection;
