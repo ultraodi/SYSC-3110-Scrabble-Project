@@ -30,19 +30,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>1750.0</double>
+      <double>2670.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>1760.0</double>
+      <double>2090.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1750.0</double>
-     <double>1760.0</double>
+     <double>2670.0</double>
+     <double>2090.0</double>
     </void>
    </object>
   </void>
@@ -77,7 +77,7 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>1580.0</double>
+      <double>1910.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -88,7 +88,7 @@
      </void>
     </void>
     <void method="setLocation">
-     <double>1580.0</double>
+     <double>1910.0</double>
      <double>1180.0</double>
     </void>
    </object>
@@ -124,19 +124,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>1780.0</double>
+      <double>2010.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>1540.0</double>
+      <double>1750.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1780.0</double>
-     <double>1540.0</double>
+     <double>2010.0</double>
+     <double>1750.0</double>
     </void>
    </object>
   </void>
@@ -167,19 +167,19 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>2030.0</double>
+      <double>2760.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>1220.0</double>
+      <double>1550.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>2030.0</double>
-     <double>1220.0</double>
+     <double>2760.0</double>
+     <double>1550.0</double>
     </void>
    </object>
   </void>
@@ -365,12 +365,18 @@ version: November 12, 2024
    <object class="com.horstmann.violet.ClassNode" id="ClassNode5">
     <void property="attributes">
      <void property="text">
-      <string>+&lt;u&gt;MAX_TILES: int = 7&lt;/u&gt;
+      <string>+&lt;u&gt;RED: String = &quot;\033[0;31m&quot;&lt;/u&gt;
++&lt;u&gt;GREEN: String = &quot;\033[0;32m&quot;&lt;/u&gt;
++&lt;u&gt;YELLOW: String = &quot;\033[0;33m&quot;&lt;/u&gt;
++&lt;u&gt;CYAN: String = &quot;\033[0;36m&quot;&lt;/u&gt;
+
+    private static final ArrayList&lt;String&gt; colour = new ArrayList&lt;&gt;(Arrays.asList(YELLOW, RED, GREEN, CYAN));
++&lt;u&gt;MAX_TILES: int = 7&lt;/u&gt;
 -name: String
--tileBag: TileBag
 -tiles: ArrayList&lt;Tile&gt;
 -score: int
--scoreHistory: ArrayList&lt;Integer&gt;</string>
+-scoreHistory: ArrayList&lt;Integer&gt;
+-playerColour: String</string>
      </void>
     </void>
     <void property="methods">
@@ -378,11 +384,14 @@ version: November 12, 2024
       <string>+Player(name: String)
 +getPlayerName(): String
 +getTiles(): ArrayList&lt;Tile&gt;
++getTilesString(): String
 +getScore(): int
 +setScore(score: int): void
 +takeTile(letter: String)
++returnTile(tile: Tile): boolean
 +playerMove(): ArrayList&lt;Tile&gt;
 +getMoreTiles(tileBag: TileBag): void
+-ownTiles(): void
 +equals(obj: Object): boolean</string>
      </void>
     </void>
