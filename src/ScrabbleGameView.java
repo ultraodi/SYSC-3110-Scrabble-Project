@@ -251,50 +251,51 @@ public class ScrabbleGameView extends JFrame {
 
         int numPlayers = 0;
         boolean validInput = false;
+        boolean wantsAI = false;
+        Object playWithAI = null;
 
-        // Loop to get a valid number of players
-        while (!validInput) {
-            JOptionPane numPlayersPane = new JOptionPane(
-                    "How many players will play (Lowest 2, Highest 4): ",
+        // Determine if the player wants to play with the AI
+        while (!wantsAI) {
+            JOptionPane wantsAIPane = new JOptionPane(
+                    "Would you like to play with AI yes or no: ",
                     JOptionPane.INFORMATION_MESSAGE,
                     JOptionPane.OK_CANCEL_OPTION
             );
-            numPlayersPane.setWantsInput(true);
-            JDialog dialog = numPlayersPane.createDialog("Input");
+            wantsAIPane.setWantsInput(true);
+            JDialog dialog = wantsAIPane.createDialog("Input");
             dialog.setVisible(true);
 
-            // Retrieve and parse user input
-            Object userInput = numPlayersPane.getInputValue();
-            if (userInput == JOptionPane.UNINITIALIZED_VALUE) {
+            playWithAI = wantsAIPane.getInputValue();
+            if (playWithAI == JOptionPane.UNINITIALIZED_VALUE) {
                 return null; // Dialog was closed
             }
 
-            try {
-                numPlayers = Integer.parseInt(userInput.toString());
-                if (numPlayers >= 2 && numPlayers <= 4) {
-                    validInput = true; // Valid input received
-                } else {
-                    JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
+
+            if (playWithAI.toString().toLowerCase().trim().equals("yes")){
+                wantsAI = true;
+            } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
+                wantsAI = true;
             }
+            else{
+                JOptionPane.showMessageDialog(this, "Please enter a valid OPTION.");
+            }
+
         }
 
-        // Loop to get each player's name
-        for (int i = 0; i < numPlayers; i++) {
+        if (playWithAI.toString().toLowerCase().trim().equals("yes")){
+
             String playerName = null;
             boolean validNameInput = false;
 
             while (!validNameInput) {
                 JOptionPane playerPane = new JOptionPane(
-                        "Player " + (i + 1) + ": What is your name?",
+                        "Player 1 "  + ": What is your name?",
                         JOptionPane.INFORMATION_MESSAGE,
                         JOptionPane.OK_CANCEL_OPTION
                 );
                 playerPane.setWantsInput(true);
 
-                JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
+                JDialog playerDialog = playerPane.createDialog("Player 1 " + " Details");
                 playerDialog.setVisible(true);
 
                 Object playerInput = playerPane.getInputValue();
@@ -309,6 +310,74 @@ public class ScrabbleGameView extends JFrame {
             }
 
             playerNames.add(playerName); // Add validated name to player names list
+
+            playerNames.add("AI"); // Adds the AI to the list of players
+
+            return playerNames; // Return list of names
+
+
+        } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
+
+            // Loop to get a valid number of players
+            while (!validInput) {
+                JOptionPane numPlayersPane = new JOptionPane(
+                        "How many players will play (Lowest 2, Highest 4): ",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+                numPlayersPane.setWantsInput(true);
+                JDialog dialog = numPlayersPane.createDialog("Input");
+                dialog.setVisible(true);
+
+                // Retrieve and parse user input
+                Object userInput = numPlayersPane.getInputValue();
+                if (userInput == JOptionPane.UNINITIALIZED_VALUE) {
+                    return null; // Dialog was closed
+                }
+
+                try {
+                    numPlayers = Integer.parseInt(userInput.toString());
+                    if (numPlayers >= 2 && numPlayers <= 4) {
+                        validInput = true; // Valid input received
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
+                }
+            }
+
+            // Loop to get each player's name
+            for (int i = 0; i < numPlayers; i++) {
+                String playerName = null;
+                boolean validNameInput = false;
+
+                while (!validNameInput) {
+                    JOptionPane playerPane = new JOptionPane(
+                            "Player " + (i + 1) + ": What is your name?",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            JOptionPane.OK_CANCEL_OPTION
+                    );
+                    playerPane.setWantsInput(true);
+
+                    JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
+                    playerDialog.setVisible(true);
+
+                    Object playerInput = playerPane.getInputValue();
+
+                    // Check if input is valid
+                    if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                        playerName = playerInput.toString().trim();
+                        validNameInput = true;  // Exit the loop if input is valid
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Please enter a valid name.");
+                    }
+                }
+
+                playerNames.add(playerName); // Add validated name to player names list
+            }
+
+            return playerNames; // Return list of names
         }
 
         return playerNames; // Return list of names
@@ -479,19 +548,5 @@ public class ScrabbleGameView extends JFrame {
             // System.out.println("Invalid tile coordinates.");
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ScrabbleGameView gameView = new ScrabbleGameView();
-            List<String> playerNames = gameView.setupPlayersOptionPane();
-            if (playerNames == null || playerNames.isEmpty()) {
-                System.exit(0); // Terminate the application if setup failed or was closed
-            }
-
-            // Create the board only after setup is successful
-            gameView.initializeBoard();
-        });
-    }
-
 
 }

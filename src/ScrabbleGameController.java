@@ -107,7 +107,7 @@ public class ScrabbleGameController implements ActionListener {
                 System.out.println(generatePlacementString());
 
                 // Show confirmation message
-                JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
+                //JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
 
                 // Check if there is more than one tile in playedTiles and remove the last one if so
                 if (playedTiles.size() > 1) {
