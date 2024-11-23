@@ -430,17 +430,6 @@ public class ScrabbleGame {
             }
         }
 
-//        // Check that all words are unique
-//        plays.removeLast();
-//        for (Play _pl: _plays) {
-//            if (plays.contains(_pl)) {
-//                System.out.printf("\n%s'%s' has already been played.\n", debugTag, _pl.getWordString());
-//                removePlayFromBoard(currentPlay);
-//                return false;
-//            }
-//        }
-//        plays.add(currentPlay);
-
         _plays.removeIf(_pl -> (/*this.plays.contains(_pl) ||*/ _pl.getWordString().length() == 1));
         boolean connects = false;
         connects = currentPlay.getContributedLettersString().contains("-"); // The word is made by contributing a few letters from the players tiles to what is already on the board.

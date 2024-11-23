@@ -147,7 +147,6 @@ public class ScrabbleGameController implements ActionListener {
             selectedBoardTile = null;
         }
 
-
         else if (command.equals("Pass")) {
             model.changeTurns();
 
@@ -166,6 +165,7 @@ public class ScrabbleGameController implements ActionListener {
             firstCol = -1;
             lastRow = -1;
             lastCol = -1;
+            view.updateBoard();
             // System.out.println("Played tiles after clear: " + formatPlayedTiles());
             // System.out.println("Cleared all moves.");
         }
@@ -194,7 +194,6 @@ public class ScrabbleGameController implements ActionListener {
                                             )
                             );
                             model.getPlayerTurn().getMoreTiles(model.getTileBag());
-
 
                             // Clear controller's state
                             clearHistory();
@@ -280,6 +279,7 @@ public class ScrabbleGameController implements ActionListener {
             // Revert the board tile to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
             view.enableBoardTile(lastState.getRow(), lastState.getCol());
+
 
             // Remove the last played tile
             if (!playedTiles.isEmpty()) {
