@@ -149,6 +149,14 @@ public class ScrabbleGameController implements ActionListener {
 
 
         else if (command.equals("Pass")) {
+            while (!history.isEmpty()) {
+                undoLastMove();  // Undo each move in the history stack
+            }
+            playedTiles.clear();  // Clear the played tiles list
+            firstRow = -1;
+            firstCol = -1;
+            lastRow = -1;
+            lastCol = -1;
             model.changeTurns();
 
             // Update view: refresh board and scores
