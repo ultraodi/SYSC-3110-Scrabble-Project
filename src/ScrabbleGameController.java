@@ -23,6 +23,7 @@ public class ScrabbleGameController implements ActionListener {
     private int firstRow = -1, firstCol = -1;  // Coordinates of the first letter placed
     private int lastRow = -1, lastCol = -1;    // Coordinates of the last letter placed
     private int clickCounter = 0;
+    private boolean isLocked = false;
 
 
     public ScrabbleGameController(ScrabbleGame model, ScrabbleGameView view) {
@@ -72,6 +73,7 @@ public class ScrabbleGameController implements ActionListener {
 
                 // Add the selected tile to the played tiles list
                 playedTiles.add(selectedTile);
+                System.out.println(generatePlacementString());
                 // System.out.println("Played tiles: " + formatPlayedTiles());
                 // System.out.println("Word was placed " + determineWordDirection());
 
@@ -95,24 +97,49 @@ public class ScrabbleGameController implements ActionListener {
 
             // Create a new tile from the board based on the row and column
             selectedBoardTile = createTileFromBoard(rowIndex, colIndex);
+            lastRow = rowIndex;
+            lastCol = colIndex;
 
-            // Increment the counter
-            clickCounter++;
+            // Check if the lock is active
+            if (!isLocked) {
+                // Increment the counter
+                clickCounter++;
 
-            // Only execute the following code if the counter is odd
-            if (clickCounter % 2 != 0) {
-                // Add the selected tile to playedTiles
-                playedTiles.add(selectedBoardTile);
-                System.out.println("Added tile to playedTiles: " + selectedBoardTile.getLetter());
-                System.out.println(generatePlacementString());
+                // Only execute the following code if the counter is odd
+                if (clickCounter % 2 != 0) {
+                    // Lock further increments for 2 seconds
+                    isLocked = true;
 
-                // Show confirmation message
-                JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
+                    // Add the selected tile to playedTiles
+                    playedTiles.add(selectedBoardTile);
+                    System.out.println("Added tile to playedTiles: " + selectedBoardTile.getLetter());
+                    System.out.println(generatePlacementString());
 
-                // Check if there is more than one tile in playedTiles and remove the last one if so
-                if (playedTiles.size() > 1) {
-                    Tile mostRecentTile = playedTiles.remove(playedTiles.size() - 1);  // Remove the most recent tile
-                    System.out.println("Removed most recent tile from playedTiles: " + mostRecentTile.getLetter());
+                    // Show confirmation message
+                    JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
+
+                    // Track the first placement
+                    if (firstRow == -1 && firstCol == -1) {
+                        firstRow = rowIndex;
+                        firstCol = colIndex;
+                        // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
+                    }
+
+//                    // Check if there is more than one tile in playedTiles and remove the last one if so
+//                    if (playedTiles.size() > 1) {
+//                        Tile mostRecentTile = playedTiles.remove(playedTiles.size() - 1); // Remove the most recent tile
+//                        System.out.println("Removed most recent tile from playedTiles: " + mostRecentTile.getLetter());
+//                    }
+
+                    // Use a Timer to unlock after 2 seconds
+                    Timer timer = new Timer(1000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            isLocked = false;
+                        }
+                    });
+                    timer.setRepeats(false); // Ensure the timer only runs once
+                    timer.start();
                 }
             }
 
@@ -188,15 +215,23 @@ public class ScrabbleGameController implements ActionListener {
                             view.updateLabels();
                         } else {
                             JOptionPane.showMessageDialog(null, "Couldn't play word.");
+                            view.updateBoard();
+                            view.updateLabels();
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid word.");
+                        view.updateBoard();
+                        view.updateLabels();
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid play format. Use: [word] [coordinate] [direction]");
+                    view.updateBoard();
+                    view.updateLabels();
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No tiles were played.");
+                view.updateBoard();
+                view.updateLabels();
             }
         }
 
@@ -239,20 +274,38 @@ public class ScrabbleGameController implements ActionListener {
     private void undoLastMove() {
         if (!history.isEmpty()) {
             TileState lastState = history.pop();  // Get the last state
-            // System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
-            // System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
+            System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
+            System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
 
             // Revert the board tile to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
             view.enableBoardTile(lastState.getRow(), lastState.getCol());
+
+            // Remove the last played tile
+            if (!playedTiles.isEmpty()) {
+                playedTiles.remove(playedTiles.size() - 1);
+            }
 
             // Re-enable the corresponding tile button in the player's rack
             int tileIndex = lastState.getTileIndex();
             if (tileIndex != -1) {
                 JButton tileButton = view.getPlayerRackButton(tileIndex);
                 tileButton.setEnabled(true);
-                // System.out.println("Re-enabled the tile button at index: " + tileIndex);
             }
+
+            // Update first and last placement
+            if (history.isEmpty()) {
+                firstRow = -1;
+                firstCol = -1;
+            } else {
+                TileState peekState = history.peek();
+                lastRow = peekState.getRow();
+                lastCol = peekState.getCol();
+            }
+
+            // Reset selected tile and word direction if needed
+            selectedTile = null;
+            selectedTileIndex = -1;
         }
     }
 

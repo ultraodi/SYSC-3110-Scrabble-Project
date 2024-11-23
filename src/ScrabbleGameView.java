@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -451,10 +452,19 @@ public class ScrabbleGameView extends JFrame {
             button.setFocusable(true); // Allow the button to gain focus again
             button.setBackground(null); // Reset the background color to the default
 
-            String command = "TwoClickBoardTile " + rowIndex + " " + colIndex;
-            button.setActionCommand(command);
+            // Wait 1 second (1000ms) before setting the action command
+            Timer timer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String command = "TwoClickBoardTile " + rowIndex + " " + colIndex;
+                    button.setActionCommand(command);
 
-            button.addActionListener(sgc);
+                    // Attach the action listener after the delay
+                    button.addActionListener(sgc);
+                }
+            });
+            timer.setRepeats(false); // Ensure the timer only runs once
+            timer.start();
         }
     }
 

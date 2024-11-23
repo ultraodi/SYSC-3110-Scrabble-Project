@@ -27,6 +27,23 @@
     - Packaging to run in a JAR file
 
 ## How to play
+- GUI version of the game
+  - Upon running the game, option panels will pop up and prompt you to input required information to continue with the game
+    - "How many players are there?"
+    - "Player x, what is your name?"
+  - To place letters on the board
+    - First, click the tile you want to place on the board from your tile rack
+    - Second, click the square on the board you want to place it on
+  - To play a word after placing the tiles on the board, press the play button on the bottom right of your screen
+  - To skip a turn, press the pass button on the bottom right of your screen
+  - To clear the board of any recently placed tiles that weren't played, press the clear button on the bottom right of your screen
+  - To CONNECT a word to an existing word on the board (DISCLAIMER: This is a little buggy so expect some bugs)
+    - This only works if the word you want to connect starts with the first letter of a word that is already on the board
+      - Example: The word "IN"  is on the board. The only words that can be connected are words that start with "I" or "N" like "IT" or "NO". It aslo cannot be in the same direction the the word "IN" is written in.
+    - First, click on the letter that you want to start the connected word with. This will give you a message that the letter has been added to your played words. To undo press the clear button.
+    - DISCLAIMER: If you press the tile more than once, you MUST click the clear button, otherwise it will add that letter multiple times to your played word.
+    - Second, fill in the rest of the word then press play.
+    
 - Text version of the game
   - Change TEXT_VERSION to true
   - Change DEBUG to false
