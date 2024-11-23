@@ -67,6 +67,7 @@ public class ScrabbleGameView extends JFrame {
                 JButton button = new JButton();
                 button.setPreferredSize(new Dimension(40, 40));
                 button.setMargin(new Insets(0, 0, 0, 0));
+                button.setOpaque(true);
                 setButtonDisplay(button, square);
 
                 // Set the action command for the button, using row and column indices
