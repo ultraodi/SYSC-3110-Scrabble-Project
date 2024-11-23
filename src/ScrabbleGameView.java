@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -28,6 +28,7 @@ public class ScrabbleGameView extends JFrame {
     ScrabbleGameController sgc;
     private TileBag tileBag;
     private JButton[] tileValueButtons = new JButton[7];
+    private boolean isAI = false;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -286,6 +287,7 @@ public class ScrabbleGameView extends JFrame {
 
         if (playWithAI.toString().toLowerCase().trim().equals("yes")){
 
+            isAI = true;
             String playerName = null;
             boolean validNameInput = false;
 
@@ -319,6 +321,8 @@ public class ScrabbleGameView extends JFrame {
 
 
         } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
+
+            isAI = false;
 
             // Loop to get a valid number of players
             while (!validInput) {
@@ -385,6 +389,10 @@ public class ScrabbleGameView extends JFrame {
         return playerNames; // Return list of names
     }
 
+    public boolean getIsAI(){
+        return isAI;
+    }
+
     public void editSquare(int row, int col, String tileLetter, int tileValue) {
         // Get the square and the button at the specified position
         Square square = squares[row][col];
@@ -415,6 +423,7 @@ public class ScrabbleGameView extends JFrame {
 
             // Print each tile to the console
             String tilesString = model.getPlayerTurn().getTilesString();
+
             for (int i = 0; i < tilesString.length(); i++) {
                 if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
                     tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
@@ -425,6 +434,7 @@ public class ScrabbleGameView extends JFrame {
             System.out.println("Model is not initialized.");
         }
     }
+
 
     public void enableAllTileButtons() {
         for (JButton button : tileButtons) {
