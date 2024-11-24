@@ -305,9 +305,11 @@ public class ScrabbleGameView extends JFrame {
                 Object playerInput = playerPane.getInputValue();
 
                 // Check if input is valid
-                if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                     playerName = playerInput.toString().trim();
                     validNameInput = true;  // Exit the loop if input is valid
+                } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                    JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                 }
@@ -372,9 +374,11 @@ public class ScrabbleGameView extends JFrame {
                     Object playerInput = playerPane.getInputValue();
 
                     // Check if input is valid
-                    if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                    if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                         playerName = playerInput.toString().trim();
                         validNameInput = true;  // Exit the loop if input is valid
+                    } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                        JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                     } else {
                         JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                     }

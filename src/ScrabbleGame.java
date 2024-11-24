@@ -57,6 +57,8 @@ public class ScrabbleGame {
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
     private ScrabbleGameView view = new ScrabbleGameView();
+    private ScrabbleGameController controller;
+
 
     /**
      * Constructor for the ScrabbleGame class.
@@ -162,8 +164,16 @@ public class ScrabbleGame {
         }
 
         // Create Player objects and set their initial scores
+        int count = 0;
         for (String name : playerNames) {
-            Player player = new Player(name);
+            Player player;
+            if (name == null){
+                player = new Player("Player " + count);
+                count ++;
+            }
+            else{
+                player = new Player(name);
+            }
             player.setScore(0); // Set initial score
             players.add(player); // Add player to the list
         }
@@ -205,7 +215,16 @@ public class ScrabbleGame {
         currentPlayerIndex = (currentPlayerIndex + 1) % playerOrder.size();
 
         // Update playerTurn to the next player
+
         playerTurn = playerOrder.get(currentPlayerIndex);
+        // If it's the AI's turn, trigger the AI's play automatically
+        if (playerTurn.getPlayerName().equals("AI")) {
+            controller.handleAITurn();
+        }
+    }
+
+    public void setController(ScrabbleGameController controller){
+        this.controller = controller;
     }
 
     /**
