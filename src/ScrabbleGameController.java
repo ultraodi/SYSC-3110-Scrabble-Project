@@ -244,31 +244,45 @@ public class ScrabbleGameController implements ActionListener {
 
                             int row = model.getRowNumProgram();
                             int col = model.getColNumProgram();
+                            String dir = model.getPlayerInputPlayDirection() == ScrabbleGame.Direction.HORIZONTAL ? "h" : "v";
+
+                            Square[][] squares = view.getSquares();
 
                             String[] tileString = model.getPlayerInputWord().split("");
-
                             ArrayList<Tile> tile = new ArrayList<>();
+                            TileBag tileBag = model.getTileBag();
 
                             for (String play : tileString){
+                                //int num = model.getTileBag().getTileValue(play);
                                 tile.add(new Tile(play));
                             }
 
-                            for (Tile tileToPlay : tile){
-                                if (model.getPlayerInputPlayDirection().equals(ScrabbleGame.Direction.HORIZONTAL)){
-                                    model.getScrabbleBoard().placeTile(row, col, tileToPlay);
-                                    System.out.println(tileToPlay.getLetter());
-                                    view.setModel(model);
-                                    view.updateBoard();
+                            if (dir.equals("h")){
+                                int count = 0;
+                                for (Tile tileToPlay : tile){
+                                    if(squares[row][col].getPlacedTile() == null){
+                                        model.getScrabbleBoard().placeTile(row, col, tileToPlay);
+                                        squares[row][col].setPlacedTile(tileToPlay);
+                                    }
                                     col++;
-                                }
-                                if (model.getPlayerInputPlayDirection().equals(ScrabbleGame.Direction.VERTICAL)){
-                                    model.getScrabbleBoard().placeTile(row, col, tileToPlay);
-                                    System.out.println(tileToPlay.getLetter());
-                                    view.setModel(model);
-                                    view.updateBoard();
-                                    row++;
+                                    count++;
                                 }
                             }
+                            else if (dir.equals("v")){
+                                int count = 0;
+                                for (Tile tileToPlay : tile){
+                                    if(squares[row][col].getPlacedTile() == null){
+                                        model.getScrabbleBoard().placeTile(row, col, tileToPlay);
+                                        squares[row][col].setPlacedTile(tileToPlay);
+                                    }
+                                    row++;
+                                    count++;
+                                }
+                            }
+
+                            view.setSquares(squares);
+                            view.updateBoard();
+                            view.updateLabels();
 
 
                             model.getPlayerTurn().getMoreTiles(model.getTileBag());

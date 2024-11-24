@@ -92,6 +92,10 @@ public class Square {
         return this.placedTile;
     }
 
+    public void setPlacedTile(Tile tile){
+        this.placedTile = tile;
+    }
+
 
     /**
      * Compares Square objects by tile and square type.

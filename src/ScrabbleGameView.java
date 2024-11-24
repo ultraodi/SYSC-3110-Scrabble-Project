@@ -444,6 +444,14 @@ public class ScrabbleGameView extends JFrame {
         }
     }
 
+    public Square[][] getSquares(){
+        return this.squares;
+    }
+
+    public void setSquares(Square[][] squares){
+        this.squares = squares;
+    }
+
     public void updateBoard() {
         // First, check if the model is not null
         if (model == null) {
@@ -452,7 +460,7 @@ public class ScrabbleGameView extends JFrame {
         }
 
         // Get the current player's tiles and their positions
-        List<Tile> playerTiles = model.getPlayerTurn().getTiles();
+        //List<Tile> playerTiles = model.getPlayerTurn().getTiles();
 
         // Loop through all the squares on the board
         for (int row = 0; row < SIZE; row++) {
