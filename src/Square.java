@@ -33,6 +33,7 @@ public class Square {
      */
     private Square.Types squareType;
 
+
     /**
      * Constructor for this Class.
      * @param type The type designated using the static variables defined in this class.
@@ -88,8 +89,13 @@ public class Square {
      * @return The tile placed on this square.
      */
     public Tile getPlacedTile() {
-        return placedTile;
+        return this.placedTile;
     }
+
+    public void setPlacedTile(Tile tile){
+        this.placedTile = tile;
+    }
+
 
     /**
      * Compares Square objects by tile and square type.

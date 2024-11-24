@@ -175,7 +175,7 @@ public class ScrabbleGameView extends JFrame {
     private void setButtonDisplay(JButton button, Square square) {
         if (square.getPlacedTile() != null) {
             button.setText(String.valueOf(square.getPlacedTile().getLetter()));
-            button.setBackground(Color.WHITE);
+            button.setBackground(new Color(255, 161, 47));
         } else {
             button.setText("");
             switch (square.getType()) {
@@ -307,9 +307,11 @@ public class ScrabbleGameView extends JFrame {
                 Object playerInput = playerPane.getInputValue();
 
                 // Check if input is valid
-                if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                     playerName = playerInput.toString().trim();
                     validNameInput = true;  // Exit the loop if input is valid
+                } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                    JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                 }
@@ -373,9 +375,11 @@ public class ScrabbleGameView extends JFrame {
                     Object playerInput = playerPane.getInputValue();
 
                     // Check if input is valid
-                    if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                    if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                         playerName = playerInput.toString().trim();
                         validNameInput = true;  // Exit the loop if input is valid
+                    } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                        JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                     } else {
                         JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                     }
@@ -392,6 +396,14 @@ public class ScrabbleGameView extends JFrame {
 
     public boolean getIsAI(){
         return isAI;
+    }
+
+    public JButton getBoardSquare(int row, int col){
+        return buttons[row][col];
+    }
+
+    public void setBoardSquare(JButton button, int row, int col){
+        this.buttons[row][col] = button;
     }
 
     public void editSquare(int row, int col, String tileLetter, int tileValue) {
@@ -445,6 +457,14 @@ public class ScrabbleGameView extends JFrame {
         }
     }
 
+    public Square[][] getSquares(){
+        return this.squares;
+    }
+
+    public void setSquares(Square[][] squares){
+        this.squares = squares;
+    }
+
     public void updateBoard() {
         // First, check if the model is not null
         if (model == null) {
@@ -453,7 +473,7 @@ public class ScrabbleGameView extends JFrame {
         }
 
         // Get the current player's tiles and their positions
-        List<Tile> playerTiles = model.getPlayerTurn().getTiles();
+        //List<Tile> playerTiles = model.getPlayerTurn().getTiles();
 
         // Loop through all the squares on the board
         for (int row = 0; row < SIZE; row++) {
