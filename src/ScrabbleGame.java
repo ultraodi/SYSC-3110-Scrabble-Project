@@ -16,7 +16,7 @@ import static java.lang.String.*;
  */
 public class ScrabbleGame {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
-    public static boolean TEXT_VERSION = true;
+    public static boolean TEXT_VERSION = false;
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
