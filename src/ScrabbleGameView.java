@@ -393,6 +393,14 @@ public class ScrabbleGameView extends JFrame {
         return isAI;
     }
 
+    public JButton getBoardSquare(int row, int col){
+        return buttons[row][col];
+    }
+
+    public void setBoardSquare(JButton button, int row, int col){
+        this.buttons[row][col] = button;
+    }
+
     public void editSquare(int row, int col, String tileLetter, int tileValue) {
         // Get the square and the button at the specified position
         Square square = squares[row][col];
