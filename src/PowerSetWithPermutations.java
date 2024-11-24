@@ -4,9 +4,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
+/**
+ * The {@code PowerSetWithPermutations} class provides utility methods to:
+ *
+ *  - Generate the power set (all subsets) of a string.</li>
+ *  - Generate permutations of each subset in the power set.</li>
+ *  - Filter subsets and permutations to generate valid words (e.g., Scrabble words).</li>
+ *
+ *
+ * This class includes methods for recursive generation of subsets and permutations
+ * and integrates with a Scrabble game instance to validate generated words.</p>
+ *
+ * @author Clinton Odinamadu
+ */
+
 public class PowerSetWithPermutations {
 
-    // Function to generate power set and permutations of each subset
+    /**
+     * Generates the power set of the input string and then computes
+     * permutations for each subset in the power set.
+     *
+     * @param str the input string for which to generate subsets and permutations.
+     * @return a list of all permutations of all subsets of the input string.
+     */
     private static List<String> generatePowerSetWithPermutations(String str) {
         List<String> result = new ArrayList<>();
         Set<String> powerSet = generatePowerSet(str);
@@ -20,14 +40,26 @@ public class PowerSetWithPermutations {
         return result;
     }
 
-    // Function to generate power set of a string (all subsets)
+    /**
+     * Generates the power set (all subsets) of the given string.
+     *
+     * @param str the input string for which to generate the power set.
+     * @return a set of all subsets of the input string.
+     */
     private static Set<String> generatePowerSet(String str) {
         Set<String> result = new HashSet<>();
         generateSubsets(str, 0, "", result);
         return result;
     }
 
-    // Recursive function to generate all subsets (power set)
+    /**
+     * Recursively generates all subsets of the given string.
+     *
+     * @param str    the input string for which to generate subsets.
+     * @param index  the current index being processed.
+     * @param current the current subset being built.
+     * @param result the set to store the generated subsets.
+     */
     private static void generateSubsets(String str, int index, String current, Set<String> result) {
         if (index == str.length()) {
             result.add(current);  // Add the current subset to the result
@@ -40,7 +72,12 @@ public class PowerSetWithPermutations {
         generateSubsets(str, index + 1, current, result);
     }
 
-    // Function to generate all permutations of a string
+    /**
+     * Generates all permutations of a given string.
+     *
+     * @param str the input string for which to generate permutations.
+     * @return a list of all permutations of the input string.
+     */
     private static List<String> generatePermutations(String str) {
         List<String> result = new ArrayList<>();
         if (str == null || str.length() == 0) {
@@ -51,7 +88,15 @@ public class PowerSetWithPermutations {
         return result;
     }
 
-    // Function to generate all valid words
+    /**
+     * Generates a list of valid words by:
+     *   - Creating the power set of the input string.</li>
+     *   - Generating permutations of each subset.</li>
+     *   - Validating each permutation against a Scrabble game word list.</li>
+     *
+     * @param str the input string from which to generate words.
+     * @return a list of unique, valid words generated from the input string.
+     */
     public static List<String> generateValidWords(String str) {
         ScrabbleGame game = new ScrabbleGame();
         List<String> allPossibleWords = generatePowerSetWithPermutations(str);
@@ -69,7 +114,13 @@ public class PowerSetWithPermutations {
         return new ArrayList<>(validWords);
     }
 
-    // Helper recursive function to generate permutations
+    /**
+     * Helper method for recursively generating permutations.
+     *
+     * @param str     the remaining characters to permute.
+     * @param current the current permutation being built.
+     * @param result  the list to store the generated permutations.
+     */
     private static void generatePermutationsHelper(String str, String current, List<String> result) {
         if (str.length() == 0) {
             result.add(current);  // If string is empty, add current permutation
