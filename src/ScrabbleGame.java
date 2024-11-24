@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -352,6 +353,11 @@ public class ScrabbleGame {
             }
         } else {
             System.out.printf("%s'%s' has already been played", debugTag, currentPlay.getWordString());
+            if (view.getIsAI()){
+                controller.setIsRepeated(true);
+                controller.handleAITurn();
+                JOptionPane.showMessageDialog(null, "AI detected repeated " + currentPlay.getWordString() + " word, Removing now");
+            }
             return false;
         }
 
@@ -377,6 +383,15 @@ public class ScrabbleGame {
         } else return true;
         System.out.println("First play must go through the center.");
         return false;
+    }
+
+    public Player getPlayerByName(String name){
+        for (Player player : players){
+            if (player.getPlayerName().equals("AI")){
+                return player;
+            }
+        }
+        return null;
     }
 
     /**
@@ -532,20 +547,41 @@ public class ScrabbleGame {
         ArrayList<String> sortedPlayerDraws = new ArrayList<>();
         ArrayList<Tile> tile;
 
-        // Initialize each player's tiles
+        // Initialize each player's tiles and check if AI is playing
+        boolean isAIPlaying = false;
+        Player aiPlayer = null;
+        Player nonAIPlayer = null;
+
         for (Player player : players) {
+            // Get random tiles for each player
             tile = tileBag.getRandomTilesFromBag(1);
             player.setPlayerTiles(tile);
-            playerDraws.add(tile.getFirst().getLetter()); // Use getFirst() to access the first tile
-            player.getMoreTiles(tileBag); // Take the number of necessary tiles needed.
+            playerDraws.add(tile.get(0).getLetter()); // Add the drawn letter for turn logic
+            player.getMoreTiles(tileBag); // Fill their rack with additional tiles
+
+            // Check if the player is AI
+            if (player.getPlayerName().equals("AI")) {
+                isAIPlaying = true;
+                aiPlayer = player;
+            } else {
+                nonAIPlayer = player;
+            }
         }
 
-        int lowestIndex = 0;
+        // If AI is playing, set the other player as the starting player
+        if (isAIPlaying && nonAIPlayer != null) {
+            returnTurns.add(nonAIPlayer); // Non-AI player starts
+            returnTurns.add(aiPlayer);   // AI player goes second
+            return returnTurns;
+        }
+
+        // Default logic if AI is not playing
+        int lowestIndex;
         String minChar;
 
         // Determine player turns based on drawn tiles
-        for (Player player : players) {
-            minChar = playerDraws.getFirst(); // Use getFirst() to access the first element
+        while (!playerDraws.isEmpty()) {
+            minChar = playerDraws.get(0);
             lowestIndex = 0;
 
             for (int i = 0; i < playerDraws.size(); i++) {
@@ -556,30 +592,14 @@ public class ScrabbleGame {
             }
 
             sortedPlayerDraws.add(minChar);
-            playerDraws.remove(lowestIndex); // Remove the drawn tile for that player
-            playerDraws.add(lowestIndex, "a"); // Mark as used
+            playerDraws.set(lowestIndex, "a"); // Mark as used
             returnTurns.add(players.get(lowestIndex)); // Add player to return list
-        }
-
-        // Debug output for player turns
-        for (int j = 0; j < returnTurns.size(); j++) {
-            System.out.printf("\nPlayer: %s Tile Drawn: %s", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
-        }
-
-        // Print player order
-        System.out.print("\nPlayer order is ");
-        for (Player player : returnTurns) {
-            System.out.printf(player.getPlayerName() + " --> ");
-        }
-        System.out.print("Repeat\n\n");
-
-        // Set the first player in the returnTurns as playerTurn
-        if (!returnTurns.isEmpty()) {
-            playerTurn = returnTurns.getFirst();
+            playerDraws.remove(lowestIndex); // Remove the used tile
         }
 
         return returnTurns;
     }
+
 
     /**
      * Retrieves a set of valid words from the url given in validWordsURL.

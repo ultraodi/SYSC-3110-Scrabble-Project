@@ -20,6 +20,7 @@ public class ScrabbleGameView extends JFrame {
     private JLabel tilesLeftLabel;
     private JLabel currentPlayerLabel;
     private JLabel currentPlayerScoreLabel;
+    private JLabel AILabel;
     private JButton[][] buttons;
     private Square[][] squares;
     private JButton[] tileButtons = new JButton[7];
@@ -29,13 +30,12 @@ public class ScrabbleGameView extends JFrame {
     private TileBag tileBag;
     private JButton[] tileValueButtons = new JButton[7];
     private boolean isAI = false;
+    private int BOARD_SIZE = 15;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(930, 1000);
-        this.setResizable(false);
-        this.setBackground(new Color(255, 230, 0));
+        this.setSize(1500, 1000);
         tileBag = new TileBag();
     }
 
@@ -129,24 +129,40 @@ public class ScrabbleGameView extends JFrame {
         // Add new labels to the left of the tile buttons
         JPanel labelsPanel = new JPanel();
         labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));  // Stack vertically
-        tilesLeftLabel = new JLabel("Tiles left in bag: ");
-        currentPlayerLabel = new JLabel("Current player: ");
-        currentPlayerScoreLabel = new JLabel("Current player score: ");
+
+        if (isAI){
+            tilesLeftLabel = new JLabel("Tiles left in bag: ");
+            currentPlayerLabel = new JLabel("Current player: ");
+            currentPlayerScoreLabel = new JLabel("Current player score: ");
+            AILabel = new JLabel("AI score is ");
+        }
+        else{
+            tilesLeftLabel = new JLabel("Tiles left in bag: ");
+            currentPlayerLabel = new JLabel("Current player: ");
+            currentPlayerScoreLabel = new JLabel("Current player score: ");
+            AILabel = new JLabel("AI score is ");
+        }
+
 
         // Set the font size for the labels
         Font labelFont = new Font("Arial", Font.BOLD, 18);  // Larger font size
         tilesLeftLabel.setFont(labelFont);
         currentPlayerLabel.setFont(labelFont);
         currentPlayerScoreLabel.setFont(labelFont);
+        AILabel.setFont(labelFont);
 
         // Add bottom margin to create double spacing
         tilesLeftLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
         currentPlayerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
         currentPlayerScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
+        AILabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Add space between labels
 
         labelsPanel.add(tilesLeftLabel);
         labelsPanel.add(currentPlayerLabel);
         labelsPanel.add(currentPlayerScoreLabel);
+        if (isAI){
+            labelsPanel.add(AILabel);
+        }
 
         JPanel sidePanel = new JPanel(new BorderLayout());
         sidePanel.add(tilesValuePanel, BorderLayout.NORTH);
@@ -175,7 +191,7 @@ public class ScrabbleGameView extends JFrame {
     private void setButtonDisplay(JButton button, Square square) {
         if (square.getPlacedTile() != null) {
             button.setText(String.valueOf(square.getPlacedTile().getLetter()));
-            button.setBackground(new Color(255, 161, 47));
+            button.setBackground(Color.WHITE);
         } else {
             button.setText("");
             switch (square.getType()) {
@@ -196,8 +212,8 @@ public class ScrabbleGameView extends JFrame {
                     button.setText("DLR");
                 }
                 case CENTER -> {
-                    button.setText("+");
                     button.setBackground(Color.MAGENTA);
+                    button.setText("+");
                 }
                 case NORMAL -> button.setBackground(Color.LIGHT_GRAY);
             }
@@ -323,6 +339,7 @@ public class ScrabbleGameView extends JFrame {
 
             return playerNames; // Return list of names
 
+
         } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
 
             isAI = false;
@@ -429,20 +446,41 @@ public class ScrabbleGameView extends JFrame {
 
     public void updateLabels() {
         if (model != null) {
-            // Update labels with model data
-            tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
-            currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
-            currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+            if(isAI){
+                // Update labels with model data
+                tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+                currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+                currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+                AILabel.setText("AI score is " + model.getPlayerByName("AI").getScore());
 
-            // Print each tile to the console
-            String tilesString = model.getPlayerTurn().getTilesString();
 
-            for (int i = 0; i < tilesString.length(); i++) {
-                if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
-                    tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
-                    tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                // Print each tile to the console
+                String tilesString = model.getPlayerTurn().getTilesString();
+
+                for (int i = 0; i < tilesString.length(); i++) {
+                    if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
+                        tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                        tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                    }
                 }
             }
+            else{
+                // Update labels with model data
+                tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+                currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+                currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+
+                // Print each tile to the console
+                String tilesString = model.getPlayerTurn().getTilesString();
+
+                for (int i = 0; i < tilesString.length(); i++) {
+                    if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
+                        tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                        tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                    }
+                }
+            }
+
         } else {
             System.out.println("Model is not initialized.");
         }
@@ -500,7 +538,7 @@ public class ScrabbleGameView extends JFrame {
             for (int col = 0; col < SIZE; col++) {
                 Square square = squares[row][col];
                 JButton button = buttons[row][col];
-                button.setOpaque(true);
+
                 setButtonDisplay(button, square); // Update button display based on square type
             }
         }
