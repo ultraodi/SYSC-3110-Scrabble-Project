@@ -29,6 +29,7 @@
 ## How to play
 - GUI version of the game
   - Upon running the game, option panels will pop up and prompt you to input required information to continue with the game
+    - "Would you like to play with AI yes or no:"
     - "How many players are there?"
     - "Player x, what is your name?"
   - To place letters on the board
@@ -37,13 +38,13 @@
   - To play a word after placing the tiles on the board, press the play button on the bottom right of your screen
   - To skip a turn, press the pass button on the bottom right of your screen
   - To clear the board of any recently placed tiles that weren't played, press the clear button on the bottom right of your screen
-  - To CONNECT a word to an existing word on the board (DISCLAIMER: This is a little buggy so expect some bugs)
-    - This only works if the word you want to connect starts with the first letter of a word that is already on the board
-      - Example: The word "IN"  is on the board. The only words that can be connected are words that start with "I" or "N" like "IT" or "NO". It aslo cannot be in the same direction the the word "IN" is written in.
-    - First, click on the letter that you want to start the connected word with. This will give you a message that the letter has been added to your played words. To undo press the clear button.
-    - DISCLAIMER: If you press the tile more than once, you MUST click the clear button, otherwise it will add that letter multiple times to your played word.
-    - Second, fill in the rest of the word then press play.
-    
+  - To connect a word to an existing word on the board multiple scenarios
+      - **Scenario 1:** There is a word on the board that spells "RAVEN" and you want to add an "S" to the end and spell "RAVENS"
+      - Click the letters in order of how to spell the word, this is to add it to your played tiles. 
+      - Example: Click the letter "R" then "A" then "V" then "E" then "N". After this add your "S" tile to the board then click play.
+      - **Scenario 2:** There is a word on the board that contains a letter needed to play a word. "RAVEN" and you have the letters "F, I, D" and you want to spell "FIND"
+      - Place "F" two tiles before the "N", place "I" one tile before the "N", click the "N" tile on the board to add to your played tiles, place the "D" one tile after the "N" tile. After completing this press play.
+  - To play against the AI of the game. Type "yes" to play against when prompted. Play as you would normally. After pressing play, the AI will make its play and the game will continue as normal.
 - Text version of the game
   - Change TEXT_VERSION to true
   - Change DEBUG to false
@@ -66,6 +67,11 @@
   - The game runs until a winner is determined under the rules of scrabble.
 - GUI version of the game
   - Change TEXT_VERSION to false
+
+---
+#### Known Issues
+- Triple Word and Double Word squares do not calculate the score correctly
+- Tile colors don't revert back when the tiles are removed from the board
 
 ---
 #### Explanation for the use of data structures

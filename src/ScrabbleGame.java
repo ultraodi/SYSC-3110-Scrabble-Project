@@ -726,12 +726,14 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("debug")) {
+        if (command.equals("-debug")) {
             DEBUG = true;
-        } else if (command.equals("noDebug")) {
+        } else if (command.equals("-noDebug")) {
             DEBUG = false;
-        } else if (command.equals("board")) {
+        } else if (command.equals("-board")) {
             scrabbleBoard.drawBoard();
+        } else if (command.equals("-quit")) {
+            System.exit(0);
         }
         isCommand = false;
     }
