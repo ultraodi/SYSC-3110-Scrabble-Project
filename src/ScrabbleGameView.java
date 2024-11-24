@@ -35,7 +35,9 @@ public class ScrabbleGameView extends JFrame {
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1500, 1000);
+        this.setSize(930, 1000);
+        this.setResizable(false);
+        this.setBackground(new Color(255, 230, 0));
         tileBag = new TileBag();
     }
 
