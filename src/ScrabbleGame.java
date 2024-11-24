@@ -51,8 +51,8 @@ public class ScrabbleGame {
     /** Stores the command*/
     private String command;
     /** Player Coordinates*/
-    int rowNum_program;
-    int colNum_program;
+    private int rowNum_program;
+    private int colNum_program;
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
 
