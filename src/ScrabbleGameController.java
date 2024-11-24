@@ -24,6 +24,7 @@ public class ScrabbleGameController implements ActionListener {
     private int lastRow = -1, lastCol = -1;    // Coordinates of the last letter placed
     private int clickCounter = 0;
     private boolean isLocked = false;
+    private boolean isRepeated = false;
 
 
     public ScrabbleGameController(ScrabbleGame model, ScrabbleGameView view) {
@@ -38,7 +39,7 @@ public class ScrabbleGameController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
         String command = source.getActionCommand();
-        // System.out.println("Button clicked with action command: " + command); // Debugging
+        //System.out.println("Button clicked with action command: " + command); // Debugging
 
         // Handle tile button clicks (player's rack)
         if (command.startsWith("Tile")) {
@@ -136,6 +137,7 @@ public class ScrabbleGameController implements ActionListener {
             selectedBoardTile = null;
         }
 
+
         else if (command.equals("Pass")) {
             while (!history.isEmpty()) {
                 undoLastMove();  // Undo each move in the history stack
@@ -168,75 +170,68 @@ public class ScrabbleGameController implements ActionListener {
 
         // Handle "Play" button action (clear the history)
         else if (command.equals("Play")) {
-            if(model.getPlayerTurn().getPlayerName().equals("AI") && view.getIsAI()){
+            if (!playedTiles.isEmpty()) {
+                // Generate the placement string based on the GUI's state
+                String placementString = generatePlacementString();
+                //placementString = getFullWord(placementString);
+                System.out.println(placementString);
+                model.setInputPlay(placementString);
 
-                handleAITurn();
+                // Call model's parsing and validation
+                if (model.parseInputPlay()) {
+                    if (model.isValidWord(model.getPlayerInputWord())) {
+                        if (model.playWord()) {
+                            // Update model: recalculate score and get new tiles
+                            model.getPlayerTurn().setScore(
+                                    model.getPlayerTurn().getScore() +
+                                            model.getTileBag().getInputScore(
+                                                    model.getPlayerInputWord(),
+                                                    model.getRowNumProgram(),
+                                                    model.getColNumProgram(),
+                                                    model.getPlayerInputPlayDirection()
+                                            )
+                            );
+                            model.getPlayerTurn().getMoreTiles(model.getTileBag());
+                            model.getScrabbleBoard().drawBoard();
 
-            }
-            else{
-                if (!playedTiles.isEmpty()) {
-                    // Generate the placement string based on the GUI's state
-                    String placementString = generatePlacementString();
-                    //placementString = getFullWord(placementString);
-                    System.out.println(placementString);
-                    model.setInputPlay(placementString);
+                            // Clear controller's state
+                            clearHistory();
+                            playedTiles.clear();
+                            firstRow = -1;
+                            firstCol = -1;
+                            lastRow = -1;
+                            lastCol = -1;
 
-                    // Call model's parsing and validation
-                    if (model.parseInputPlay()) {
-                        if (model.isValidWord(model.getPlayerInputWord())) {
-                            if (model.playWord()) {
-                                // Update model: recalculate score and get new tiles
-                                model.getPlayerTurn().setScore(
-                                        model.getPlayerTurn().getScore() +
-                                                model.getTileBag().getInputScore(
-                                                        model.getPlayerInputWord(),
-                                                        model.getRowNumProgram(),
-                                                        model.getColNumProgram(),
-                                                        model.getPlayerInputPlayDirection()
-                                                )
-                                );
-                                model.getPlayerTurn().getMoreTiles(model.getTileBag());
-                                model.getScrabbleBoard().drawBoard();
+                            // Re-enable all tile buttons
+                            view.enableAllTileButtons();
 
-                                // Clear controller's state
-                                clearHistory();
-                                playedTiles.clear();
-                                firstRow = -1;
-                                firstCol = -1;
-                                lastRow = -1;
-                                lastCol = -1;
+                            // Change turns
+                            model.changeTurns();
 
-                                // Re-enable all tile buttons
-                                view.enableAllTileButtons();
-
-                                // Change turns
-                                model.changeTurns();
-
-                                // Update view: refresh board and scores
-                                view.updateBoard();
-                                view.updateLabels();
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Words must connect or start from center.");
-                                view.updateBoard();
-                                view.updateLabels();
-                                //clearHistory();
-                                undoLastMove();
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, model.getPlayerInputWord() + " is an invalid word.");
+                            // Update view: refresh board and scores
                             view.updateBoard();
                             view.updateLabels();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Words must connect or start from center.");
+                            view.updateBoard();
+                            view.updateLabels();
+                            //clearHistory();
+                            undoLastMove();
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Invalid play format. Use: [word] [coordinate] [direction]");
+                        JOptionPane.showMessageDialog(null, model.getPlayerInputWord() + " is an invalid word.");
                         view.updateBoard();
                         view.updateLabels();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "No tiles were played.");
+                    JOptionPane.showMessageDialog(null, "Spell out your word correctly by clicking the button");
                     view.updateBoard();
                     view.updateLabels();
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "No tiles were played.");
+                view.updateBoard();
+                view.updateLabels();
             }
         }
     }
@@ -282,7 +277,7 @@ public class ScrabbleGameController implements ActionListener {
         ScrabbleBoard gameBoard = model.getScrabbleBoard();
         Square[][] board = gameBoard.getBoard();
 
-        // Check if the board is completely empty (all tiles are null)
+        // Check if the board is completely empty
         boolean isBoardEmpty = true;
         for (int row = 0; row < gameBoard.SIZE; row++) {
             for (int col = 0; col < gameBoard.SIZE; col++) {
@@ -291,12 +286,10 @@ public class ScrabbleGameController implements ActionListener {
                     break;
                 }
             }
-            if (!isBoardEmpty) {
-                break;
-            }
+            if (!isBoardEmpty) break;
         }
 
-        // If the board is empty, the first move should be placed at the center
+        // Handle the empty board case
         if (isBoardEmpty) {
             boolean placeVertically = Math.random() < 0.5;
             String direction = placeVertically ? "v" : "h";
@@ -315,70 +308,35 @@ public class ScrabbleGameController implements ActionListener {
                     // Check if the placed letter matches any letter in aiWord
                     for (int i = 0; i < wordLength; i++) {
                         if (placedLetter.equals(letters[i])) {
-                            // Check vertical placement
-                            String direction = "v";
-                            int startRow = row - i;
-                            int startCol = col;
-
-                            // Adjust starting row upwards
-                            while (startRow > 0 && board[startRow - 1][col].getPlacedTile() != null) {
-                                startRow--;
+                            // Ensure that there is enough space for placement in all 4 directions
+                            if (!prePlacementValidation(aiWord, board, row, col, i)) {
+                                continue;  // Skip if the word cannot be placed
                             }
 
-                            // Combine letters below the word
-                            StringBuilder combinedWord = new StringBuilder(aiWord);
-                            for (int checkRow = row + 1; checkRow < gameBoard.SIZE; checkRow++) {
-                                if (board[checkRow][col].getPlacedTile() != null) {
-                                    combinedWord.append(board[checkRow][col].getPlacedTile().getLetter());
-                                } else {
-                                    break;
+                            // Try placing the word vertically (up-down)
+                            if (canPlaceWord(aiWord, board, row, col, i, "v")) {
+                                String placementString = generateWordString(aiWord,
+                                        Integer.toHexString(row - i + 1).toUpperCase(),
+                                        Integer.toHexString(col + 1).toUpperCase(),
+                                        "v");
+
+                                // After placement, validate if the surrounding words are valid
+                                if (postPlacementValidation(aiWord, board, row, col, i, "v")) {
+                                    return placementString;  // Valid placement found
                                 }
                             }
 
-                            // Check one tile further down
-                            int extraRow = row + wordLength - i;
-                            if (extraRow < gameBoard.SIZE && board[extraRow][col].getPlacedTile() != null) {
-                                combinedWord.append(board[extraRow][col].getPlacedTile().getLetter());
-                            }
+                            // Try placing the word horizontally (left-right)
+                            if (canPlaceWord(aiWord, board, row, col, i, "h")) {
+                                String placementString = generateWordString(aiWord,
+                                        Integer.toHexString(row + 1).toUpperCase(),
+                                        Integer.toHexString(col - i + 1).toUpperCase(),
+                                        "h");
 
-                            if (model.isValidWord(combinedWord.toString()) && canPlaceWord(aiWord, board, startRow, startCol, i, direction)) {
-                                return generateWordString(aiWord,
-                                        Integer.toHexString(startRow + 1).toUpperCase(),
-                                        Integer.toHexString(startCol + 1).toUpperCase(),
-                                        direction);
-                            }
-
-                            // Check horizontal placement
-                            direction = "h";
-                            startRow = row;
-                            startCol = col - i;
-
-                            // Adjust starting column leftwards
-                            while (startCol > 0 && board[row][startCol - 1].getPlacedTile() != null) {
-                                startCol--;
-                            }
-
-                            // Combine letters to the right of the word
-                            combinedWord = new StringBuilder(aiWord);
-                            for (int checkCol = col + 1; checkCol < gameBoard.SIZE; checkCol++) {
-                                if (board[row][checkCol].getPlacedTile() != null) {
-                                    combinedWord.append(board[row][checkCol].getPlacedTile().getLetter());
-                                } else {
-                                    break;
+                                // After placement, validate if the surrounding words are valid
+                                if (postPlacementValidation(aiWord, board, row, col, i, "h")) {
+                                    return placementString;  // Valid placement found
                                 }
-                            }
-
-                            // Check one tile further right
-                            int extraCol = col + wordLength - i;
-                            if (extraCol < gameBoard.SIZE && board[row][extraCol].getPlacedTile() != null) {
-                                combinedWord.append(board[row][extraCol].getPlacedTile().getLetter());
-                            }
-
-                            if (model.isValidWord(combinedWord.toString()) && canPlaceWord(aiWord, board, startRow, startCol, i, direction)) {
-                                return generateWordString(aiWord,
-                                        Integer.toHexString(startRow + 1).toUpperCase(),
-                                        Integer.toHexString(startCol + 1).toUpperCase(),
-                                        direction);
                             }
                         }
                     }
@@ -391,163 +349,122 @@ public class ScrabbleGameController implements ActionListener {
         return "No valid placement found";
     }
 
-
-    // Combine vertical word with surrounding letters
-    private String combineVertical(String word, Square[][] board, int startRow, int col) {
-        StringBuilder combined = new StringBuilder();
-
-        // Append letters above the start of the word
-        for (int r = startRow - 1; r >= 0 && board[r][col].getPlacedTile() != null; r--) {
-            combined.insert(0, board[r][col].getPlacedTile().getLetter());
+    private boolean prePlacementValidation(String aiWord, Square[][] board, int row, int col, int letterIndex) {
+        // Ensure that there is enough space in all four directions before placing the word
+        if (!canPlaceWordWithBuffer(aiWord, board, row, col, letterIndex, "v") &&
+                !canPlaceWordWithBuffer(aiWord, board, row, col, letterIndex, "h")) {
+            return false;  // Cannot place word
         }
-
-        // Append the word itself
-        combined.append(word);
-
-        // Append letters below the word
-        for (int r = startRow + word.length(); r < board.length && board[r][col].getPlacedTile() != null; r++) {
-            combined.append(board[r][col].getPlacedTile().getLetter());
-        }
-
-        return combined.toString();
+        return true;
     }
 
-    // Combine horizontal word with surrounding letters
-    private String combineHorizontal(String word, Square[][] board, int row, int startCol) {
-        StringBuilder combined = new StringBuilder();
-
-        // Append letters to the left of the start of the word
-        for (int c = startCol - 1; c >= 0 && board[row][c].getPlacedTile() != null; c--) {
-            combined.insert(0, board[row][c].getPlacedTile().getLetter());
+    private boolean canPlaceWordWithBuffer(String aiWord, Square[][] board, int row, int col, int letterIndex, String direction) {
+        // Check if there's space for the word and one extra tile in the direction
+        if (direction.equals("v")) {
+            if (row - 1 >= 0 && board[row - 1][col].getPlacedTile() != null) return false;
+            if (row + aiWord.length() < board.length && board[row + aiWord.length()][col].getPlacedTile() != null) return false;
+        } else { // horizontal
+            if (col - 1 >= 0 && board[row][col - 1].getPlacedTile() != null) return false;
+            if (col + aiWord.length() < board[row].length && board[row][col + aiWord.length()].getPlacedTile() != null) return false;
         }
-
-        // Append the word itself
-        combined.append(word);
-
-        // Append letters to the right of the word
-        for (int c = startCol + word.length(); c < board[row].length && board[row][c].getPlacedTile() != null; c++) {
-            combined.append(board[row][c].getPlacedTile().getLetter());
-        }
-
-        return combined.toString();
+        return true;
     }
 
+    private boolean postPlacementValidation(String aiWord, Square[][] board, int row, int col, int letterIndex, String direction) {
+        // After placing the word, check the surrounding directions (up, down, left, right)
+        String combinedWord;
 
-    // Helper method to extend the word and validate
-    private String extendWord(String aiWord, Square[][] board, int startRow, int startCol, int offset, String direction) {
-        StringBuilder extendedWord = new StringBuilder(aiWord);
-
-        int row = direction.equals("v") ? startRow + offset + 1 : startRow;
-        int col = direction.equals("h") ? startCol + offset + 1 : startCol;
-
-        while (row < board.length && col < board[0].length) {
-            Square currentSquare = board[row][col];
-
-            // Stop extending if the square is empty
-            if (currentSquare == null || currentSquare.getPlacedTile() == null) break;
-
-            // Append the letter to the word
-            extendedWord.append(currentSquare.getPlacedTile().getLetter());
-
-            // Move to the next square in the current direction
-            if (direction.equals("v")) row++;
-            else col++;
+        // Check vertical (up/down)
+        if (direction.equals("v")) {
+            if (!checkDirection(aiWord, board, row, col, "v", letterIndex)) {
+                return false;  // Invalid combination found
+            }
+        } else { // Horizontal (left/right)
+            if (!checkDirection(aiWord, board, row, col, "h", letterIndex)) {
+                return false;  // Invalid combination found
+            }
         }
 
-        return extendedWord.toString();
+        return true;  // If all checks are valid
     }
 
+    private boolean checkDirection(String aiWord, Square[][] board, int row, int col, String direction, int letterIndex) {
+        StringBuilder combinedWord = new StringBuilder();
 
-    // Helper function to check if the word can be placed
+        if (direction.equals("v")) { // Vertical direction
+            int upRow = row;
+            int downRow = row + letterIndex;
+
+            // Check upwards direction for combined word
+            while (upRow >= 0 && board[upRow][col].getPlacedTile() != null) {
+                combinedWord.insert(0, board[upRow][col].getPlacedTile().getLetter());
+                upRow--;
+            }
+
+            // Check downwards direction for combined word
+            while (downRow < board.length && board[downRow][col].getPlacedTile() != null) {
+                combinedWord.append(board[downRow][col].getPlacedTile().getLetter());
+                downRow++;
+            }
+
+            // Check the first letter (upward direction - top)
+            if (row - 1 >= 0 && board[row - 1][col].getPlacedTile() != null) {
+                combinedWord.insert(0, board[row - 1][col].getPlacedTile().getLetter());
+            }
+
+            // Check the last letter (downward direction - bottom)
+            if (row + letterIndex < board.length && board[row + letterIndex][col].getPlacedTile() != null) {
+                combinedWord.append(board[row + letterIndex][col].getPlacedTile().getLetter());
+            }
+        } else { // Horizontal direction
+            int leftCol = col;
+            int rightCol = col + letterIndex;
+
+            // Check leftwards direction for combined word
+            while (leftCol >= 0 && board[row][leftCol].getPlacedTile() != null) {
+                combinedWord.insert(0, board[row][leftCol].getPlacedTile().getLetter());
+                leftCol--;
+            }
+
+            // Check rightwards direction for combined word
+            while (rightCol < board[row].length && board[row][rightCol].getPlacedTile() != null) {
+                combinedWord.append(board[row][rightCol].getPlacedTile().getLetter());
+                rightCol++;
+            }
+
+            // Check the first letter (left direction - left side)
+            if (col - 1 >= 0 && board[row][col - 1].getPlacedTile() != null) {
+                combinedWord.insert(0, board[row][col - 1].getPlacedTile().getLetter());
+            }
+
+            // Check the last letter (right direction - right side)
+            if (col + letterIndex < board[row].length && board[row][col + letterIndex].getPlacedTile() != null) {
+                combinedWord.append(board[row][col + letterIndex].getPlacedTile().getLetter());
+            }
+        }
+
+        // After combining, validate if the formed word is valid
+        return model.isValidWord(combinedWord.toString());
+    }
+
+    // Helper method to check if the word can be placed (both vertical and horizontal)
     private boolean canPlaceWord(String aiWord, Square[][] board, int row, int col, int offset, String direction) {
         int wordLength = aiWord.length();
 
-        if (direction.equals("v")) {
-            for (int i = 0; i < wordLength; i++) {
-                int currentRow = row - offset + i;
-                if (currentRow < 0 || currentRow >= board.length) return false;
+        for (int i = 0; i < wordLength; i++) {
+            int currentRow = direction.equals("v") ? row + i : row;
+            int currentCol = direction.equals("h") ? col + i : col;
 
-                Square square = board[currentRow][col];
-                if (square.getPlacedTile() != null) {
-                    String placedLetter = square.getPlacedTile().getLetter();
-                    if (!placedLetter.equals(String.valueOf(aiWord.charAt(i)))) return false;
-                }
+            if (currentRow < 0 || currentRow >= board.length || currentCol < 0 || currentCol >= board[0].length) {
+                return false; // Out of bounds
             }
-        } else if (direction.equals("h")) {
-            for (int i = 0; i < wordLength; i++) {
-                int currentCol = col - offset + i;
-                if (currentCol < 0 || currentCol >= board[0].length) return false;
 
-                Square square = board[row][currentCol];
-                if (square.getPlacedTile() != null) {
-                    String placedLetter = square.getPlacedTile().getLetter();
-                    if (!placedLetter.equals(String.valueOf(aiWord.charAt(i)))) return false;
-                }
+            Square currentSquare = board[currentRow][currentCol];
+            if (currentSquare.getPlacedTile() != null && !aiWord.substring(i, i + 1).equals(currentSquare.getPlacedTile().getLetter())) {
+                return false; // Letter mismatch
             }
         }
 
-        // Validate adjacent tiles to ensure all words formed are valid
-        return validateAdjacentTiles(aiWord, board, row, col, offset, direction);
-
-    }
-
-    // Validate adjacent tiles to ensure proper Scrabble rules
-    private boolean validateAdjacentTiles(String aiWord, Square[][] board, int row, int col, int offset, String direction) {
-        StringBuilder wordToCheck = new StringBuilder();
-
-        if (direction.equals("v")) {
-            for (int i = 0; i < aiWord.length(); i++) {
-                int currentRow = row - offset + i;
-
-                // Build a vertical word by including surrounding tiles
-                wordToCheck.setLength(0); // Reset the word builder
-                int tempRow = currentRow;
-                // Check upwards
-                while (tempRow >= 0 && board[tempRow][col].getPlacedTile() != null) {
-                    wordToCheck.insert(0, board[tempRow][col].getPlacedTile().getLetter());
-                    tempRow--;
-                }
-                // Add the new letter
-                wordToCheck.append(aiWord.charAt(i));
-                // Check downwards
-                tempRow = currentRow + 1;
-                while (tempRow < board.length && board[tempRow][col].getPlacedTile() != null) {
-                    wordToCheck.append(board[tempRow][col].getPlacedTile().getLetter());
-                    tempRow++;
-                }
-                // Validate the constructed word
-                if (!model.isValidWord(wordToCheck.toString())) {
-                    return false; // Invalid word formed
-                }
-            }
-        } else if (direction.equals("h")) {
-            for (int i = 0; i < aiWord.length(); i++) {
-                int currentCol = col - offset + i;
-
-                // Build a horizontal word by including surrounding tiles
-                wordToCheck.setLength(0); // Reset the word builder
-                int tempCol = currentCol;
-                // Check leftwards
-                while (tempCol >= 0 && board[row][tempCol].getPlacedTile() != null) {
-                    wordToCheck.insert(0, board[row][tempCol].getPlacedTile().getLetter());
-                    tempCol--;
-                }
-                // Add the new letter
-                wordToCheck.append(aiWord.charAt(i));
-                // Check rightwards
-                tempCol = currentCol + 1;
-                while (tempCol < board[0].length && board[row][tempCol].getPlacedTile() != null) {
-                    wordToCheck.append(board[row][tempCol].getPlacedTile().getLetter());
-                    tempCol++;
-                }
-                // Validate the constructed word
-                if (!model.isValidWord(wordToCheck.toString())) {
-                    return false; // Invalid word formed
-                }
-            }
-        }
-
-        // If all constructed words are valid
         return true;
     }
 
@@ -555,6 +472,10 @@ public class ScrabbleGameController implements ActionListener {
     // Generate the placement string
     private String generateWordString(String aiWord, String row, String col, String direction) {
         return aiWord + " " + row + col + " " + direction;
+    }
+
+    public void setIsRepeated(boolean isRepeated){
+        this.isRepeated = isRepeated;
     }
 
     // handle AI play
@@ -612,13 +533,16 @@ public class ScrabbleGameController implements ActionListener {
         model.setInputPlay(wordToPlace);
 
         if (wordToPlace.equals("No valid placement found")){
-            // If no valid word was placed, pass the turn
-            JOptionPane.showMessageDialog(
-                    view,
-                    "AI could not find a valid move and has passed its turn.",
-                    "AI Turn Complete",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            if(!isRepeated){
+                // If no valid word was placed, pass the turn
+                JOptionPane.showMessageDialog(
+                        view,
+                        "AI could not find a valid move and has passed its turn.",
+                        "AI Turn Complete",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+
 
             playedTiles.clear();  // Clear the played tiles list
             firstRow = -1;
