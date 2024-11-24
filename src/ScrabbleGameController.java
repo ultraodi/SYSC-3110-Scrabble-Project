@@ -219,28 +219,20 @@ public class ScrabbleGameController implements ActionListener {
                             model.changeTurns();
 
                             // Update view: refresh board and scores
-                            view.updateBoard();
-                            view.updateLabels();
                         } else {
                             JOptionPane.showMessageDialog(null, "Couldn't play word.");
-                            view.updateBoard();
-                            view.updateLabels();
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid word.");
-                        view.updateBoard();
-                        view.updateLabels();
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid play format. Use: [word] [coordinate] [direction]");
-                    view.updateBoard();
-                    view.updateLabels();
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No tiles were played.");
-                view.updateBoard();
-                view.updateLabels();
             }
+            view.updateBoard();
+            view.updateLabels();
         }
 
     }
