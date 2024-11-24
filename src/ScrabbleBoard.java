@@ -264,6 +264,11 @@ public class ScrabbleBoard {
         } else return;
     }
 
+
+    public Square[][] getBoardSquare(){
+        return board;
+    }
+
     /**
      * Draw the board in the stdout area.
      */

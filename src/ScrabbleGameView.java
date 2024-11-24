@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -28,6 +28,7 @@ public class ScrabbleGameView extends JFrame {
     ScrabbleGameController sgc;
     private TileBag tileBag;
     private JButton[] tileValueButtons = new JButton[7];
+    private boolean isAI = false;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -286,6 +287,7 @@ public class ScrabbleGameView extends JFrame {
 
         if (playWithAI.toString().toLowerCase().trim().equals("yes")){
 
+            isAI = true;
             String playerName = null;
             boolean validNameInput = false;
 
@@ -303,9 +305,11 @@ public class ScrabbleGameView extends JFrame {
                 Object playerInput = playerPane.getInputValue();
 
                 // Check if input is valid
-                if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                     playerName = playerInput.toString().trim();
                     validNameInput = true;  // Exit the loop if input is valid
+                } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                    JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                 }
@@ -319,6 +323,8 @@ public class ScrabbleGameView extends JFrame {
 
 
         } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
+
+            isAI = false;
 
             // Loop to get a valid number of players
             while (!validInput) {
@@ -368,9 +374,11 @@ public class ScrabbleGameView extends JFrame {
                     Object playerInput = playerPane.getInputValue();
 
                     // Check if input is valid
-                    if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
+                    if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
                         playerName = playerInput.toString().trim();
                         validNameInput = true;  // Exit the loop if input is valid
+                    } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                        JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                     } else {
                         JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                     }
@@ -383,6 +391,18 @@ public class ScrabbleGameView extends JFrame {
         }
 
         return playerNames; // Return list of names
+    }
+
+    public boolean getIsAI(){
+        return isAI;
+    }
+
+    public JButton getBoardSquare(int row, int col){
+        return buttons[row][col];
+    }
+
+    public void setBoardSquare(JButton button, int row, int col){
+        this.buttons[row][col] = button;
     }
 
     public void editSquare(int row, int col, String tileLetter, int tileValue) {
@@ -415,6 +435,7 @@ public class ScrabbleGameView extends JFrame {
 
             // Print each tile to the console
             String tilesString = model.getPlayerTurn().getTilesString();
+
             for (int i = 0; i < tilesString.length(); i++) {
                 if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
                     tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
@@ -426,12 +447,21 @@ public class ScrabbleGameView extends JFrame {
         }
     }
 
+
     public void enableAllTileButtons() {
         for (JButton button : tileButtons) {
             if (button != null) {
                 button.setEnabled(true); // Re-enable each button in the rack
             }
         }
+    }
+
+    public Square[][] getSquares(){
+        return this.squares;
+    }
+
+    public void setSquares(Square[][] squares){
+        this.squares = squares;
     }
 
     public void updateBoard() {
@@ -442,7 +472,7 @@ public class ScrabbleGameView extends JFrame {
         }
 
         // Get the current player's tiles and their positions
-        List<Tile> playerTiles = model.getPlayerTurn().getTiles();
+        //List<Tile> playerTiles = model.getPlayerTurn().getTiles();
 
         // Loop through all the squares on the board
         for (int row = 0; row < SIZE; row++) {

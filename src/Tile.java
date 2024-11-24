@@ -23,6 +23,11 @@ public class Tile {
         this.value = value;
     }
 
+    public Tile(String letter) {
+        this.player = null;
+        this.letter = letter.toUpperCase();
+    }
+
     /**
      * Gets the player in possession of the tile.
      * @return The player in possession of th tile.
