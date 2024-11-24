@@ -15,7 +15,7 @@ import static java.lang.String.*;
  */
 public class ScrabbleGame {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
-    public static boolean TEXT_VERSION = false;
+    public static boolean TEXT_VERSION = true;
     /** Players of the game*/
     private ArrayList<Player> players;
     /** Holds current player's turn*/
@@ -706,12 +706,14 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("debug")) {
+        if (command.equals("-debug")) {
             DEBUG = true;
-        } else if (command.equals("noDebug")) {
+        } else if (command.equals("-noDebug")) {
             DEBUG = false;
-        } else if (command.equals("board")) {
+        } else if (command.equals("-board")) {
             scrabbleBoard.drawBoard();
+        } else if (command.equals("-quit")) {
+            System.exit(0);
         }
         isCommand = false;
     }

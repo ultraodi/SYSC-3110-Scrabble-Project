@@ -68,6 +68,11 @@
   - Change TEXT_VERSION to false
 
 ---
+#### Known Issues
+- Triple Word and Double Word squares do not calculate the score correctly
+- Tile colors don't revert back when the tiles are removed from the board
+
+---
 #### Explanation for the use of data structures
 - See data_structure_explanations.md
   - HashSet<String> validWords: ScrabbleGame
