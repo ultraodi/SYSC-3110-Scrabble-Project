@@ -321,7 +321,6 @@ public class ScrabbleGameView extends JFrame {
 
             return playerNames; // Return list of names
 
-
         } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
 
             isAI = false;
