@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="23" class="java.beans.XMLDecoder">
+<java version="23.0.1" class="java.beans.XMLDecoder">
  <object class="com.horstmann.violet.ClassDiagramGraph">
   <void method="addNode">
    <object class="com.horstmann.violet.ClassNode" id="ClassNode0">
@@ -309,7 +309,7 @@ colNum_program: int
       <string>width</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>200.0</double>
+       <double>300.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -333,9 +333,9 @@ colNum_program: int
     </void>
     <void property="text">
      <void property="text">
-      <string>author: Marvel Adotse-ogah
+      <string>author: Marvel Adotse-ogah, Abdul Babatunde
 team: Group 4
-version: November 12, 2024
+version: November 24, 2024
 </string>
      </void>
     </void>
@@ -506,30 +506,39 @@ version: November 12, 2024
 -currentPlayerScoreLabel: JLabel
 -buttons: JButton[][]
 -squares: Square[][]
--tileButtons: JButton[]
--&lt;u&gt;SIZE: int = 15&lt;/u&gt;
+-tileButtons: JButton[] = new JButton[7]
++&lt;u&gt;SIZE: int = 15&lt;/u&gt;
 -model: ScrabbleGame
--sgc: ScrabbleGameController</string>
+-sgc: ScrabbleGameController
+-tileBag: TileBag
+-tileValueButtons: JButtons: JButton[] = new JButton[7]
+-isAI: boolean = false</string>
      </void>
     </void>
     <void property="methods">
      <void property="text">
       <string>+ScrabbleGameView()
++ScrabbleGameView()
 +initializeBoard(): void
 +setModel(model: ScrabbleGame): void
 -createBoard(): void
 -setButtonDisplay(button: JButton, square: Square): void
 -getSquareType(row: int, col: int): Square.Types
 +setupPlayersOptionPane(): List&lt;String&gt;
++getIsAI(): boolean
++getBoardSquare(int, int): JButton
++setBoardSquare(JButton, int, int): void
 +editSquare(row: int, col: int, tileLetter: String, tileValue: int): void
 +updateLabels(): void
++enableAllTileButtons(): void
++getSquares(): Square[][]
++setSquares(Squares[][]): void
 +updateBoard(): void
 +getTileValueAt(rowIndex: int, colIndex: int): int
 +getTileLetterAt(rowIndex: int, colIndex: int): String
 +getPlayerRackButton(index: int): JButton
 +disableBoardTile(rowIndex: int, colIndex: int): void
-+enableBoardTile(rowIndex: int, colIndex: int): void
-+&lt;u&gt;main(args: String[]): void,/u&gt;</string>
++enableBoardTile(rowIndex: int, colIndex: int): void</string>
      </void>
     </void>
     <void property="name">
@@ -671,20 +680,33 @@ ActionListener</string>
       <string>-model: ScrabbleGame
 -view: ScrabbleGameView
 -selectedTile: Tile
+-selectedBoardTile: Tile
 -history: Stack&lt;TileState&gt;
 -playedTiles: List&lt;Tile&gt;
--selectedTileIndex: int
--firstRow: int
--firstCol: int
--lastRow: int
--lastCol: int</string>
+-selectedTileIndex: int = -1
+-firstRow: int = -1
+-firstCol: int = -1
+-lastRow: int = -1
+-lastCol: int = -1
+-isLocked: boolean = false</string>
      </void>
     </void>
     <void property="methods">
      <void property="text">
       <string>+ScrabbleGameController(model: ScrabbleGame, view: ScrabbleGameView)
 +actionPerformed(e: ActionEvent): void
+-enableAITilesForClick(List&lt;Tile&gt;,List&lt;int[]&gt;): void
+-calculateWordScore(String): int
+-getFullWord(String): String
+-combineVertical(String, Square[][], int, int): String
+-combinHorizontal(String, Square[][], int, int): String
+-extendWord(String, Square[][], int , int, int, String): String
+-canPlaceWord(String, Square[][], int, int, int, String): boolean
+-validateAdjacentTiles(String, Square[][], int, int, int, String): boolean
+-generateWordString(String, String, String, String): String
++handleAITurn(): void
 -savePreviousState(rowIndex: int, colIndex: int): void
+-createTileFromBoard(int, int): Tile
 -enableAllTileButtons(): void
 -undoLastMove(): void
 -clearHistory(): void
@@ -706,19 +728,19 @@ ActionListener</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double13"/>
-      <double>1770.0</double>
+      <double>1780.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double13"/>
-      <double>610.0</double>
+      <double>510.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1770.0</double>
-     <double>610.0</double>
+     <double>1780.0</double>
+     <double>510.0</double>
     </void>
    </object>
   </void>
@@ -760,6 +782,45 @@ ActionListener</string>
     <void method="setLocation">
      <double>2510.0</double>
      <double>570.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.ClassNode" id="ClassNode12">
+    <void property="methods">
+     <void property="text">
+      <string>-generatePowerSetWithPermutations(String): List&lt;String&gt;
+-generatePowerSet(String): Set&lt;String&gt;
+-generateSubSets(String, int, String, Set&lt;String&gt;): void
+-generatePermutations(String): List&lt;String&gt;
++generateValidWords(String): List&lt;String&gt;
+-generatePermutationsHelper(String, String, List&lt;String&gt;): void</string>
+     </void>
+    </void>
+    <void property="name">
+     <void property="text">
+      <string>PowerSetWithPermutations</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double15">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double15"/>
+      <double>240.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double15"/>
+      <double>1820.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>240.0</double>
+     <double>1820.0</double>
     </void>
    </object>
   </void>
