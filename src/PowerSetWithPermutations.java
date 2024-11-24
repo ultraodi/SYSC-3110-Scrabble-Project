@@ -7,13 +7,13 @@ import java.util.LinkedHashSet;
 /**
  * The {@code PowerSetWithPermutations} class provides utility methods to:
  *
- *  - Generate the power set (all subsets) of a string.</li>
- *  - Generate permutations of each subset in the power set.</li>
- *  - Filter subsets and permutations to generate valid words (e.g., Scrabble words).</li>
+ *  - Generate the power set (all subsets) of a string.
+ *  - Generate permutations of each subset in the power set.
+ *  - Filter subsets and permutations to generate valid words (e.g., Scrabble words).
  *
  *
  * This class includes methods for recursive generation of subsets and permutations
- * and integrates with a Scrabble game instance to validate generated words.</p>
+ * and integrates with a Scrabble game instance to validate generated words.
  *
  * @author Clinton Odinamadu
  */
