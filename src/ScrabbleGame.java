@@ -219,7 +219,7 @@ public class ScrabbleGame {
 
         playerTurn = playerOrder.get(currentPlayerIndex);
         // If it's the AI's turn, trigger the AI's play automatically
-        if (playerTurn.getPlayerName().equals("AI")) {
+        if (playerTurn.getPlayerName().equals("AI") && view.getIsAI()) {
             controller.handleAITurn();
         }
     }
@@ -460,6 +460,8 @@ public class ScrabbleGame {
             if (DEBUG) System.out.printf("%s word is %s%n", debugTag, _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 System.out.printf("%s'%s' is not a word.\n", debugTag, _pl.getWordString());
+                controller.setIsRepeated(true);
+                controller.handleAITurn();
                 return false;
             }
         }
@@ -542,62 +544,93 @@ public class ScrabbleGame {
      * @return The order of play for the players.
      */
     public ArrayList<Player> determinePlayerTurns() {
-        ArrayList<Player> returnTurns = new ArrayList<>();
-        ArrayList<String> playerDraws = new ArrayList<>();
-        ArrayList<String> sortedPlayerDraws = new ArrayList<>();
-        ArrayList<Tile> tile;
+        if(view.getIsAI()) {
+            ArrayList<Player> returnTurns = new ArrayList<>();
+            ArrayList<String> playerDraws = new ArrayList<>();
+            ArrayList<String> sortedPlayerDraws = new ArrayList<>();
+            ArrayList<Tile> tile;
 
-        // Initialize each player's tiles and check if AI is playing
-        boolean isAIPlaying = false;
-        Player aiPlayer = null;
-        Player nonAIPlayer = null;
+            boolean isAIPlaying = false;
+            Player aiPlayer = null;
+            Player nonAIPlayer = null;
 
-        for (Player player : players) {
-            // Get random tiles for each player
-            tile = tileBag.getRandomTilesFromBag(1);
-            player.setPlayerTiles(tile);
-            playerDraws.add(tile.get(0).getLetter()); // Add the drawn letter for turn logic
-            player.getMoreTiles(tileBag); // Fill their rack with additional tiles
+            // Initialize each player's tiles and check if "AI" is playing
+            for (Player player : players) {
+                tile = tileBag.getRandomTilesFromBag(1);
+                player.setPlayerTiles(tile);
+                playerDraws.add(tile.get(0).getLetter()); // Use get(0) to access the first tile
+                player.getMoreTiles(tileBag); // Take the number of necessary tiles needed
 
-            // Check if the player is AI
-            if (player.getPlayerName().equals("AI")) {
-                isAIPlaying = true;
-                aiPlayer = player;
-            } else {
-                nonAIPlayer = player;
-            }
-        }
-
-        // If AI is playing, set the other player as the starting player
-        if (isAIPlaying && nonAIPlayer != null) {
-            returnTurns.add(nonAIPlayer); // Non-AI player starts
-            returnTurns.add(aiPlayer);   // AI player goes second
-            return returnTurns;
-        }
-
-        // Default logic if AI is not playing
-        int lowestIndex;
-        String minChar;
-
-        // Determine player turns based on drawn tiles
-        while (!playerDraws.isEmpty()) {
-            minChar = playerDraws.get(0);
-            lowestIndex = 0;
-
-            for (int i = 0; i < playerDraws.size(); i++) {
-                if (minChar.charAt(0) > playerDraws.get(i).charAt(0)) {
-                    minChar = playerDraws.get(i);
-                    lowestIndex = i;
+                if (player.getPlayerName().equals("AI")) {
+                    isAIPlaying = true;
+                    aiPlayer = player;
+                } else {
+                    nonAIPlayer = player;
                 }
             }
 
-            sortedPlayerDraws.add(minChar);
-            playerDraws.set(lowestIndex, "a"); // Mark as used
-            returnTurns.add(players.get(lowestIndex)); // Add player to return list
-            playerDraws.remove(lowestIndex); // Remove the used tile
+            // Check if "AI" is playing and view.getIsAI() is true
+            if (isAIPlaying && view.getIsAI() && nonAIPlayer != null) {
+                returnTurns.add(nonAIPlayer); // Non-AI player starts
+                returnTurns.add(aiPlayer);   // AI player goes second
+                return returnTurns;
+            }
         }
+        else{
+            ArrayList<Player> returnTurns = new ArrayList<>();
+            ArrayList<String> playerDraws = new ArrayList<>();
+            ArrayList<String> sortedPlayerDraws = new ArrayList<>();
+            ArrayList<Tile> tile;
 
-        return returnTurns;
+            // Initialize each player's tiles
+            for (Player player : players) {
+                tile = tileBag.getRandomTilesFromBag(1);
+                player.setPlayerTiles(tile);
+                playerDraws.add(tile.getFirst().getLetter()); // Use getFirst() to access the first tile
+                player.getMoreTiles(tileBag); // Take the number of necessary tiles needed.
+            }
+
+            int lowestIndex = 0;
+            String minChar;
+
+            // Determine player turns based on drawn tiles
+            for (Player player : players) {
+                minChar = playerDraws.getFirst(); // Use getFirst() to access the first element
+                lowestIndex = 0;
+
+                for (int i = 0; i < playerDraws.size(); i++) {
+                    if (minChar.charAt(0) > playerDraws.get(i).charAt(0)) {
+                        minChar = playerDraws.get(i);
+                        lowestIndex = i;
+                    }
+                }
+
+                sortedPlayerDraws.add(minChar);
+                playerDraws.remove(lowestIndex); // Remove the drawn tile for that player
+                playerDraws.add(lowestIndex, "a"); // Mark as used
+                returnTurns.add(players.get(lowestIndex)); // Add player to return list
+            }
+
+            // Debug output for player turns
+            for (int j = 0; j < returnTurns.size(); j++) {
+                System.out.printf("\nPlayer: %s Tile Drawn: %s", returnTurns.get(j).getPlayerName(), sortedPlayerDraws.get(j));
+            }
+
+            // Print player order
+            System.out.print("\nPlayer order is ");
+            for (Player player : returnTurns) {
+                System.out.printf(player.getPlayerName() + " --> ");
+            }
+            System.out.print("Repeat\n\n");
+
+            // Set the first player in the returnTurns as playerTurn
+            if (!returnTurns.isEmpty()) {
+                playerTurn = returnTurns.getFirst();
+            }
+
+            return returnTurns;
+        }
+        return null;
     }
 
 
@@ -726,14 +759,12 @@ public class ScrabbleGame {
     }
 
     public void doCommand(String command) {
-        if (command.equals("-debug")) {
+        if (command.equals("debug")) {
             DEBUG = true;
-        } else if (command.equals("-noDebug")) {
+        } else if (command.equals("noDebug")) {
             DEBUG = false;
-        } else if (command.equals("-board")) {
+        } else if (command.equals("board")) {
             scrabbleBoard.drawBoard();
-        } else if (command.equals("-quit")) {
-            System.exit(0);
         }
         isCommand = false;
     }
