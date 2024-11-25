@@ -3,6 +3,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 /**
@@ -25,6 +26,7 @@ public class ScrabbleGameController implements ActionListener {
     private int clickCounter = 0;
     private boolean isLocked = false;
     private boolean isRepeated = false;
+    private int changedTileIndex = -1;
 
 
     public ScrabbleGameController(ScrabbleGame model, ScrabbleGameView view) {
@@ -46,8 +48,47 @@ public class ScrabbleGameController implements ActionListener {
             // Extract tile index (1-based to 0-based)
             selectedTileIndex = Integer.parseInt(command.split(" ")[1]) - 1;
             selectedTile = model.getPlayerTurn().getTiles().get(selectedTileIndex);  // Get selected tile from player's rack
-            // System.out.println("Selected Tile: " + selectedTile.getLetter() + " with value: " + selectedTile.getValue());
+            System.out.println("Letter" + selectedTile.getLetter());
+
+            if (Objects.equals(selectedTile.getLetter(), " ")) {
+                boolean validInput = false;
+                Object userInput = null; // Declare userInput outside the loop
+                String input = null;
+
+                while (!validInput) {
+                    JOptionPane numPlayersPane = new JOptionPane(
+                            "What letter do you want the blank tile to be?",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            JOptionPane.OK_CANCEL_OPTION
+                    );
+                    numPlayersPane.setWantsInput(true);
+                    JDialog dialog = numPlayersPane.createDialog("Blank Tile Selection");
+                    dialog.setVisible(true);
+
+                    // Retrieve and parse user input
+                    userInput = numPlayersPane.getInputValue();
+                    if (userInput != JOptionPane.UNINITIALIZED_VALUE) {
+                        input = userInput.toString().toUpperCase();
+                        if (input.length() == 1 && input.charAt(0) >= 'A' && input.charAt(0) <= 'Z') {
+                            validInput = true;
+                            // Process the valid input
+                            System.out.println("Selected letter: " + input);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Please enter a single letter from A-Z.");
+                        }
+                    }
+                }
+
+                selectedTile.setLetter(input.toUpperCase()); // Ensure the letter is set correctly
+                selectedTile.setValue(0);
+                view.updateBlankTile(input.toUpperCase(), 0, selectedTileIndex);
+
+                // Store the index of the tile that was changed
+                changedTileIndex = selectedTileIndex;
+                System.out.println("Tile at index " + changedTileIndex + " was changed.");
+            }
         }
+
 
         // Handle board tile clicks
         else if (command.startsWith("BoardTile")) {
@@ -58,7 +99,7 @@ public class ScrabbleGameController implements ActionListener {
 
             if (selectedTile != null) {
                 view.editSquare(rowIndex, colIndex, selectedTile.getLetter(), selectedTile.getValue());
-//                 System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
+                //System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
 
                 // Track the first placement
                 if (firstRow == -1 && firstCol == -1) {
@@ -159,16 +200,14 @@ public class ScrabbleGameController implements ActionListener {
 
         // Handle "Clear" button action (Undo action)
         else if (command.equals("Clear")) {
-            while (!history.isEmpty()) {
-                undoLastMove();  // Undo each move in the history stack
-            }
+            undoLastMove();  // Undo each move in the history stack
             playedTiles.clear();  // Clear the played tiles list
             firstRow = -1;
             firstCol = -1;
             lastRow = -1;
             lastCol = -1;
-            // System.out.println("Played tiles after clear: " + formatPlayedTiles());
-            // System.out.println("Cleared all moves.");
+            view.updateLabels();
+            view.updateBoard();
         }
 
         // Handle "Play" button action (clear the history)
@@ -259,7 +298,6 @@ public class ScrabbleGameController implements ActionListener {
             //boardTileButton.setText(aiPlayedTiles.get(i).getLetter());
         }
     }
-
 
     // Calculate the word value
     private int calculateWordScore(String word) {
@@ -706,10 +744,19 @@ public class ScrabbleGameController implements ActionListener {
 
     // Method to undo the last placed tile
     private void undoLastMove() {
+        // Get the tile to revert
+        selectedTile = model.getPlayerTurn().getTiles().get(changedTileIndex);
+
+        // Set it to blank only after history state is fetched
+        selectedTile.setLetter(" ");
+        System.out.println(selectedTile.getLetter());
+        selectedTile.setValue(0);
+        // Reset selected tile and word direction if needed
+        selectedTile = null;
+        selectedTileIndex = -1;
         if (!history.isEmpty()) {
-            TileState lastState = history.pop();  // Get the last state
-            // System.out.println("Undid last move at (" + lastState.getRow() + ", " + lastState.getCol() + ")");
-            // System.out.println("Previously at this tile: Letter = " + lastState.getLetter() + ", Value = " + lastState.getValue());
+            // Retrieve the last state from the history
+            TileState lastState = history.pop();
 
             // Revert the board tile to its previous state
             view.editSquare(lastState.getRow(), lastState.getCol(), lastState.getLetter(), lastState.getValue());
@@ -736,9 +783,6 @@ public class ScrabbleGameController implements ActionListener {
                 lastRow = peekState.getRow();
                 lastCol = peekState.getCol();
             }
-            // Reset selected tile and word direction if needed
-            selectedTile = null;
-            selectedTileIndex = -1;
         }
     }
 

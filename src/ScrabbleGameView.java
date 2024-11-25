@@ -35,8 +35,8 @@ public class ScrabbleGameView extends JFrame {
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(930, 1000);
-        this.setResizable(false);
+        this.setSize(1500, 1000);
+        this.setResizable(true);
         this.setBackground(new Color(255, 230, 0));
         tileBag = new TileBag();
     }
@@ -270,10 +270,6 @@ public class ScrabbleGameView extends JFrame {
 
 
     public List<String> setupPlayersOptionPane() {
-        List<String> playerNames = new ArrayList<>();
-
-        int numPlayers = 0;
-        boolean validInput = false;
         boolean wantsAI = false;
         Object playWithAI = null;
 
@@ -293,124 +289,184 @@ public class ScrabbleGameView extends JFrame {
                 return null; // Dialog was closed
             }
 
-
-            if (playWithAI.toString().toLowerCase().trim().equals("yes")){
+            if (playWithAI.toString().toLowerCase().trim().equals("yes")) {
                 wantsAI = true;
             } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
                 wantsAI = true;
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Please enter a valid OPTION.");
             }
-
         }
 
-        if (playWithAI.toString().toLowerCase().trim().equals("yes")){
+        if (playWithAI.toString().toLowerCase().trim().equals("yes")) {
+            // Setup with AI
+            return setupPlayersWithAI();
+        } else {
+            // Setup without AI
+            return setupPlayersWithoutAI();
+        }
+    }
 
-            isAI = true;
+    public List<String> setupPlayersWithAI() {
+        List<String> playerNames = new ArrayList<>();
+        isAI = true;
+        String playerName = null;
+        boolean validNameInput = false;
+
+        while (!validNameInput) {
+            JOptionPane playerPane = new JOptionPane(
+                    "Player 1 "  + ": What is your name?",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+            playerPane.setWantsInput(true);
+
+            JDialog playerDialog = playerPane.createDialog("Player 1 " + " Details");
+            playerDialog.setVisible(true);
+
+            Object playerInput = playerPane.getInputValue();
+
+            // Check if input is valid
+            if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
+                playerName = playerInput.toString().trim();
+                validNameInput = true;  // Exit the loop if input is valid
+            } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter a valid name.");
+            }
+        }
+
+        playerNames.add(playerName); // Add validated name to player names list
+
+        playerNames.add("AI"); // Adds the AI to the list of players
+
+        return playerNames; // Return list of names
+
+    }
+
+    public List<String> setupPlayersWithoutAI() {
+        List<String> playerNames = new ArrayList<>();
+
+        int numPlayers = 0;
+        boolean validInput = false;
+
+        // Loop to get a valid number of players
+        while (!validInput) {
+            JOptionPane numPlayersPane = new JOptionPane(
+                    "How many players will play (Lowest 2, Highest 4): ",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+            numPlayersPane.setWantsInput(true);
+            JDialog dialog = numPlayersPane.createDialog("Input");
+            dialog.setVisible(true);
+
+            // Retrieve and parse user input
+            Object userInput = numPlayersPane.getInputValue();
+            if (userInput == JOptionPane.UNINITIALIZED_VALUE) {
+                return null; // Dialog was closed
+            }
+
+            try {
+                numPlayers = Integer.parseInt(userInput.toString());
+                if (numPlayers >= 2 && numPlayers <= 4) {
+                    validInput = true; // Valid input received
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
+            }
+        }
+
+        // Loop to get each player's name
+        for (int i = 0; i < numPlayers; i++) {
             String playerName = null;
             boolean validNameInput = false;
 
             while (!validNameInput) {
                 JOptionPane playerPane = new JOptionPane(
-                        "Player 1 "  + ": What is your name?",
+                        "Player " + (i + 1) + ": What is your name?",
                         JOptionPane.INFORMATION_MESSAGE,
                         JOptionPane.OK_CANCEL_OPTION
                 );
                 playerPane.setWantsInput(true);
 
-                JDialog playerDialog = playerPane.createDialog("Player 1 " + " Details");
+                JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
                 playerDialog.setVisible(true);
 
                 Object playerInput = playerPane.getInputValue();
 
                 // Check if input is valid
-                if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
+                if (playerInput != null && !playerInput.toString().trim().isEmpty()) {
                     playerName = playerInput.toString().trim();
                     validNameInput = true;  // Exit the loop if input is valid
-                } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
-                    JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter a valid name.");
                 }
             }
 
             playerNames.add(playerName); // Add validated name to player names list
-
-            playerNames.add("AI"); // Adds the AI to the list of players
-
-            return playerNames; // Return list of names
-
-
-        } else if (playWithAI.toString().toLowerCase().trim().equals("no")) {
-
-            isAI = false;
-
-            // Loop to get a valid number of players
-            while (!validInput) {
-                JOptionPane numPlayersPane = new JOptionPane(
-                        "How many players will play (Lowest 2, Highest 4): ",
-                        JOptionPane.INFORMATION_MESSAGE,
-                        JOptionPane.OK_CANCEL_OPTION
-                );
-                numPlayersPane.setWantsInput(true);
-                JDialog dialog = numPlayersPane.createDialog("Input");
-                dialog.setVisible(true);
-
-                // Retrieve and parse user input
-                Object userInput = numPlayersPane.getInputValue();
-                if (userInput == JOptionPane.UNINITIALIZED_VALUE) {
-                    return null; // Dialog was closed
-                }
-
-                try {
-                    numPlayers = Integer.parseInt(userInput.toString());
-                    if (numPlayers >= 2 && numPlayers <= 4) {
-                        validInput = true; // Valid input received
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
-                    }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Please enter a valid number between 2 and 4.");
-                }
-            }
-
-            // Loop to get each player's name
-            for (int i = 0; i < numPlayers; i++) {
-                String playerName = null;
-                boolean validNameInput = false;
-
-                while (!validNameInput) {
-                    JOptionPane playerPane = new JOptionPane(
-                            "Player " + (i + 1) + ": What is your name?",
-                            JOptionPane.INFORMATION_MESSAGE,
-                            JOptionPane.OK_CANCEL_OPTION
-                    );
-                    playerPane.setWantsInput(true);
-
-                    JDialog playerDialog = playerPane.createDialog("Player " + (i + 1) + " Details");
-                    playerDialog.setVisible(true);
-
-                    Object playerInput = playerPane.getInputValue();
-
-                    // Check if input is valid
-                    if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
-                        playerName = playerInput.toString().trim();
-                        validNameInput = true;  // Exit the loop if input is valid
-                    } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
-                        JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Please enter a valid name.");
-                    }
-                }
-
-                playerNames.add(playerName); // Add validated name to player names list
-            }
-
-            return playerNames; // Return list of names
         }
 
         return playerNames; // Return list of names
+    }
+
+
+    private String getPlayerName(int playerNumber) {
+        String playerName = null;
+        boolean validNameInput = false;
+
+        while (!validNameInput) {
+            JOptionPane playerPane = new JOptionPane(
+                    "Player " + playerNumber + ": What is your name?",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+            playerPane.setWantsInput(true);
+
+            JDialog playerDialog = playerPane.createDialog("Player " + playerNumber + " Details");
+            playerDialog.setVisible(true);
+
+            Object playerInput = playerPane.getInputValue();
+
+            // Check if input is valid
+            if (playerInput != null && !playerInput.toString().trim().isEmpty() && !playerInput.toString().trim().toUpperCase().equals("AI")) {
+                playerName = playerInput.toString().trim();
+                validNameInput = true;  // Exit the loop if input is valid
+            } else if (playerInput.toString().trim().toUpperCase().equals("AI")) {
+                JOptionPane.showMessageDialog(this, "AI name is reserved, please pick another name");
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter a valid name.");
+            }
+        }
+
+        return playerName;
+    }
+
+
+    public void updateBlankTile(String letter, int value, int index) {
+        if (model != null) {
+            // Update labels with model data
+            tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+            currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+            currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+
+            if (isAI) {
+                AILabel.setText("AI score is " + model.getPlayerByName("AI").getScore());
+            }
+
+            // Update the tile details at the specified index
+            if (index >= 0 && index < tileButtons.length) {  // Ensure the index is within bounds
+                tileButtons[index].setText(letter);
+                tileValueButtons[index].setText(String.valueOf(value));
+            } else {
+                System.out.println("Index out of bounds.");
+            }
+        } else {
+            System.out.println("Model is not initialized.");
+        }
     }
 
     public boolean getIsAI(){
