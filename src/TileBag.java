@@ -76,6 +76,7 @@ public class TileBag {
         LETTER_VALUE.put("X", 8);
         LETTER_VALUE.put("Y", 4);
         LETTER_VALUE.put("Z", 10);
+        LETTER_VALUE.put(" ", 0);
     }
 
     /**

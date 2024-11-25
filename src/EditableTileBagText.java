@@ -37,6 +37,7 @@ public class EditableTileBagText {
         letterFrequency.put("X", 1);
         letterFrequency.put("Y", 2);
         letterFrequency.put("Z", 1);
+        letterFrequency.put(" ", 25);
         // Add all other letters...
 
         letterValue.put("A", 1);
@@ -65,6 +66,8 @@ public class EditableTileBagText {
         letterValue.put("X", 8);
         letterValue.put("Y", 4);
         letterValue.put("Z", 10);
+        letterValue.put(" ", 1);
+
         // Add all other letter values...
     }
 

@@ -45,11 +45,25 @@ public class Tile {
     }
 
     /**
+     * Sets the letter on the tile.
+     */
+    public void setLetter(String letter){
+        this.letter = letter;
+    }
+
+    /**
      * Gets the value of the tile.
      * @return The value of the tile.
      */
     public int getValue(){
         return value;
+    }
+
+    /**
+     * Sets the value of the tile.
+     */
+    public void setValue(int value){
+        this.value = value;
     }
 
     /**
