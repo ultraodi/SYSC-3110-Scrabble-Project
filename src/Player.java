@@ -115,6 +115,18 @@ public class Player {
     }
 
     /**
+     * Clears all the tiles currently held by the player and returns them to the tile bag.
+     * @param tileBag The tile bag to which the tiles will be returned.
+     */
+    public void clearAllTiles(TileBag tileBag) {
+        // Iterate through the player's tiles and return them to the tile bag
+        for (Tile tile : tiles) {
+            tileBag.addTileToBag(tile);  // Add each tile back to the tile bag
+        }
+        tiles.clear();  // Remove all tiles from the player's list
+    }
+
+    /**
      * Returns a tile to the player's tile deck.
      * @param tile The tile to be returned to the tile deck.
      * @return True if the tile could be returned. False otherwise.

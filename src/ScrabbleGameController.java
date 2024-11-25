@@ -27,6 +27,8 @@ public class ScrabbleGameController implements ActionListener {
     private boolean isLocked = false;
     private boolean isRepeated = false;
     private int changedTileIndex = -1;
+    private boolean isChangedTile = false;
+    private int numAiSkipped = 1;
 
 
     public ScrabbleGameController(ScrabbleGame model, ScrabbleGameView view) {
@@ -85,6 +87,7 @@ public class ScrabbleGameController implements ActionListener {
 
                 // Store the index of the tile that was changed
                 changedTileIndex = selectedTileIndex;
+                isChangedTile = true;
                 System.out.println("Tile at index " + changedTileIndex + " was changed.");
             }
         }
@@ -275,6 +278,15 @@ public class ScrabbleGameController implements ActionListener {
                 view.updateBoard();
                 view.updateLabels();
             }
+        }
+
+        else if (command.equals("Swap")) {
+            model.getPlayerTurn().clearAllTiles(model.getTileBag());
+            model.getPlayerTurn().getMoreTiles(model.getTileBag());
+            undoLastMove();
+            model.changeTurns();
+            view.updateBoard();
+            view.updateLabels();
         }
     }
 
@@ -573,6 +585,35 @@ public class ScrabbleGameController implements ActionListener {
         System.out.println(wordToPlace);
         model.setInputPlay(wordToPlace);
 
+        if (wordToPlace.equals("No valid placement found") && ((numAiSkipped % 2 == 0) && numAiSkipped != 0)) {
+            if(!isRepeated){
+                // If no valid word was placed, pass the turn
+                JOptionPane.showMessageDialog(
+                        view,
+                        "AI could not find a valid move and has swapped its tiles.",
+                        "AI Turn Complete",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+
+            numAiSkipped = 1;
+            playedTiles.clear();  // Clear the played tiles list
+            firstRow = -1;
+            firstCol = -1;
+            lastRow = -1;
+            lastCol = -1;
+            model.getPlayerTurn().clearAllTiles(model.getTileBag());
+            model.getPlayerTurn().getMoreTiles(model.getTileBag());
+            undoLastMove();
+            model.changeTurns();
+
+            // Update view: refresh board and scores
+            view.updateBoard();
+            view.updateLabels();
+
+            return;
+        }
+
         if (wordToPlace.equals("No valid placement found")){
             if(!isRepeated){
                 // If no valid word was placed, pass the turn
@@ -595,6 +636,8 @@ public class ScrabbleGameController implements ActionListener {
             // Update view: refresh board and scores
             view.updateBoard();
             view.updateLabels();
+
+            numAiSkipped++;
 
             return;
         }
@@ -706,7 +749,6 @@ public class ScrabbleGameController implements ActionListener {
     }
 
 
-
     // Method to save the previous state of a tile before it is updated
     private void savePreviousState(int rowIndex, int colIndex) {
         String letter = view.getTileLetterAt(rowIndex, colIndex);
@@ -745,15 +787,18 @@ public class ScrabbleGameController implements ActionListener {
     // Method to undo the last placed tile
     private void undoLastMove() {
         // Get the tile to revert
-        selectedTile = model.getPlayerTurn().getTiles().get(changedTileIndex);
+        if (isChangedTile) {
+            selectedTile = model.getPlayerTurn().getTiles().get(changedTileIndex);
 
-        // Set it to blank only after history state is fetched
-        selectedTile.setLetter(" ");
-        System.out.println(selectedTile.getLetter());
-        selectedTile.setValue(0);
-        // Reset selected tile and word direction if needed
-        selectedTile = null;
-        selectedTileIndex = -1;
+            // Set it to blank only after history state is fetched
+            selectedTile.setLetter(" ");
+            System.out.println(selectedTile.getLetter());
+            selectedTile.setValue(0);
+            // Reset selected tile and word direction if needed
+            selectedTile = null;
+            selectedTileIndex = -1;
+            isChangedTile = false;
+        }
         if (!history.isEmpty()) {
             // Retrieve the last state from the history
             TileState lastState = history.pop();

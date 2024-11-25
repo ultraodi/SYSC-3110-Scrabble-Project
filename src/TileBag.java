@@ -201,4 +201,13 @@ public class TileBag {
         return LETTER_VALUE.get(c);
     }
 
+    /**
+     * Adds a tile back to the tile bag.
+     * @param tile The tile to be added back.
+     */
+    public void addTileToBag(Tile tile) {
+        tiles.add(tile);  // Add the tile back to the bag
+        numTilesLeft++;    // Update the number of tiles
+    }
+
 }

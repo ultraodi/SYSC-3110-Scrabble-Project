@@ -101,22 +101,25 @@ public class ScrabbleGameView extends JFrame {
         JButton playButton = new JButton("Play");
         JButton passButton = new JButton("Pass");
         JButton clearButton = new JButton("Clear");
-        //JButton swapButton = new JButton("Swap");
+        JButton swapButton = new JButton("Swap");
 
         gameplayButtonsPanel.add(playButton);
         gameplayButtonsPanel.add(passButton);
         gameplayButtonsPanel.add(clearButton);
-        //gameplayButtonsPanel.add(swapButton);
+        gameplayButtonsPanel.add(swapButton);
 
 
         clearButton.setActionCommand("Clear");  // Set the action command for the "Clear" button
         playButton.setActionCommand("Play");  // Set the action command for the "Play" button
         passButton.setActionCommand("Pass");  // Set the action command for the "Pass" button
+        swapButton.setActionCommand("Swap");  // Set the action command for the "Pass" button
+
 
 
         clearButton.addActionListener(sgc);  // Add the controller as the action listener
         playButton.addActionListener(sgc);  // Add the controller as the action listener
         passButton.addActionListener(sgc);  // Add the controller as the action listener
+        swapButton.addActionListener(sgc);  // Add the controller as the action listener
 
 
         // Player tile values
