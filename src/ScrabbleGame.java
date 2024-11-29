@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.*;
 
 import static java.lang.String.*;
-//ahaha
+
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
  * game Scrabble.

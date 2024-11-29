@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -31,6 +32,10 @@ public class ScrabbleGameView extends JFrame {
     private JButton[] tileValueButtons = new JButton[7];
     private boolean isAI = false;
     private int BOARD_SIZE = 15;
+    private JMenuBar menuBar;
+    private JMenu editMenu;
+    private JMenuItem undoMenuItem;
+    private JMenuItem redoMenuItem;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -39,6 +44,32 @@ public class ScrabbleGameView extends JFrame {
         this.setResizable(true);
         this.setBackground(new Color(255, 230, 0));
         tileBag = new TileBag();
+        menuBar = new JMenuBar();
+
+        // Create the "Edit" menu
+        editMenu = new JMenu("Undo/Redo");
+
+        // Create "Undo" and "Redo" menu items
+        undoMenuItem = new JMenuItem("Undo");
+        redoMenuItem = new JMenuItem("Redo");
+
+        // Add action commands
+        undoMenuItem.setActionCommand("Undo");
+        redoMenuItem.setActionCommand("Redo");
+
+        // Set keyboard shortcuts
+        undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
+        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
+
+        // Add menu items to the "Edit" menu
+        editMenu.add(undoMenuItem);
+        editMenu.add(redoMenuItem);
+
+        // Add the "Edit" menu to the menu bar
+        menuBar.add(editMenu);
+
+        // Set the menu bar for the frame
+        setJMenuBar(menuBar);
     }
 
     // Move the board creation to a separate method
@@ -57,6 +88,10 @@ public class ScrabbleGameView extends JFrame {
 
     private void createBoard() {
         JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // Add action listeners
+        undoMenuItem.addActionListener(sgc);
+        redoMenuItem.addActionListener(sgc);
 
         // Scrabble Board Panel (15x15 grid)
         JPanel boardPanel = new JPanel(new GridLayout(15, 15));

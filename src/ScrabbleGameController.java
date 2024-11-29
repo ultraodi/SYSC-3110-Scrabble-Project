@@ -19,6 +19,7 @@ public class ScrabbleGameController implements ActionListener {
     private Tile selectedTile;  // To store the selected tile from the player's rack
     private Tile selectedBoardTile;
     private Stack<TileState> history;  // Stack to store the previous state of board tiles
+    private Stack<TileState> validMoves = new Stack<>();
     private List<Tile> playedTiles;  // List to store the tiles played on the board
     private int selectedTileIndex = -1;  // Initialize with -1 to indicate no tile selected
     private int firstRow = -1, firstCol = -1;  // Coordinates of the first letter placed
@@ -35,174 +36,16 @@ public class ScrabbleGameController implements ActionListener {
         this.model = model;
         this.view = view;
         this.history = new Stack<>();  // Initialize the history stack
+        this.validMoves = new Stack<>();
         this.playedTiles = new ArrayList<>();  // Initialize the list of played tiles
         model.setController(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton source = (JButton) e.getSource();
-        String command = source.getActionCommand();
-        //System.out.println("Button clicked with action command: " + command); // Debugging
+        String command = e.getActionCommand();
 
-        // Handle tile button clicks (player's rack)
-        if (command.startsWith("Tile")) {
-            // Extract tile index (1-based to 0-based)
-            selectedTileIndex = Integer.parseInt(command.split(" ")[1]) - 1;
-            selectedTile = model.getPlayerTurn().getTiles().get(selectedTileIndex);  // Get selected tile from player's rack
-            System.out.println("Letter" + selectedTile.getLetter());
-
-            if (Objects.equals(selectedTile.getLetter(), " ")) {
-                boolean validInput = false;
-                Object userInput = null; // Declare userInput outside the loop
-                String input = null;
-
-                while (!validInput) {
-                    JOptionPane numPlayersPane = new JOptionPane(
-                            "What letter do you want the blank tile to be?",
-                            JOptionPane.INFORMATION_MESSAGE,
-                            JOptionPane.OK_CANCEL_OPTION
-                    );
-                    numPlayersPane.setWantsInput(true);
-                    JDialog dialog = numPlayersPane.createDialog("Blank Tile Selection");
-                    dialog.setVisible(true);
-
-                    // Retrieve and parse user input
-                    userInput = numPlayersPane.getInputValue();
-                    if (userInput != JOptionPane.UNINITIALIZED_VALUE) {
-                        input = userInput.toString().toUpperCase();
-                        if (input.length() == 1 && input.charAt(0) >= 'A' && input.charAt(0) <= 'Z') {
-                            validInput = true;
-                            // Process the valid input
-                            System.out.println("Selected letter: " + input);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Please enter a single letter from A-Z.");
-                        }
-                    }
-                }
-
-                selectedTile.setLetter(input.toUpperCase()); // Ensure the letter is set correctly
-                selectedTile.setValue(0);
-                view.updateBlankTile(input.toUpperCase(), 0, selectedTileIndex);
-
-                // Store the index of the tile that was changed
-                changedTileIndex = selectedTileIndex;
-                isChangedTile = true;
-                System.out.println("Tile at index " + changedTileIndex + " was changed.");
-            }
-        }
-
-
-        // Handle board tile clicks
-        else if (command.startsWith("BoardTile")) {
-            int rowIndex = Integer.parseInt(command.split(" ")[1]);
-            int colIndex = Integer.parseInt(command.split(" ")[2]);
-
-            savePreviousState(rowIndex, colIndex);
-
-            if (selectedTile != null) {
-                view.editSquare(rowIndex, colIndex, selectedTile.getLetter(), selectedTile.getValue());
-                //System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
-
-                // Track the first placement
-                if (firstRow == -1 && firstCol == -1) {
-                    firstRow = rowIndex;
-                    firstCol = colIndex;
-                    // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
-                }
-
-                // Update the last placement
-                lastRow = rowIndex;
-                lastCol = colIndex;
-                // System.out.println("Last letter placed at: (" + lastRow + ", " + lastCol + ")");
-
-                // Add the selected tile to the played tiles list
-                playedTiles.add(selectedTile);
-                System.out.println(generatePlacementString());
-                // System.out.println("Played tiles: " + formatPlayedTiles());
-                // System.out.println("Word was placed " + determineWordDirection());
-
-
-                if (selectedTileIndex != -1) {
-                    // Disable the tile button at the correct index
-                    JButton tileButton = view.getPlayerRackButton(selectedTileIndex);
-                    tileButton.setEnabled(false);
-                    // System.out.println("Disabled the tile button at index: " + selectedTileIndex);
-                    selectedTileIndex = -1;  // Reset the selectedTileIndex after use
-                }
-
-                selectedTile = null;  // Clear the selected tile after placing it on the board
-                view.disableBoardTile(rowIndex,colIndex);
-            }
-        }
-
-        else if (command.startsWith("TwoClickBoardTile")) {
-            int rowIndex = Integer.parseInt(command.split(" ")[1]);
-            int colIndex = Integer.parseInt(command.split(" ")[2]);
-
-            // Create a new tile from the board based on the row and column
-            selectedBoardTile = createTileFromBoard(rowIndex, colIndex);
-            lastRow = rowIndex;
-            lastCol = colIndex;
-            // Check if the lock is active
-            if (!isLocked) {
-                // Increment the counter
-                clickCounter++;
-                // Only execute the following code if the counter is odd
-                if (clickCounter % 2 != 0) {
-                    // Lock further increments for 2 seconds
-                    isLocked = true;
-                    // Add the selected tile to playedTiles
-                    playedTiles.add(selectedBoardTile);
-                    System.out.println("Added tile to playedTiles: " + selectedBoardTile.getLetter());
-                    System.out.println(generatePlacementString());
-                    // Show confirmation message
-                    JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
-                    // Track the first placement
-                    if (firstRow == -1 && firstCol == -1) {
-                        firstRow = rowIndex;
-                        firstCol = colIndex;
-                        // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
-                    }
-
-                    // Use a Timer to unlock after 2 seconds
-                    Timer timer = new Timer(1000, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            isLocked = false;
-                        }
-                    });
-                    timer.setRepeats(false); // Ensure the timer only runs once
-                    timer.start();
-                }
-            }
-
-            // Reset the selectedBoardTile after use
-            selectedBoardTile = null;
-        }
-
-
-        else if (command.equals("Pass")) {
-
-            while (!history.isEmpty()) {
-                undoLastMove();  // Undo each move in the history stack
-            }
-            playedTiles.clear();  // Clear the played tiles list
-            firstRow = -1;
-            firstCol = -1;
-            lastRow = -1;
-            lastCol = -1;
-            System.out.println("players changed");
-            model.changeTurns();
-
-            // Update view: refresh board and scores
-            view.updateBoard();
-            view.updateLabels();
-
-        }
-
-        // Handle "Clear" button action (Undo action)
-        else if (command.equals("Clear")) {
+        if (command.equals("Undo")) {
             undoLastMove();  // Undo each move in the history stack
             playedTiles.clear();  // Clear the played tiles list
             firstRow = -1;
@@ -211,82 +54,251 @@ public class ScrabbleGameController implements ActionListener {
             lastCol = -1;
             view.updateLabels();
             view.updateBoard();
+        } else if (command.equals("Redo")) {
+            System.out.println("Redo Clicked");
+            //redoLastMove();  // Implement this method to redo the last undone move
+            view.updateLabels();
+            view.updateBoard();
         }
 
-        // Handle "Play" button action (clear the history)
-        else if (command.equals("Play")) {
-            if (!playedTiles.isEmpty()) {
-                // Generate the placement string based on the GUI's state
-                String placementString = generatePlacementString();
-                //placementString = getFullWord(placementString);
-                System.out.println(placementString);
-                model.setInputPlay(placementString);
+        else {
+            JButton source = (JButton) e.getSource();
+            command = source.getActionCommand();
+            // Handle tile button clicks (player's rack)
+            if (command.startsWith("Tile")) {
+                // Extract tile index (1-based to 0-based)
+                selectedTileIndex = Integer.parseInt(command.split(" ")[1]) - 1;
+                selectedTile = model.getPlayerTurn().getTiles().get(selectedTileIndex);  // Get selected tile from player's rack
 
-                // Call model's parsing and validation
-                if (model.parseInputPlay()) {
-                    if (model.isValidWord(model.getPlayerInputWord())) {
-                        if (model.playWord()) {
-                            // Update model: recalculate score and get new tiles
-                            model.getPlayerTurn().setScore(
-                                    model.getPlayerTurn().getScore() +
-                                            model.getTileBag().getInputScore(
-                                                    model.getPlayerInputWord(),
-                                                    model.getRowNumProgram(),
-                                                    model.getColNumProgram(),
-                                                    model.getPlayerInputPlayDirection()
-                                            )
-                            );
-                            model.getPlayerTurn().getMoreTiles(model.getTileBag());
-                            model.getScrabbleBoard().drawBoard();
+                if (Objects.equals(selectedTile.getLetter(), " ")) {
+                    boolean validInput = false;
+                    Object userInput = null; // Declare userInput outside the loop
+                    String input = null;
 
-                            // Clear controller's state
-                            clearHistory();
-                            playedTiles.clear();
-                            firstRow = -1;
-                            firstCol = -1;
-                            lastRow = -1;
-                            lastCol = -1;
+                    while (!validInput) {
+                        JOptionPane numPlayersPane = new JOptionPane(
+                                "What letter do you want the blank tile to be?",
+                                JOptionPane.INFORMATION_MESSAGE,
+                                JOptionPane.OK_CANCEL_OPTION
+                        );
+                        numPlayersPane.setWantsInput(true);
+                        JDialog dialog = numPlayersPane.createDialog("Blank Tile Selection");
+                        dialog.setVisible(true);
 
-                            // Re-enable all tile buttons
-                            view.enableAllTileButtons();
+                        // Retrieve and parse user input
+                        userInput = numPlayersPane.getInputValue();
+                        if (userInput != JOptionPane.UNINITIALIZED_VALUE) {
+                            input = userInput.toString().toUpperCase();
+                            if (input.length() == 1 && input.charAt(0) >= 'A' && input.charAt(0) <= 'Z') {
+                                validInput = true;
+                                // Process the valid input
+                                System.out.println("Selected letter: " + input);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Please enter a single letter from A-Z.");
+                            }
+                        }
+                    }
 
-                            // Change turns
-                            model.changeTurns();
+                    selectedTile.setLetter(input.toUpperCase()); // Ensure the letter is set correctly
+                    selectedTile.setValue(0);
+                    view.updateBlankTile(input.toUpperCase(), 0, selectedTileIndex);
 
-                            // Update view: refresh board and scores
-                            view.updateBoard();
-                            view.updateLabels();
+                    // Store the index of the tile that was changed
+                    changedTileIndex = selectedTileIndex;
+                    isChangedTile = true;
+                    System.out.println("Tile at index " + changedTileIndex + " was changed.");
+                }
+            }
+
+
+            // Handle board tile clicks
+            else if (command.startsWith("BoardTile")) {
+                int rowIndex = Integer.parseInt(command.split(" ")[1]);
+                int colIndex = Integer.parseInt(command.split(" ")[2]);
+
+                savePreviousState(rowIndex, colIndex);
+
+                if (selectedTile != null) {
+                    view.editSquare(rowIndex, colIndex, selectedTile.getLetter(), selectedTile.getValue());
+                    //System.out.println("Board updated at (" + rowIndex + ", " + colIndex + ") with tile: " + selectedTile.getLetter());
+
+                    // Track the first placement
+                    if (firstRow == -1 && firstCol == -1) {
+                        firstRow = rowIndex;
+                        firstCol = colIndex;
+                        // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
+                    }
+
+                    // Update the last placement
+                    lastRow = rowIndex;
+                    lastCol = colIndex;
+                    // System.out.println("Last letter placed at: (" + lastRow + ", " + lastCol + ")");
+
+                    // Add the selected tile to the played tiles list
+                    playedTiles.add(selectedTile);
+                    System.out.println(generatePlacementString());
+                    // System.out.println("Played tiles: " + formatPlayedTiles());
+                    // System.out.println("Word was placed " + determineWordDirection());
+
+
+                    if (selectedTileIndex != -1) {
+                        // Disable the tile button at the correct index
+                        JButton tileButton = view.getPlayerRackButton(selectedTileIndex);
+                        tileButton.setEnabled(false);
+                        // System.out.println("Disabled the tile button at index: " + selectedTileIndex);
+                        selectedTileIndex = -1;  // Reset the selectedTileIndex after use
+                    }
+
+                    selectedTile = null;  // Clear the selected tile after placing it on the board
+                    view.disableBoardTile(rowIndex, colIndex);
+                }
+            } else if (command.startsWith("TwoClickBoardTile")) {
+                int rowIndex = Integer.parseInt(command.split(" ")[1]);
+                int colIndex = Integer.parseInt(command.split(" ")[2]);
+
+                // Create a new tile from the board based on the row and column
+                selectedBoardTile = createTileFromBoard(rowIndex, colIndex);
+                lastRow = rowIndex;
+                lastCol = colIndex;
+                // Check if the lock is active
+                if (!isLocked) {
+                    // Increment the counter
+                    clickCounter++;
+                    // Only execute the following code if the counter is odd
+                    if (clickCounter % 2 != 0) {
+                        // Lock further increments for 2 seconds
+                        isLocked = true;
+                        // Add the selected tile to playedTiles
+                        playedTiles.add(selectedBoardTile);
+                        System.out.println("Added tile to playedTiles: " + selectedBoardTile.getLetter());
+                        System.out.println(generatePlacementString());
+                        // Show confirmation message
+                        JOptionPane.showMessageDialog(null, "Added letter to your played tiles");
+                        // Track the first placement
+                        if (firstRow == -1 && firstCol == -1) {
+                            firstRow = rowIndex;
+                            firstCol = colIndex;
+                            // System.out.println("First letter placed at: (" + firstRow + ", " + firstCol + ")");
+                        }
+
+                        // Use a Timer to unlock after 2 seconds
+                        Timer timer = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                isLocked = false;
+                            }
+                        });
+                        timer.setRepeats(false); // Ensure the timer only runs once
+                        timer.start();
+                    }
+                }
+
+                // Reset the selectedBoardTile after use
+                selectedBoardTile = null;
+            } else if (command.equals("Pass")) {
+
+                while (!history.isEmpty()) {
+                    undoLastMove();  // Undo each move in the history stack
+                }
+                playedTiles.clear();  // Clear the played tiles list
+                firstRow = -1;
+                firstCol = -1;
+                lastRow = -1;
+                lastCol = -1;
+                System.out.println("players changed");
+                model.changeTurns();
+
+                // Update view: refresh board and scores
+                view.updateBoard();
+                view.updateLabels();
+
+            }
+
+            // Handle "Clear" button action (Undo action)
+            else if (command.equals("Clear")) {
+                undoLastMove();  // Undo each move in the history stack
+                playedTiles.clear();  // Clear the played tiles list
+                firstRow = -1;
+                firstCol = -1;
+                lastRow = -1;
+                lastCol = -1;
+                view.updateLabels();
+                view.updateBoard();
+            }
+
+            // Handle "Play" button action (clear the history)
+            else if (command.equals("Play")) {
+                if (!playedTiles.isEmpty()) {
+                    // Generate the placement string based on the GUI's state
+                    String placementString = generatePlacementString();
+                    //placementString = getFullWord(placementString);
+                    System.out.println(placementString);
+                    model.setInputPlay(placementString);
+
+                    // Call model's parsing and validation
+                    if (model.parseInputPlay()) {
+                        if (model.isValidWord(model.getPlayerInputWord())) {
+                            if (model.playWord()) {
+                                // Update model: recalculate score and get new tiles
+                                model.getPlayerTurn().setScore(
+                                        model.getPlayerTurn().getScore() +
+                                                model.getTileBag().getInputScore(
+                                                        model.getPlayerInputWord(),
+                                                        model.getRowNumProgram(),
+                                                        model.getColNumProgram(),
+                                                        model.getPlayerInputPlayDirection()
+                                                )
+                                );
+                                model.getPlayerTurn().getMoreTiles(model.getTileBag());
+                                model.getScrabbleBoard().drawBoard();
+
+                                // Clear controller's state
+                                clearHistory();
+                                playedTiles.clear();
+                                firstRow = -1;
+                                firstCol = -1;
+                                lastRow = -1;
+                                lastCol = -1;
+
+                                // Re-enable all tile buttons
+                                view.enableAllTileButtons();
+
+                                // Change turns
+                                model.changeTurns();
+
+                                // Update view: refresh board and scores
+                                view.updateBoard();
+                                view.updateLabels();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Words must connect or start from center.");
+                                view.updateBoard();
+                                view.updateLabels();
+                                //clearHistory();
+                                undoLastMove();
+                            }
                         } else {
-                            JOptionPane.showMessageDialog(null, "Words must connect or start from center.");
+                            JOptionPane.showMessageDialog(null, model.getPlayerInputWord() + " is an invalid word.");
                             view.updateBoard();
                             view.updateLabels();
-                            //clearHistory();
-                            undoLastMove();
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, model.getPlayerInputWord() + " is an invalid word.");
+                        JOptionPane.showMessageDialog(null, "Spell out your word correctly by clicking the button");
                         view.updateBoard();
                         view.updateLabels();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Spell out your word correctly by clicking the button");
+                    JOptionPane.showMessageDialog(null, "No tiles were played.");
                     view.updateBoard();
                     view.updateLabels();
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "No tiles were played.");
+            } else if (command.equals("Swap")) {
+                model.getPlayerTurn().clearAllTiles(model.getTileBag());
+                model.getPlayerTurn().getMoreTiles(model.getTileBag());
+                undoLastMove();
+                model.changeTurns();
                 view.updateBoard();
                 view.updateLabels();
             }
-        }
-
-        else if (command.equals("Swap")) {
-            model.getPlayerTurn().clearAllTiles(model.getTileBag());
-            model.getPlayerTurn().getMoreTiles(model.getTileBag());
-            undoLastMove();
-            model.changeTurns();
-            view.updateBoard();
-            view.updateLabels();
         }
     }
 
@@ -770,18 +782,10 @@ public class ScrabbleGameController implements ActionListener {
         return newTile;
     }
 
-    // Method to re-enable all tile buttons after the "Play" button is clicked
-    private void enableAllTileButtons() {
-        // Assuming `view.getPlayerRackButton(index)` provides access to the buttons in the player's rack
-        for (int i = 0; i < 7; i++) {
-            JButton tileButton = view.getPlayerRackButton(i);
-            if (tileButton != null) {
-                tileButton.setEnabled(true);  // Enable the button
-            }
-        }
-        // System.out.println("All tile buttons have been re-enabled.");
+    // Method to save valid placements to validMoves history
+    private void saveValidMove(List<TileState> tilesPlayed) {
+        validMoves.addAll(tilesPlayed); // Store all tiles from the valid move
     }
-
 
 
     // Method to undo the last placed tile
@@ -827,6 +831,37 @@ public class ScrabbleGameController implements ActionListener {
                 TileState peekState = history.peek();
                 lastRow = peekState.getRow();
                 lastCol = peekState.getCol();
+            }
+        }
+    }
+
+    private void clearValidMoves() {
+        validMoves.clear();
+    }
+
+    private void undoLastValidMove() {
+        if (!validMoves.isEmpty()) {
+            // Retrieve the tiles of the last valid move
+            List<TileState> lastValidMove = new ArrayList<>();
+            while (!validMoves.isEmpty()) {
+                TileState lastState = validMoves.pop();
+                lastValidMove.add(lastState);
+
+                // Revert board tile to its previous state
+                view.editSquare(lastState.getRow(), lastState.getCol(), " ", 0);
+                view.enableBoardTile(lastState.getRow(), lastState.getCol());
+
+                // Re-enable the corresponding rack tile
+                int tileIndex = lastState.getTileIndex();
+                if (tileIndex != -1) {
+                    JButton tileButton = view.getPlayerRackButton(tileIndex);
+                    tileButton.setEnabled(true);
+                }
+
+                // Stop after reverting all tiles from the last move
+                if (validMoves.isEmpty() || !validMoves.peek().equals(lastState)) {
+                    break;
+                }
             }
         }
     }
