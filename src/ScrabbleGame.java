@@ -26,7 +26,7 @@ public class ScrabbleGame {
     /** The tile bag for the game*/
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private ArrayList<Play> plays;
+    public ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** Holds a set of valid words*/
@@ -59,6 +59,7 @@ public class ScrabbleGame {
 
     private ScrabbleGameView view = new ScrabbleGameView();
     private ScrabbleGameController controller;
+    public boolean showAllPlayerTiles = false;
 
 
     /**
@@ -114,7 +115,7 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
-        boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
+        showAllPlayerTiles = false; // To be added to the XML 'configuration' file
         setupPlayers();
         playerTurn = players.getFirst();
         scrabbleBoard.drawBoard();

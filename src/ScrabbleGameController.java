@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -19,8 +20,14 @@ public class ScrabbleGameController implements ActionListener {
     private Tile selectedTile;  // To store the selected tile from the player's rack
     private Tile selectedBoardTile;
     private Stack<TileState> history;  // Stack to store the previous state of board tiles
-    private Stack<TileState> validMoves = new Stack<>();
+    private Stack<List<TileState>> undoValidMoves;
+    private Stack<Integer> undoPlayerScoresStack;
+    private Stack<List<Tile>> undoPlayerTilesStack;
+    private Stack<Player> undoPlayerStack;
     private List<Tile> playedTiles;  // List to store the tiles played on the board
+    private Stack<List<Tile>> undoPlayerDrawnTilesStack = new Stack<>();
+    List<Tile> currentPlayerTiles = new ArrayList<>();
+    private List<Tile> undoDrawnTiles;
     private int selectedTileIndex = -1;  // Initialize with -1 to indicate no tile selected
     private int firstRow = -1, firstCol = -1;  // Coordinates of the first letter placed
     private int lastRow = -1, lastCol = -1;    // Coordinates of the last letter placed
@@ -36,9 +43,15 @@ public class ScrabbleGameController implements ActionListener {
         this.model = model;
         this.view = view;
         this.history = new Stack<>();  // Initialize the history stack
-        this.validMoves = new Stack<>();
+        this.undoValidMoves = new Stack<>();
         this.playedTiles = new ArrayList<>();  // Initialize the list of played tiles
+        this.undoPlayerScoresStack = new Stack<>();
+        this.undoPlayerTilesStack = new Stack<>();
+        this.undoPlayerStack = new Stack<>();
         model.setController(this);
+
+        // Temporary variable to store the player's tiles
+        currentPlayerTiles = new ArrayList<>(model.getPlayerTurn().getTiles());
     }
 
     @Override
@@ -46,7 +59,7 @@ public class ScrabbleGameController implements ActionListener {
         String command = e.getActionCommand();
 
         if (command.equals("Undo")) {
-            undoLastMove();  // Undo each move in the history stack
+            undoLastValidMove();  // Undo each move in the history stack
             playedTiles.clear();  // Clear the played tiles list
             firstRow = -1;
             firstCol = -1;
@@ -91,8 +104,6 @@ public class ScrabbleGameController implements ActionListener {
                             input = userInput.toString().toUpperCase();
                             if (input.length() == 1 && input.charAt(0) >= 'A' && input.charAt(0) <= 'Z') {
                                 validInput = true;
-                                // Process the valid input
-                                System.out.println("Selected letter: " + input);
                             } else {
                                 JOptionPane.showMessageDialog(null, "Please enter a single letter from A-Z.");
                             }
@@ -106,7 +117,6 @@ public class ScrabbleGameController implements ActionListener {
                     // Store the index of the tile that was changed
                     changedTileIndex = selectedTileIndex;
                     isChangedTile = true;
-                    System.out.println("Tile at index " + changedTileIndex + " was changed.");
                 }
             }
 
@@ -137,8 +147,6 @@ public class ScrabbleGameController implements ActionListener {
                     // Add the selected tile to the played tiles list
                     playedTiles.add(selectedTile);
                     System.out.println(generatePlacementString());
-                    // System.out.println("Played tiles: " + formatPlayedTiles());
-                    // System.out.println("Word was placed " + determineWordDirection());
 
 
                     if (selectedTileIndex != -1) {
@@ -152,7 +160,9 @@ public class ScrabbleGameController implements ActionListener {
                     selectedTile = null;  // Clear the selected tile after placing it on the board
                     view.disableBoardTile(rowIndex, colIndex);
                 }
-            } else if (command.startsWith("TwoClickBoardTile")) {
+            }
+
+            else if (command.startsWith("TwoClickBoardTile")) {
                 int rowIndex = Integer.parseInt(command.split(" ")[1]);
                 int colIndex = Integer.parseInt(command.split(" ")[2]);
 
@@ -195,7 +205,9 @@ public class ScrabbleGameController implements ActionListener {
 
                 // Reset the selectedBoardTile after use
                 selectedBoardTile = null;
-            } else if (command.equals("Pass")) {
+            }
+
+            else if (command.equals("Pass")) {
 
                 while (!history.isEmpty()) {
                     undoLastMove();  // Undo each move in the history stack
@@ -216,7 +228,9 @@ public class ScrabbleGameController implements ActionListener {
 
             // Handle "Clear" button action (Undo action)
             else if (command.equals("Clear")) {
-                undoLastMove();  // Undo each move in the history stack
+                while (!history.isEmpty()) {
+                    undoLastMove();  // Undo each move in the history stack
+                }
                 playedTiles.clear();  // Clear the played tiles list
                 firstRow = -1;
                 firstCol = -1;
@@ -231,7 +245,6 @@ public class ScrabbleGameController implements ActionListener {
                 if (!playedTiles.isEmpty()) {
                     // Generate the placement string based on the GUI's state
                     String placementString = generatePlacementString();
-                    //placementString = getFullWord(placementString);
                     System.out.println(placementString);
                     model.setInputPlay(placementString);
 
@@ -239,6 +252,8 @@ public class ScrabbleGameController implements ActionListener {
                     if (model.parseInputPlay()) {
                         if (model.isValidWord(model.getPlayerInputWord())) {
                             if (model.playWord()) {
+                                undoPlayerTilesStack.push(currentPlayerTiles);
+                                saveValidMove(history);
                                 // Update model: recalculate score and get new tiles
                                 model.getPlayerTurn().setScore(
                                         model.getPlayerTurn().getScore() +
@@ -249,8 +264,8 @@ public class ScrabbleGameController implements ActionListener {
                                                         model.getPlayerInputPlayDirection()
                                                 )
                                 );
-                                model.getPlayerTurn().getMoreTiles(model.getTileBag());
-                                model.getScrabbleBoard().drawBoard();
+                                undoDrawnTiles =  model.getPlayerTurn().getMoreTiles(model.getTileBag());
+                                undoPlayerDrawnTilesStack.push(new ArrayList<>(undoDrawnTiles));
 
                                 // Clear controller's state
                                 clearHistory();
@@ -269,11 +284,11 @@ public class ScrabbleGameController implements ActionListener {
                                 // Update view: refresh board and scores
                                 view.updateBoard();
                                 view.updateLabels();
+                                currentPlayerTiles = new ArrayList<>(model.getPlayerTurn().getTiles());
                             } else {
                                 JOptionPane.showMessageDialog(null, "Words must connect or start from center.");
                                 view.updateBoard();
                                 view.updateLabels();
-                                //clearHistory();
                                 undoLastMove();
                             }
                         } else {
@@ -291,7 +306,9 @@ public class ScrabbleGameController implements ActionListener {
                     view.updateBoard();
                     view.updateLabels();
                 }
-            } else if (command.equals("Swap")) {
+            }
+
+            else if (command.equals("Swap")) {
                 model.getPlayerTurn().clearAllTiles(model.getTileBag());
                 model.getPlayerTurn().getMoreTiles(model.getTileBag());
                 undoLastMove();
@@ -782,12 +799,6 @@ public class ScrabbleGameController implements ActionListener {
         return newTile;
     }
 
-    // Method to save valid placements to validMoves history
-    private void saveValidMove(List<TileState> tilesPlayed) {
-        validMoves.addAll(tilesPlayed); // Store all tiles from the valid move
-    }
-
-
     // Method to undo the last placed tile
     private void undoLastMove() {
         // Get the tile to revert
@@ -836,33 +847,96 @@ public class ScrabbleGameController implements ActionListener {
     }
 
     private void clearValidMoves() {
-        validMoves.clear();
+        undoValidMoves.clear();
     }
 
-    private void undoLastValidMove() {
-        if (!validMoves.isEmpty()) {
-            // Retrieve the tiles of the last valid move
-            List<TileState> lastValidMove = new ArrayList<>();
-            while (!validMoves.isEmpty()) {
-                TileState lastState = validMoves.pop();
-                lastValidMove.add(lastState);
+    // Method to save valid placements to validMoves history
+    private void saveValidMove(List<TileState> tilesPlayed) {
+        if (tilesPlayed != null && !tilesPlayed.isEmpty()) {
+            // Save tiles played
+            undoValidMoves.push(new ArrayList<>(tilesPlayed));
+            System.out.println("Saved valid move: " + tilesPlayed);
 
-                // Revert board tile to its previous state
-                view.editSquare(lastState.getRow(), lastState.getCol(), " ", 0);
-                view.enableBoardTile(lastState.getRow(), lastState.getCol());
+            // Save the current player's score
+            int currentScore = model.getPlayerTurn().getScore();
+            undoPlayerScoresStack.push(currentScore);
+            System.out.println("Saved player's score: " + currentScore);
 
-                // Re-enable the corresponding rack tile
-                int tileIndex = lastState.getTileIndex();
+            // Save the current player's tiles
+            List<Tile> currentTiles = undoPlayerTilesStack.peek();
+            //undoPlayerTilesStack.push(currentTiles);
+            System.out.println("Saved player's tiles: " + currentTiles);
+
+            // Save the current player
+            Player currentPlayer = model.getPlayerTurn();
+            undoPlayerStack.push(currentPlayer);
+            System.out.println("Saved current player: " + currentPlayer.getPlayerName());
+
+        } else {
+            System.out.println("No valid tiles to save.");
+        }
+    }
+
+    public void undoLastValidMove() {
+        if (!undoValidMoves.isEmpty() && !undoPlayerScoresStack.isEmpty() && !undoPlayerTilesStack.isEmpty() && !undoPlayerStack.isEmpty() && !undoPlayerDrawnTilesStack.isEmpty()) {
+            // Pop the last valid move
+            List<TileState> lastMove = undoValidMoves.pop();
+            System.out.println("Undone valid move: " + lastMove);
+
+            // Revert to the previous player if needed
+            Player previousPlayer = undoPlayerStack.pop();
+            model.setPlayerTurn(previousPlayer);  // Set the player turn to the previous player
+            System.out.println("Reverted to player: " + previousPlayer.getPlayerName());
+
+            // Revert the player's score from the stack
+            int previousScore = undoPlayerScoresStack.pop();
+            model.getPlayerTurn().setScore(previousScore);  // Set the score for the current player
+            System.out.println("Reverted player's score to: " + previousScore);
+
+            // Revert the player's tiles from the stack
+            List<Tile> previousTiles = undoPlayerTilesStack.pop();
+            model.getPlayerTurn().setPlayerTiles(new ArrayList<>(previousTiles)); // Set the tiles for the current player
+            System.out.println("Reverted player's tiles to: " + previousTiles);
+
+            // Retrieve and return the drawn tiles from the player's tile rack to the TileBag
+            List<Tile> drawnTiles = undoPlayerDrawnTilesStack.pop(); // Assume you've stored these in a stack
+            System.out.println("Returning drawn tiles: " + drawnTiles);
+
+            // Iterate through the drawn tiles and return each to the tile bag
+            TileBag tileBag = model.getTileBag();  // Access the tile bag
+            for (Tile tile : drawnTiles) {
+                if (tile != null) {
+                    tileBag.returnTile(tile);
+                    System.out.println("Returned tile to bag: " + tile.getLetter());
+                } else {
+                    System.out.println("Null tile encountered during undo.");
+                }
+            }
+
+            // Reset the plays list after undoing the valid move to allow replays
+            //model.plays.remove(model.getCurrentPlay()); // This should reset the plays list
+            //model.removePlayFromBoard(model.getCurrentPlay());
+
+            // Iterate through each TileState in the last move and revert it
+            for (TileState tileState : lastMove) {
+                // Revert board tile to its previous state (clear the tile)
+                view.editSquare(tileState.getRow(), tileState.getCol(), " ", 0);
+                view.enableBoardTile(tileState.getRow(), tileState.getCol());
+
+                // Re-enable the corresponding tile button in the rack
+                int tileIndex = tileState.getTileIndex();
                 if (tileIndex != -1) {
                     JButton tileButton = view.getPlayerRackButton(tileIndex);
                     tileButton.setEnabled(true);
                 }
-
-                // Stop after reverting all tiles from the last move
-                if (validMoves.isEmpty() || !validMoves.peek().equals(lastState)) {
-                    break;
-                }
             }
+
+            // Update the UI after undoing the move
+            view.updateLabels();
+            view.updateBoard();
+            model.printPlayerTiles(model.showAllPlayerTiles);
+        } else {
+            System.out.println("No valid moves to undo or missing stack data.");
         }
     }
 
@@ -947,4 +1021,5 @@ public class ScrabbleGameController implements ActionListener {
 
         public int getTileIndex() { return tileIndex; }
     }
+
 }

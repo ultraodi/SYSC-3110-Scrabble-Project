@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a player in the Scrabble game.
@@ -152,10 +153,17 @@ public class Player {
      * Get more tiles from the tile bag
      * @param tileBag The tile bag to take the tiles from
      */
-    public void getMoreTiles(TileBag tileBag) {
-        tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
+    // Modify the method to return a List<Tile> instead of void
+    public List<Tile> getMoreTiles(TileBag tileBag) {
+        // Draw the tiles and add them to the player's tile list
+        List<Tile> drawnTiles = tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size());
+        tiles.addAll(drawnTiles);
         ownTiles();
+
+        // Return the drawn tiles
+        return drawnTiles;
     }
+
 
     /**
      * Transfers ownership of the tile to a player.
