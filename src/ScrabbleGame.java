@@ -42,11 +42,13 @@ public class ScrabbleGame {
     /** Play direction of a played word either horizontal or vertical*/
     private Direction playerInputPlayDirection;
     /** Holds a list of the player's order*/
-    private ArrayList<Player> playerOrder;
+    public ArrayList<Player> playerOrder;
     /** Holds the current index of the player's turn */
-    private int currentPlayerIndex = 0;
+    public int currentPlayerIndex = 0;
     /** Current play being worked with*/
-    private Play currentPlay;
+    public Play currentPlay;
+    /** Holds a stack for all the plays*/
+    public Stack<Play> playStack;
     /** Is true when the player's input is a command. False otherwise*/
     private boolean isCommand;
     /** Stores the command*/
@@ -56,6 +58,7 @@ public class ScrabbleGame {
     private int colNum_program;
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
+
 
     private ScrabbleGameView view = new ScrabbleGameView();
     private ScrabbleGameController controller;
@@ -85,6 +88,7 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
         currentPlay = null;
+        playStack = new Stack<>();
         isCommand = false;
         command = "board";
     }
@@ -346,15 +350,16 @@ public class ScrabbleGame {
         putPlayOnBoard(dir, rowNum, colNum);
 
         // First play goes through the center of the board.
-        if (!plays.contains(currentPlay)) {
-            if (firstPlayIsThroughCenter()) plays.add(currentPlay);
-            else {
+        if (!playStack.contains(currentPlay)) { // Check if the current play is in the stack
+            if (firstPlayIsThroughCenter()) {
+                playStack.push(currentPlay); // Add the current play to the stack
+            } else {
                 removePlayFromBoard(currentPlay);
                 return false;
             }
         } else {
             System.out.printf("%s'%s' has already been played", debugTag, currentPlay.getWordString());
-            if (view.getIsAI()){
+            if (view.getIsAI()) {
                 controller.setIsRepeated(true);
                 controller.handleAITurn();
                 JOptionPane.showMessageDialog(null, "AI detected repeated " + currentPlay.getWordString() + " word, Removing now");
@@ -374,8 +379,39 @@ public class ScrabbleGame {
         return true;
     }
 
+    /**
+     * Removes the most recent play from the plays list.
+     * @return True if a play was successfully removed, false if the list was empty.
+     */
+    public boolean removeMostRecentPlay() {
+        if (!plays.isEmpty()) {
+            Play removedPlay = plays.remove(plays.size()); // Remove the last play
+
+            System.out.println("Most recent play removed: " + removedPlay.getWordString());
+            return true;
+        }
+        // Add this after a play is added or removed to debug the plays list
+        System.out.println("No plays to remove.");
+        return false;
+    }
+
+    /**
+     * Removes the specified play from the plays list if it exists.
+     * @param play The play to remove.
+     * @return True if the play was found and removed, false otherwise.
+     */
+    public boolean removeSpecificPlay(Play play) {
+        if (plays.contains(play)) {
+            plays.remove(play); // Remove the play from the list
+            System.out.println("Play removed: " + play.getWordString());
+            return true;
+        }
+        System.out.println("Play not found: " + play.getWordString());
+        return false;
+    }
+
     public boolean firstPlayIsThroughCenter() {
-        if (plays.isEmpty()) {
+        if (playStack.isEmpty()) {
             for (Square square : currentPlay.getWordSquares()) {
                 if (square.getType() == Square.Types.CENTER) {
                     return true;
