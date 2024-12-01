@@ -173,6 +173,19 @@ public class Player {
             tile.setPlayer(this);
         }
     }
+    /**
+     * Sets a tile at the specified index in the player's tile list.
+     * @param index The index at which the tile will be set.
+     * @param tile The tile to be set.
+     * @return True if the tile was successfully set, false if the index is out of bounds.
+     */
+    public boolean setTileAtIndex(int index, Tile tile) {
+        if (index >= 0 && index < tiles.size()) {
+            tiles.set(index, tile);
+            return true;  // Tile successfully set
+        }
+        return false;  // Index is out of bounds
+    }
 
     /**
      * Compares for equality between Players

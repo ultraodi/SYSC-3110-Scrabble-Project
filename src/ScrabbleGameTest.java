@@ -1,12 +1,17 @@
 import org.junit.Before;
 
+import java.net.SecureCacheResponse;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class ScrabbleGameTest {
     ScrabbleGame game;
+    ScrabbleGameController controller;
+    ScrabbleGameView view;
+
     ArrayList<Player> set2Players;
     ArrayList<Player> set3Players;
     ArrayList<Player> set4Players;
@@ -138,6 +143,71 @@ public class ScrabbleGameTest {
         assertNull(board[5][10].getPlacedTile());
         assertNull(board[5][11].getPlacedTile());
         assertNull(board[5][12].getPlacedTile());
+    }
+
+    @org.junit.Test
+    public void testUndoLastValidMove() {
+        // Set up an initial move for the test
+        controller.view.editSquare(7, 7, "A", 1);
+        controller.view.editSquare(7, 8, "B", 3);
+
+        Player player1 = controller.model.getPlayerTurn();
+        player1.setTileAtIndex(0, new Tile("A", 1));  // Correct syntax for setting a tile at index 0
+        player1.setTileAtIndex(1, new Tile("B", 3));  // Add another tile to the player
+
+        // Create a list of TileState objects to simulate a valid move
+        List<ScrabbleGameController.TileState> move = new ArrayList<>();
+        move.add(new ScrabbleGameController.TileState("A", 1, 7, 7, 0));
+        move.add(new ScrabbleGameController.TileState("B", 3, 7, 8, 1));
+        controller.undoValidMoves.push(move);
+
+        // Remove tiles from player's rack as part of the move
+        player1.getTiles().clear();
+
+        // Perform undo
+        controller.undoLastValidMove();
+
+        // Verify the board is reverted
+        assertEquals(" ", controller.view.getTileLetterAt(7, 7));
+        assertEquals(" ", controller.view.getTileLetterAt(7, 8));
+
+        // Verify the player's tiles are returned
+        assertEquals(2, player1.getTiles().size());
+        assertEquals("A", player1.getTiles().get(0).getLetter());
+        assertEquals("B", player1.getTiles().get(1).getLetter());
+    }
+
+    @org.junit.Test
+    public void testRedoLastValidMove() {
+        // Set up an initial move for the test
+        controller.view.editSquare(7, 7, "A", 1);
+        controller.view.editSquare(7, 8, "B", 3);
+
+        Player player1 = controller.model.getPlayerTurn();
+        player1.setTileAtIndex(0, new Tile("A", 1));  // Correct syntax for setting a tile at index 0
+        player1.setTileAtIndex(1, new Tile("B", 3));  // Add another tile to the player
+
+        // Create a list of TileState objects to simulate a valid move
+        List<ScrabbleGameController.TileState> move = new ArrayList<>();
+        move.add(new ScrabbleGameController.TileState("A", 1, 7, 7, 0));
+        move.add(new ScrabbleGameController.TileState("B", 3, 7, 8, 1));
+        controller.undoValidMoves.push(move);
+
+        // Remove tiles from player's rack as part of the move
+        player1.getTiles().clear();
+
+        // Perform undo
+        controller.undoLastValidMove();
+        controller.redoLastValidMove();
+
+        // Verify the board is reverted
+        assertEquals("A", controller.view.getTileLetterAt(7, 7));
+        assertEquals("B", controller.view.getTileLetterAt(7, 8));
+
+        // Verify the player's tiles are returned
+        assertEquals(2, player1.getTiles().size());
+        assertNotEquals("A", player1.getTiles().get(0).getLetter());
+        assertNotEquals("B", player1.getTiles().get(1).getLetter());
     }
 
     @org.junit.Test
@@ -291,11 +361,17 @@ public class ScrabbleGameTest {
 
     @Before
     public void setUp() throws Exception {
+        // Initialize game and controller
         game = new ScrabbleGame();
+        game.game();
+        controller = new ScrabbleGameController(game, view);
+
+        // Initialize player sets
         set2Players = new ArrayList<>();
         set3Players = new ArrayList<>();
         set4Players = new ArrayList<>();
 
+        // Initialize word tile lists
         read = new ArrayList<>();
         been = new ArrayList<>();
         ieee = new ArrayList<>();
@@ -303,9 +379,10 @@ public class ScrabbleGameTest {
         piano = new ArrayList<>();
         pool = new ArrayList<>();
 
+        // Set up 2-player game by default
         game.setPlayers(set2Players);
 
-        // Set up players
+        // Configure players for different sets
         set2Players.add(new Player("Player 1"));
         set2Players.add(new Player("Player 2"));
 
@@ -318,7 +395,7 @@ public class ScrabbleGameTest {
         set4Players.add(new Player("Player 4"));
         set4Players.add(new Player("Player 2"));
 
-        // Set up words
+        // Set up words with tiles
         read.add(new Tile("R", 1));
         read.add(new Tile("E", 1));
         read.add(new Tile("A", 1));
@@ -349,4 +426,5 @@ public class ScrabbleGameTest {
         pool.add(new Tile("O", 1));
         pool.add(new Tile("L", 1));
     }
+
 }
