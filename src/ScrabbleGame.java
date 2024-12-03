@@ -488,7 +488,7 @@ public class ScrabbleGame {
             if (DEBUG) System.out.printf("%s word is %s%n", debugTag, _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 System.out.printf("%s'%s' is not a word.\n", debugTag, _pl.getWordString());
-                controller.setIsRepeated(true);
+                controller.setIsRepeated(false);
                 controller.handleAITurn();
                 return false;
             }
