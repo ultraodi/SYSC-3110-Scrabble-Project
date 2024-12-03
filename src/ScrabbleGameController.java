@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * @version November 12, 2024
  */
 
-public class ScrabbleGameController implements ActionListener {
+public class ScrabbleGameController implements ActionListener, Serializable {
     public ScrabbleGame model;
     public ScrabbleGameView view;
     private Tile selectedTile;  // To store the selected tile from the player's rack
@@ -1085,7 +1086,7 @@ public class ScrabbleGameController implements ActionListener {
     class ExportSerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String fileName = view.getSerializedExportFileName();
-            //model.exportSerializedAddressBook(fileName);
+            model.exportSerializedScrabbleGame(fileName);
         }
     }
 
@@ -1093,12 +1094,15 @@ public class ScrabbleGameController implements ActionListener {
     class ImportSerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String fileName = view.getSerializedImportFileName();
-            //model = AddressBook.importSerializedAddressBook(fileName);
+            model = ScrabbleGame.importSerializedScrabbleGame(fileName);
+            view.setModel(model);
+            view.updateBoard();
+            System.out.println("View Updated");
         }
     }
 
     // Inner class to represent the state of a tile (letter, value, position)
-    public static class TileState {
+    public static class TileState implements Serializable {
         private String letter;
         private int value;
         private int row;

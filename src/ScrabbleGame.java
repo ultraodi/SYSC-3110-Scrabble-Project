@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.io.Serializable;
 
 import static java.lang.String.*;
 
@@ -14,7 +15,7 @@ import static java.lang.String.*;
  * @author Marvel Adotse-ogah
  * @version October 22, 2024
  */
-public class ScrabbleGame {
+public class ScrabbleGame implements Serializable {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     public static boolean TEXT_VERSION = false;
     /** Players of the game*/
@@ -58,7 +59,6 @@ public class ScrabbleGame {
     private int colNum_program;
     /** Valid commands for the game*/
     private static final ArrayList<String> commands = new ArrayList<>(List.of(new String[]{"-debug", "-noDebug", "-board", "-quit"}));
-
 
     private ScrabbleGameView view = new ScrabbleGameView();
     private ScrabbleGameController controller;
@@ -231,6 +231,33 @@ public class ScrabbleGame {
 
     public void setController(ScrabbleGameController controller){
         this.controller = controller;
+    }
+
+    // Method to export ScrabbleGame to a serialized file
+    public void exportSerializedScrabbleGame(String fileName) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            out.writeObject(this);  // Serialize the ScrabbleGame object
+            System.out.println("ScrabbleGame saved to " + fileName);
+        } catch (IOException e) {
+            System.err.println("Error saving to file: " + e.getMessage());
+        }
+    }
+
+    // Static method to import ScrabbleGame from a serialized file
+    public static ScrabbleGame importSerializedScrabbleGame(String fileName) {
+        ScrabbleGame scrabbleGame = null;
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            scrabbleGame = (ScrabbleGame) in.readObject();
+            System.out.println("ScrabbleGame loaded from " + fileName);
+            scrabbleGame.getScrabbleBoard().drawBoard();
+
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error loading from file: " + e.getMessage());
+        }
+
+        return scrabbleGame;
     }
 
     /**
@@ -882,6 +909,7 @@ public class ScrabbleGame {
     public ArrayList<Player> getPlayerOrder() {
         return playerOrder;
     }
+
 
     public Play getCurrentPlay() {
         return currentPlay;

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Represents a player in the Scrabble game.
@@ -9,7 +10,7 @@ import java.util.List;
  * @author Abdul Babatunde
  * @version October 22, 2024
  */
-public class Player {
+public class Player implements Serializable {
     // The following are ANSI codes for console text. Might not be portable on Windows computers.
     public static final String RED = "\033[0;31m"; // Red
     public static final String GREEN = "\033[0;32m"; // Green

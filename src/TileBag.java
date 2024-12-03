@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.io.Serializable;
 
 /**
  * The TileBag class simulates as at this version the library for all available
@@ -15,7 +16,7 @@ import java.util.Random;
  * @version October 21, 2024
  */
 
-public class TileBag {
+public class TileBag implements Serializable {
     /** The max number of tiles allowed in the bag*/
     private static int MAX_NO_TILES = 100;
     /** The frequency of the letters*/

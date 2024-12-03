@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -16,7 +17,7 @@ import java.awt.event.KeyEvent;
  * @version November 12, 2024
  */
 
-public class ScrabbleGameView extends JFrame {
+public class ScrabbleGameView extends JFrame implements Serializable {
 
     private JLabel tilesLeftLabel;
     private JLabel currentPlayerLabel;

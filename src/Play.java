@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Represents a play in the Scrabble game, which consists of a player and a word
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  * @author Abdul Babatunde
  * @version October 22, 2024
  */
-public class Play {
+public class Play implements Serializable {
 
     /** Represents a player*/
     private Player player;

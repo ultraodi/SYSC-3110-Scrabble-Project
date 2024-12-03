@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * The Tile class simulates the individual tiles that can be interacted with by the users.
  * @author Clinton Odinamadu
@@ -6,7 +8,7 @@
  * @version October 20, 2024
  */
 
-public class Tile {
+public class Tile implements Serializable {
     /** Player in possession of the tile. Null represents that the tile is still in the tilebab.*/
     private Player player;
     /** Letter on the tile.*/
