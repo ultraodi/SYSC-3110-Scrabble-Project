@@ -65,6 +65,10 @@ public class ScrabbleGameController implements ActionListener {
         // Temporary variable to store the player's tiles
         currentPlayerTiles = new ArrayList<>(model.getPlayerTurn().getTiles());
         currentPlayerTiles2 = new ArrayList<>(model.getPlayerTurn().getTiles());
+
+        // Serialized Listeners
+        view.addNewExportSerListener(new ExportSerListener());
+        view.addNewImportSerListener(new ImportSerListener());
     }
 
     @Override
@@ -1077,6 +1081,21 @@ public class ScrabbleGameController implements ActionListener {
         return "";  // Return an empty string for invalid indices
     }
 
+    // Listener for exporting Serialized ScrabbleGame
+    class ExportSerListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String fileName = view.getSerializedExportFileName();
+            //model.exportSerializedAddressBook(fileName);
+        }
+    }
+
+    // Listener for importing Serialized ScrabbleGame
+    class ImportSerListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String fileName = view.getSerializedImportFileName();
+            //model = AddressBook.importSerializedAddressBook(fileName);
+        }
+    }
 
     // Inner class to represent the state of a tile (letter, value, position)
     public static class TileState {

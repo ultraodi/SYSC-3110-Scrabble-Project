@@ -36,6 +36,9 @@ public class ScrabbleGameView extends JFrame {
     private JMenu editMenu;
     private JMenuItem undoMenuItem;
     private JMenuItem redoMenuItem;
+    private JMenu saveLoadMenuItem;
+    private JMenuItem saveCurrentState;
+    private JMenuItem loadCurrentState;
 
     public ScrabbleGameView() {
         super("Scrabble Game!");
@@ -49,9 +52,20 @@ public class ScrabbleGameView extends JFrame {
         // Create the "Edit" menu
         editMenu = new JMenu("Undo/Redo");
 
+        // Create the save/load menu
+        saveLoadMenuItem = new JMenu("Save/Load");
+
         // Create "Undo" and "Redo" menu items
         undoMenuItem = new JMenuItem("Undo");
         redoMenuItem = new JMenuItem("Redo");
+
+        // Create the "Save" and "Load" menu items
+        saveCurrentState = new JMenuItem("Save");
+        loadCurrentState = new JMenuItem("Load");
+
+        // Add Save/Load items to menu
+        saveLoadMenuItem.add(saveCurrentState);
+        saveLoadMenuItem.add(loadCurrentState);
 
         // Add action commands
         undoMenuItem.setActionCommand("Undo");
@@ -67,6 +81,7 @@ public class ScrabbleGameView extends JFrame {
 
         // Add the "Edit" menu to the menu bar
         menuBar.add(editMenu);
+        menuBar.add(saveLoadMenuItem);
 
         // Set the menu bar for the frame
         setJMenuBar(menuBar);
@@ -451,6 +466,25 @@ public class ScrabbleGameView extends JFrame {
         return playerNames; // Return list of names
     }
 
+    // Serialized listener method
+    public void addNewExportSerListener(ActionListener listener) {
+        saveCurrentState.addActionListener(listener);
+    }
+
+    // Serialized view option to enter filename
+    public String getSerializedExportFileName() {
+        return JOptionPane.showInputDialog(this, "Enter File Name to Serialize: ");
+    }
+
+    // Serialized listener method
+    public void addNewImportSerListener(ActionListener listener) {
+        loadCurrentState.addActionListener(listener);
+    }
+
+    // Serialized view option to enter filename
+    public String getSerializedImportFileName() {
+        return JOptionPane.showInputDialog(this, "Enter File Name to Unserialize:");
+    }
 
     private String getPlayerName(int playerNumber) {
         String playerName = null;
