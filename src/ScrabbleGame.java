@@ -350,20 +350,11 @@ public class ScrabbleGame {
         putPlayOnBoard(dir, rowNum, colNum);
 
         // First play goes through the center of the board.
-        if (!playStack.contains(currentPlay)) { // Check if the current play is in the stack
-            if (firstPlayIsThroughCenter()) {
-                playStack.push(currentPlay); // Add the current play to the stack
-            } else {
-                removePlayFromBoard(currentPlay);
-                return false;
-            }
+
+        if (firstPlayIsThroughCenter()) {
+            playStack.push(currentPlay); // Add the current play to the stack
         } else {
-            System.out.printf("%s'%s' has already been played", debugTag, currentPlay.getWordString());
-            if (view.getIsAI()) {
-                controller.setIsRepeated(true);
-                controller.handleAITurn();
-                JOptionPane.showMessageDialog(null, "AI detected repeated " + currentPlay.getWordString() + " word, Removing now");
-            }
+            removePlayFromBoard(currentPlay);
             return false;
         }
 
