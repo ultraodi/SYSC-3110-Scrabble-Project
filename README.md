@@ -46,7 +46,7 @@
   
   - Handling Serialization
     - In the GUI Version, you can save the state of the game with the "Save" JMenuitem. Once selected, you can give the serialized file a name, click "OK" and it will be saved to your file directory.
-    - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click on the "OK". 
+    - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click "OK". 
 
 
 - Text version of the game
