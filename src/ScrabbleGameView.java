@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -41,6 +42,10 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     private JMenuItem saveCurrentState;
     private JMenuItem loadCurrentState;
 
+    private Color currentColor;  // Initial text color
+    private final Color[] colors = {Color.GREEN, Color.RED, Color.BLUE, Color.ORANGE, Color.MAGENTA};  // Array of colors
+    private int colorIndex = 0;  // To cycle through the colors
+
     public ScrabbleGameView() {
         super("Scrabble Game!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,6 +54,8 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         this.setBackground(new Color(255, 230, 0));
         tileBag = new TileBag();
         menuBar = new JMenuBar();
+
+        currentColor = Color.GREEN;
 
         // Create the "Edit" menu
         editMenu = new JMenu("Undo/Redo");
@@ -577,36 +584,49 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     public void updateLabels() {
         if (model != null) {
             if(isAI){
-                // Update labels with model data
-                tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
-                currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
-                currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
-                AILabel.setText("AI score is " + model.getPlayerByName("AI").getScore());
+                // Check if the number of tiles is equal to 0
+                if (model.getTileBag().getNumTilesLeft() == 0){
+                    celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    disableAllButtons();
+                }
+                else{
+                    // Update labels with model data
+                    tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+                    currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+                    currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+                    AILabel.setText("AI score is " + model.getPlayerByName("AI").getScore());
 
 
-                // Print each tile to the console
-                String tilesString = model.getPlayerTurn().getTilesString();
+                    // Print each tile to the console
+                    String tilesString = model.getPlayerTurn().getTilesString();
 
-                for (int i = 0; i < tilesString.length(); i++) {
-                    if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
-                        tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
-                        tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                    for (int i = 0; i < tilesString.length(); i++) {
+                        if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
+                            tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                            tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                        }
                     }
                 }
             }
             else{
-                // Update labels with model data
-                tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
-                currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
-                currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
+                if (model.getTileBag().getNumTilesLeft() == 0){
+                    celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    disableAllButtons();
+                }
+                else{
+                    // Update labels with model data
+                    tilesLeftLabel.setText("Tiles left in bag: " + model.getTileBag().getNumTilesLeft());
+                    currentPlayerLabel.setText("Current player: " + model.getPlayerTurn().getPlayerName());
+                    currentPlayerScoreLabel.setText("Current player score: " + model.getPlayerTurn().getScore());
 
-                // Print each tile to the console
-                String tilesString = model.getPlayerTurn().getTilesString();
+                    // Print each tile to the console
+                    String tilesString = model.getPlayerTurn().getTilesString();
 
-                for (int i = 0; i < tilesString.length(); i++) {
-                    if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
-                        tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
-                        tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                    for (int i = 0; i < tilesString.length(); i++) {
+                        if (i < tileButtons.length) {  // Ensure we don’t exceed the number of buttons
+                            tileButtons[i].setText(String.valueOf(tilesString.charAt(i)));
+                            tileValueButtons[i].setText(String.valueOf(tileBag.getTileValue(String.valueOf(tilesString.charAt(i)))));
+                        }
                     }
                 }
             }
@@ -639,7 +659,6 @@ public class ScrabbleGameView extends JFrame implements Serializable {
             System.out.println("Model is not initialized.");
             return;
         }
-
 
         // Loop through all the squares on the board
         for (int row = 0; row < SIZE; row++) {
@@ -757,4 +776,54 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         }
     }
 
+    public void disableAllButtons() {
+        for (int row = 0; row < buttons.length; row++) {
+            for (int col = 0; col < buttons.length; col++) {
+                if (buttons[row][col] != null) {
+                    buttons[row][col].setEnabled(false);  // Disable the button
+                }
+            }
+        }
+    }
+
+
+    // Method to display the celebration message and confetti effect
+    public void celebrateWinner(String winnerName) {
+        // Create a frame for the celebration
+        JFrame celebrationFrame = new JFrame("Winner Celebration");
+        celebrationFrame.setSize(1500, 1000);  // Set the frame size to 1500x1000
+        celebrationFrame.setLocationRelativeTo(null);  // Center the frame
+        celebrationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Panel to display the message
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Draw the winner message
+                g.setColor(currentColor);
+                g.setFont(new Font("Arial", Font.BOLD, 100));  // Font size and style
+                FontMetrics fm = g.getFontMetrics();
+                String message = winnerName + " Wins!";
+                int x = (getWidth() - fm.stringWidth(message)) / 2;  // Center horizontally
+                int y = getHeight() / 2;  // Center vertically
+                g.drawString(message, x, y);
+            }
+        };
+        celebrationFrame.add(panel);
+
+        // Timer to change the color of the text
+        Timer colorChangeTimer = new Timer(200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorIndex = (colorIndex + 1) % colors.length;  // Cycle through the colors
+                currentColor = colors[colorIndex];
+                panel.repaint();  // Repaint the panel to apply the new color
+            }
+        });
+        colorChangeTimer.start();  // Start the timer
+
+        // Make the frame visible
+        celebrationFrame.setVisible(true);
+    }
 }
