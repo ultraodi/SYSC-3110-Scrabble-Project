@@ -310,10 +310,10 @@ public class ScrabbleGameController implements ActionListener, Serializable {
                                 history.clear();
                                 currentPlayerTiles = new ArrayList<>(model.getPlayerTurn().getTiles());
                             } else {
-                                JOptionPane.showMessageDialog(null, "Word has already been played.");
+//                                JOptionPane.showMessageDialog(null, "Word has already been played.");
                                 view.updateBoard();
                                 view.updateLabels();
-                                undoLastMove();
+//                                undoLastMove();
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, model.getPlayerInputWord() + " is an invalid word.");

@@ -951,6 +951,22 @@ public class ScrabbleGame implements Serializable {
         this.currentPlayerIndex = currentPlayerIndex;
     }
 
+    public Player getPlayerWithHighestScore() {
+        if (players == null || players.isEmpty()) {
+            return null; // Return null if the list is empty or null
+        }
+
+        Player highestScoringPlayer = players.get(0); // Assume the first player has the highest score initially
+
+        for (Player player : players) {
+            if (player.getScore() > highestScoringPlayer.getScore()) {
+                highestScoringPlayer = player; // Update if a player has a higher score
+            }
+        }
+
+        return highestScoringPlayer;
+    }
+
     public void setPlayerInputBoardPosition(String playerInputBoardPosition) {
         this.playerInputBoardPosition = playerInputBoardPosition;
     }

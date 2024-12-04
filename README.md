@@ -1,30 +1,7 @@
 # Group_4_SYSC3110_Project
 
 #### Notes
-- The project is incomplete
-  - It will not run by running the JAR file. It must be extracted and run in IntellliJ
-  - All words in the provided database are accounted for.
-  - The initial designs for the GUI have been created.
-  - Completed since the last Milestone
-    - Enforcements of scrabble rules are now implemented.
-    - Words can be built off each other as in a scrabble game.
-    - A basic scoring system was implemented.
-  - The following still need to be done
-    - GUI that is consistent with the model.
-    - AI players
-    - Unit tests for the following classes:
-      - Square
-      - Play
-      - Player
-      - ScrabbleBoard
-      - ScrabbleGame
-      - Tile
-      - TileBag
-    - Unit tests for the different rules of scrabble
-    - Unit tests for GUI elements
-    - Win conditions for the game need to be implemented
-    - Refactoring for clarity
-    - Packaging to run in a JAR file
+- The project is complete
 
 ## How to play
 - GUI version of the game
@@ -72,6 +49,14 @@
 - GUI version of the game
   - Change TEXT_VERSION to false
 
+
+## Bonus Section
+  - **Selected Feature: Winner Celebration**
+    - When the number of tiles left in the bag is equal to 0, the game automatically disables all buttons and a GUI displaying a celebratory message for the winner pops up.
+  - **Contributors**
+    - Abdul Babatunde
+    - Clinton Odinamadu
+    - Marvel Adotse-Ogah
 ---
 #### Explanation for the use of data structures
 - See data_structure_explanations.md
