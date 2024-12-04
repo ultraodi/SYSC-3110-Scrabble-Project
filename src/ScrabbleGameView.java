@@ -27,7 +27,7 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     private Square[][] squares;
     private JButton[] tileButtons = new JButton[7];
     public static final int SIZE = 15;
-    ScrabbleGame model ;
+    ScrabbleGame model;
     ScrabbleGameController sgc;
     private TileBag tileBag;
     private JButton[] tileValueButtons = new JButton[7];
@@ -99,7 +99,6 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     public void setModel(ScrabbleGame model) {
         this.model = model;
         sgc = new ScrabbleGameController(model, this);  // Pass model if needed
-
     }
 
     private void createBoard() {
@@ -641,8 +640,6 @@ public class ScrabbleGameView extends JFrame implements Serializable {
             return;
         }
 
-        // Get the current player's tiles and their positions
-        //List<Tile> playerTiles = model.getPlayerTurn().getTiles();
 
         // Loop through all the squares on the board
         for (int row = 0; row < SIZE; row++) {
