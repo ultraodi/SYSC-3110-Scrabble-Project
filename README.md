@@ -20,10 +20,16 @@
     - First, click on the letter that you want to start the connected word with. This will give you a message that the letter has been added to your played words. To undo press the clear button.
     - DISCLAIMER: If you press the tile more than once, you MUST click the clear button, otherwise it will add that letter multiple times to your played word.
     - Second, fill in the rest of the word then press play.
-  
-  - Handling Serialization
-    - In the GUI Version, you can save the state of the game with the "Save" JMenuitem. Once selected, you can give the serialized file a name, click "OK" and it will be saved to your file directory.
-    - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click "OK". 
+
+- Handling Serialization
+  - In the GUI Version, you can save the state of the game with the "Save" JMenuitem. Once selected, you can give the serialized file a name, click "OK" and it will be saved to your file directory.
+  - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click "OK".
+
+- How to use undo/redo feature.
+  - There will be a panel where you can see the undo and redo. Click it and a dropdown will appear.
+  - Click undo or (ctrl + z) to undo
+  - Click redo or (Ctrl + y) to redo
+  - Make sure there are moves to be undone / redone
 
 
 - Text version of the game
