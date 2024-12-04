@@ -43,7 +43,12 @@
     - First, click on the letter that you want to start the connected word with. This will give you a message that the letter has been added to your played words. To undo press the clear button.
     - DISCLAIMER: If you press the tile more than once, you MUST click the clear button, otherwise it will add that letter multiple times to your played word.
     - Second, fill in the rest of the word then press play.
-    
+  
+  - Handling Serialization
+    - In the GUI Version, you can save the state of the game with the "Save" JMenuitem. Once selected, you can give the serialized file a name, click "OK" and it will be saved to your file directory.
+    - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click on the "OK". 
+
+
 - Text version of the game
   - Change TEXT_VERSION to true
   - Change DEBUG to false
