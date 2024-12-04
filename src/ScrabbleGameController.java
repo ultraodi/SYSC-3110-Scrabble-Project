@@ -1095,11 +1095,36 @@ public class ScrabbleGameController implements ActionListener, Serializable {
         public void actionPerformed(ActionEvent e) {
             String fileName = view.getSerializedImportFileName();
             model = ScrabbleGame.importSerializedScrabbleGame(fileName);
+
             view.setModel(model);
+
+            view.setSquares(refreshBoardAfterDeserialization(model.getScrabbleBoard().getBoard()));
+            view.updateLabels();
             view.updateBoard();
             System.out.println("View Updated");
         }
     }
+
+    public Square[][] refreshBoardAfterDeserialization(Square[][] squareView) {
+        Square[][] squares = squareView; // Get the board's squares
+        for (int row = 0; row < ScrabbleGameView.SIZE; row++) {
+            for (int col = 0; col < ScrabbleGameView.SIZE; col++) {
+                // Get the square and its corresponding button
+                Square square = squares[row][col];
+                JButton button = view.getBoardSquare(row, col); // Get the corresponding button
+
+                // Check if the square already has a placed tile
+                Tile placedTile = square.getPlacedTile();
+
+                if (placedTile != null) {
+                    // Set the ActionCommand for a square with a placed tile
+                    button.setActionCommand("TwoClickBoardTile " + row + " " + col);
+                }
+            }
+        }
+        return squares;
+    }
+
 
     // Inner class to represent the state of a tile (letter, value, position)
     public static class TileState implements Serializable {
