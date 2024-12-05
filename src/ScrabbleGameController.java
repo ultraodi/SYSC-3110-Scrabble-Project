@@ -899,7 +899,7 @@ public class ScrabbleGameController implements ActionListener, Serializable {
     }
 
     public void undoLastValidMove() {
-        if (!undoValidMoves.isEmpty() && !undoPlayerScoresStack.isEmpty() && !undoPlayerTilesStack.isEmpty() && !undoPlayerStack.isEmpty() && !undoPlayerDrawnTilesStack.isEmpty()) {
+        if (!undoValidMoves.isEmpty() && !undoPlayerScoresStack.isEmpty() && !undoPlayerTilesStack.isEmpty() && !undoPlayerStack.isEmpty()) {
             // Pop the last valid move
             List<TileState> lastMove = undoValidMoves.pop();
 
@@ -921,7 +921,21 @@ public class ScrabbleGameController implements ActionListener, Serializable {
                 }
             }
 
-            redoValidMoves.push(history);
+            // After iterating through the last move
+            redoValidMoves.push(new ArrayList<>(history));
+
+            // Debug: Print all moves in the redo stack
+            System.out.println("Redo stack contents: ");
+            for (List<TileState> move : redoValidMoves) {
+                System.out.println("Move: ");
+                for (TileState tileState : move) {
+                    System.out.printf("Letter: %s, Value: %d, Row: %d, Column: %d%n",
+                            tileState.getLetter(), tileState.getValue(), tileState.getRow(), tileState.getCol());
+                }
+                System.out.println(); // Add a blank line between moves for clarity
+            }
+
+
             List<String> lettersPlayed = new ArrayList<>();
             for (TileState tileState : redoValidMoves.peek()) {
                 if (tileState != null) {
@@ -945,32 +959,34 @@ public class ScrabbleGameController implements ActionListener, Serializable {
             List<Tile> previousTiles = undoPlayerTilesStack.pop();
             model.getPlayerTurn().setPlayerTiles(new ArrayList<>(previousTiles)); // Set the tiles for the current player
 
-            // Retrieve and return the drawn tiles from the player's tile rack to the TileBag
-            List<Tile> drawnTiles = undoPlayerDrawnTilesStack.pop(); // Assume you've stored these in a stack
-
-            // Iterate through the drawn tiles and return each to the tile bag
-            TileBag tileBag = model.getTileBag();  // Access the tile bag
-            for (Tile tile : drawnTiles) {
-                if (tile != null) {
-                    redoDrawnTiles.add(tile);
-                    tileBag.returnTile(tile);
+            if (!undoPlayerDrawnTilesStack.isEmpty()) {
+                // Retrieve and return the drawn tiles from the player's tile rack to the TileBag
+                List<Tile> drawnTiles = undoPlayerDrawnTilesStack.pop(); // Assume you've stored these in a stack
+                // Iterate through the drawn tiles and return each to the tile bag
+                TileBag tileBag = model.getTileBag();  // Access the tile bag
+                for (Tile tile : drawnTiles) {
+                    if (tile != null) {
+                        redoDrawnTiles.add(tile);
+                        tileBag.returnTile(tile);
+                    }
                 }
+                redoPlayerDrawnTilesStack.add(redoDrawnTiles);
+                redoDrawnTiles.clear();
             }
-            redoPlayerDrawnTilesStack.add(redoDrawnTiles);
-            redoDrawnTiles.clear();
 
             // Update the UI after undoing the move
             view.updateLabels();
             view.updateBoard();
             model.printPlayerTiles(model.showAllPlayerTiles);
+            //clearHistory();
         } else {
             System.out.println("No valid moves to undo or missing stack data.");
         }
     }
 
     public void redoLastValidMove() {
-        if (!redoValidMoves.isEmpty() && !redoPlayerScoresStack.isEmpty() && !redoPlayerTilesStack.isEmpty() && !redoPlayerStack.isEmpty() && !redoPlayerDrawnTilesStack.isEmpty()) {
-            // Pop the last move from redo stack
+        if (!redoValidMoves.isEmpty() && !redoPlayerScoresStack.isEmpty() && !redoPlayerTilesStack.isEmpty() && !redoPlayerStack.isEmpty()) {
+            // Pop the last move from the redo stack
             List<TileState> lastMove = redoValidMoves.pop();
 
             // Debug: Print details of the move being redone
@@ -993,9 +1009,24 @@ public class ScrabbleGameController implements ActionListener, Serializable {
                 }
             }
 
-            // Push the move onto the undo stack
-            undoValidMoves.push(new ArrayList<>(lastMove)); // Push a copy of the move to the undo stack
-            System.out.println("Saved move to undo stack.");
+            // Push a copy of the move onto the undo stack
+            undoValidMoves.push(new ArrayList<>(lastMove)); // Push a new copy
+
+            // Debug: Print the contents of the undo stack
+            System.out.println("Undo stack contents:");
+            for (List<TileState> move : undoValidMoves) {
+                System.out.println("Move: ");
+                for (TileState tileState : move) {
+                    System.out.printf("Letter: %s, Value: %d, Row: %d, Column: %d%n",
+                            tileState.getLetter(), tileState.getValue(), tileState.getRow(), tileState.getCol());
+                }
+                System.out.println(); // Add a blank line between moves for clarity
+            }
+
+
+            undoPlayerStack.push(model.playerOrder.get((model.currentPlayerIndex + 1) % model.playerOrder.size()));
+            undoPlayerScoresStack.push(model.playerOrder.get((model.currentPlayerIndex + 1) % model.playerOrder.size()).getScore());
+            undoPlayerTilesStack.push(model.playerOrder.get((model.currentPlayerIndex + 1) % model.playerOrder.size()).getTiles());
 
             // Update player state
             Player nextPlayer = redoPlayerStack.pop();
@@ -1007,17 +1038,17 @@ public class ScrabbleGameController implements ActionListener, Serializable {
             List<Tile> nextTiles = redoPlayerTilesStack.pop();
             model.getPlayerTurn().setPlayerTiles(new ArrayList<>(nextTiles)); // Push a copy of the tiles
 
-            // Reintegrate drawn tiles from redo stack
-            List<Tile> drawnTiles = redoPlayerDrawnTilesStack.pop();
-            TileBag tileBag = model.getTileBag();
-            for (Tile tile : drawnTiles) {
-                if (tile != null) {
-                    undoDrawnTiles.add(tile);
-                    tileBag.returnTile(tile);
+            if (!redoPlayerDrawnTilesStack.isEmpty()){
+                // Reintegrate drawn tiles from redo stack
+                List<Tile> drawnTiles = redoPlayerDrawnTilesStack.pop();
+                TileBag tileBag = model.getTileBag();
+                for (Tile tile : drawnTiles) {
+                    if (tile != null) {
+                        undoDrawnTiles.add(tile);
+                        tileBag.returnTile(tile);
+                    }
                 }
             }
-            undoPlayerDrawnTilesStack.push(new ArrayList<>(undoDrawnTiles)); // Push a copy to the undo stack
-            undoDrawnTiles.clear();
 
             // Switch turns and update the board
             model.changeTurns();
