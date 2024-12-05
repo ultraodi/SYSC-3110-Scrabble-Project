@@ -957,14 +957,21 @@ public class ScrabbleGame implements Serializable {
         }
 
         Player highestScoringPlayer = players.get(0); // Assume the first player has the highest score initially
+        int highestScore = highestScoringPlayer.getScore();
+        boolean tie = false; // Flag to track if there is a tie
 
-        for (Player player : players) {
-            if (player.getScore() > highestScoringPlayer.getScore()) {
-                highestScoringPlayer = player; // Update if a player has a higher score
+        for (int i = 1; i < players.size(); i++) {
+            Player currentPlayer = players.get(i);
+            if (currentPlayer.getScore() > highestScore) {
+                highestScoringPlayer = currentPlayer; // Update highest scoring player
+                highestScore = currentPlayer.getScore(); // Update the highest score
+                tie = false; // Reset the tie flag as we have a new highest score
+            } else if (currentPlayer.getScore() == highestScore) {
+                tie = true; // Set tie flag if another player matches the highest score
             }
         }
 
-        return highestScoringPlayer;
+        return tie ? null : highestScoringPlayer; // Return null if there's a tie
     }
 
     public void setPlayerInputBoardPosition(String playerInputBoardPosition) {

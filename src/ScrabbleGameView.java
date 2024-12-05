@@ -601,7 +601,12 @@ public class ScrabbleGameView extends JFrame implements Serializable {
             if(isAI){
                 // Check if the number of tiles is equal to 0
                 if (model.getTileBag().getNumTilesLeft() == 0){
-                    celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    if (model.getPlayerWithHighestScore() != null){
+                        celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    }
+                    else{
+                        celebrateWinner(null);
+                    }
                     disableAllButtons();
                 }
                 else{
@@ -625,7 +630,12 @@ public class ScrabbleGameView extends JFrame implements Serializable {
             }
             else{
                 if (model.getTileBag().getNumTilesLeft() == 0){
-                    celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    if (model.getPlayerWithHighestScore() != null){
+                        celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+                    }
+                    else{
+                        celebrateWinner(null);
+                    }
                     disableAllButtons();
                 }
                 else{
@@ -819,7 +829,10 @@ public class ScrabbleGameView extends JFrame implements Serializable {
                 g.setColor(currentColor);
                 g.setFont(new Font("Arial", Font.BOLD, 100));  // Font size and style
                 FontMetrics fm = g.getFontMetrics();
-                String message = winnerName + " Wins!";
+
+                // Determine the message based on whether winnerName is null
+                String message = (winnerName == null) ? "It's a Tie!" : winnerName + " Wins!";
+
                 int x = (getWidth() - fm.stringWidth(message)) / 2;  // Center horizontally
                 int y = getHeight() / 2;  // Center vertically
                 g.drawString(message, x, y);
@@ -841,4 +854,5 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         // Make the frame visible
         celebrationFrame.setVisible(true);
     }
+
 }

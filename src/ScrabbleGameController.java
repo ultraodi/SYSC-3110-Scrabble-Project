@@ -1140,7 +1140,12 @@ public class ScrabbleGameController implements ActionListener, Serializable {
     // Listener for importing Serialized ScrabbleGame
     class QuitGameListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            view.celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+            if (model.getPlayerWithHighestScore() != null){
+                view.celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+            }
+            else{
+                view.celebrateWinner(null);
+            }
             view.disableAllButtons();
             System.out.println("GAME OVER");
         }
