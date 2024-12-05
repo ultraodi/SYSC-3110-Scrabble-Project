@@ -42,6 +42,10 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     private JMenuItem saveCurrentState;
     private JMenuItem loadCurrentState;
 
+    private JMenu quitMenu;
+
+    private JMenuItem quitMenuItem;
+
     private Color currentColor;  // Initial text color
     private final Color[] colors = {Color.GREEN, Color.RED, Color.BLUE, Color.ORANGE, Color.MAGENTA};  // Array of colors
     private int colorIndex = 0;  // To cycle through the colors
@@ -71,6 +75,11 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         saveCurrentState = new JMenuItem("Save");
         loadCurrentState = new JMenuItem("Load");
 
+        quitMenu = new JMenu("Quit");
+        quitMenuItem = new JMenuItem("QUIT");
+
+        quitMenu.add(quitMenuItem);
+
         // Add Save/Load items to menu
         saveLoadMenuItem.add(saveCurrentState);
         saveLoadMenuItem.add(loadCurrentState);
@@ -90,6 +99,7 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         // Add the "Edit" menu to the menu bar
         menuBar.add(editMenu);
         menuBar.add(saveLoadMenuItem);
+        menuBar.add(quitMenu);
 
         // Set the menu bar for the frame
         setJMenuBar(menuBar);
@@ -493,6 +503,11 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         return JOptionPane.showInputDialog(this, "Enter File Name to Unserialize:");
     }
 
+    // Quit Game listener method
+    public void addNewQuitGameListener(ActionListener listener) {
+        quitMenuItem.addActionListener(listener);
+    }
+
     private String getPlayerName(int playerNumber) {
         String playerName = null;
         boolean validNameInput = false;
@@ -787,7 +802,7 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     }
 
 
-    // Method to display the celebration message and confetti effect
+    // Method to display the celebration message
     public void celebrateWinner(String winnerName) {
         // Create a frame for the celebration
         JFrame celebrationFrame = new JFrame("Winner Celebration");

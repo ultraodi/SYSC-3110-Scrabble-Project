@@ -59,6 +59,7 @@
 ## Bonus Section
   - **Selected Feature: Winner Celebration**
     - When the number of tiles left in the bag is equal to 0, the game automatically disables all buttons and a GUI displaying a celebratory message for the winner pops up.
+    - Also, you can end the game prematurely by selecting the "Quit" menu. The game will end and the highest scoring player will be celebrated.
   - **Contributors**
     - Abdul Babatunde
     - Clinton Odinamadu

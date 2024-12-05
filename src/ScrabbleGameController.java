@@ -70,6 +70,7 @@ public class ScrabbleGameController implements ActionListener, Serializable {
         // Serialized Listeners
         view.addNewExportSerListener(new ExportSerListener());
         view.addNewImportSerListener(new ImportSerListener());
+        view.addNewQuitGameListener(new QuitGameListener());
     }
 
     @Override
@@ -1102,6 +1103,15 @@ public class ScrabbleGameController implements ActionListener, Serializable {
             view.updateLabels();
             view.updateBoard();
             System.out.println("View Updated");
+        }
+    }
+
+    // Listener for importing Serialized ScrabbleGame
+    class QuitGameListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            view.celebrateWinner(model.getPlayerWithHighestScore().getPlayerName());
+            view.disableAllButtons();
+            System.out.println("GAME OVER");
         }
     }
 
