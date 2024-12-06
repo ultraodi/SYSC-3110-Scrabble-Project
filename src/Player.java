@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.io.Serializable;
 
 /**
  * Represents a player in the Scrabble game.
@@ -8,7 +10,7 @@ import java.util.Arrays;
  * @author Abdul Babatunde
  * @version October 22, 2024
  */
-public class Player {
+public class Player implements Serializable {
     // The following are ANSI codes for console text. Might not be portable on Windows computers.
     public static final String RED = "\033[0;31m"; // Red
     public static final String GREEN = "\033[0;32m"; // Green
@@ -115,6 +117,18 @@ public class Player {
     }
 
     /**
+     * Clears all the tiles currently held by the player and returns them to the tile bag.
+     * @param tileBag The tile bag to which the tiles will be returned.
+     */
+    public void clearAllTiles(TileBag tileBag) {
+        // Iterate through the player's tiles and return them to the tile bag
+        for (Tile tile : tiles) {
+            tileBag.addTileToBag(tile);  // Add each tile back to the tile bag
+        }
+        tiles.clear();  // Remove all tiles from the player's list
+    }
+
+    /**
      * Returns a tile to the player's tile deck.
      * @param tile The tile to be returned to the tile deck.
      * @return True if the tile could be returned. False otherwise.
@@ -140,10 +154,17 @@ public class Player {
      * Get more tiles from the tile bag
      * @param tileBag The tile bag to take the tiles from
      */
-    public void getMoreTiles(TileBag tileBag) {
-        tiles.addAll(tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size()));
+    // Modify the method to return a List<Tile> instead of void
+    public List<Tile> getMoreTiles(TileBag tileBag) {
+        // Draw the tiles and add them to the player's tile list
+        List<Tile> drawnTiles = tileBag.getRandomTilesFromBag(MAX_TILES - tiles.size());
+        tiles.addAll(drawnTiles);
         ownTiles();
+
+        // Return the drawn tiles
+        return drawnTiles;
     }
+
 
     /**
      * Transfers ownership of the tile to a player.
@@ -152,6 +173,19 @@ public class Player {
         for (Tile tile: tiles) {
             tile.setPlayer(this);
         }
+    }
+    /**
+     * Sets a tile at the specified index in the player's tile list.
+     * @param index The index at which the tile will be set.
+     * @param tile The tile to be set.
+     * @return True if the tile was successfully set, false if the index is out of bounds.
+     */
+    public boolean setTileAtIndex(int index, Tile tile) {
+        if (index >= 0 && index < tiles.size()) {
+            tiles.set(index, tile);
+            return true;  // Tile successfully set
+        }
+        return false;  // Index is out of bounds
     }
 
     /**

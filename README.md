@@ -1,30 +1,7 @@
 # Group_4_SYSC3110_Project
 
 #### Notes
-- The project is incomplete
-  - It will not run by running the JAR file. It must be extracted and run in IntellliJ
-  - All words in the provided database are accounted for.
-  - The initial designs for the GUI have been created.
-  - Completed since the last Milestone
-    - Enforcements of scrabble rules are now implemented.
-    - Words can be built off each other as in a scrabble game.
-    - A basic scoring system was implemented.
-  - The following still need to be done
-    - GUI that is consistent with the model.
-    - AI players
-    - Unit tests for the following classes:
-      - Square
-      - Play
-      - Player
-      - ScrabbleBoard
-      - ScrabbleGame
-      - Tile
-      - TileBag
-    - Unit tests for the different rules of scrabble
-    - Unit tests for GUI elements
-    - Win conditions for the game need to be implemented
-    - Refactoring for clarity
-    - Packaging the resources to run in a JAR file. For now, the jar file must be run with the resource folder in the same directory
+- The project is complete
 
 ## How to play
 - GUI version of the game
@@ -43,7 +20,18 @@
     - First, click on the letter that you want to start the connected word with. This will give you a message that the letter has been added to your played words. To undo press the clear button.
     - DISCLAIMER: If you press the tile more than once, you MUST click the clear button, otherwise it will add that letter multiple times to your played word.
     - Second, fill in the rest of the word then press play.
-    
+
+- Handling Serialization
+  - In the GUI Version, you can save the state of the game with the "Save" JMenuitem. Once selected, you can give the serialized file a name, click "OK" and it will be saved to your file directory.
+  - To Load the game, you can click on the "Load" JMenuitem. Once selected, type in the name you saved your file as and click "OK".
+
+- How to use undo/redo feature.
+  - There will be a panel where you can see the undo and redo. Click it and a dropdown will appear.
+  - Click undo or (ctrl + z) to undo
+  - Click redo or (Ctrl + y) to redo
+  - Make sure there are moves to be undone / redone
+
+
 - Text version of the game
   - Change TEXT_VERSION to true
   - Change DEBUG to false
@@ -67,6 +55,15 @@
 - GUI version of the game
   - Change TEXT_VERSION to false
 
+
+## Bonus Section
+  - **Selected Feature: Winner Celebration**
+    - When the number of tiles left in the bag is equal to 0, the game automatically disables all buttons and a GUI displaying a celebratory message for the winner pops up.
+    - Also, you can end the game prematurely by selecting the "Quit" menu. The game will end and the highest scoring player will be celebrated.
+  - **Contributors**
+    - Abdul Babatunde
+    - Clinton Odinamadu
+    - Marvel Adotse-Ogah
 ---
 #### Explanation for the use of data structures
 - See data_structure_explanations.md

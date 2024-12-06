@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /**
  * The ScrabbleBoard class represents the board where the scrabble game is played.
  * @author Marvel Adotse-ogah
  * @version October 18, 2024
  */
-public class ScrabbleBoard {
+public class ScrabbleBoard implements Serializable {
     // The following are ANSI codes for console text. Might not be portable on Windows computers.
     public static final String RESET = "\033[0m"; // Colour Reset
     public static final String RED = "\033[0;31m"; // Red

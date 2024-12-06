@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.sql.SQLInvalidAuthorizationSpecException;
 
 /**
@@ -5,7 +6,7 @@ import java.sql.SQLInvalidAuthorizationSpecException;
  * @author Marvel Adotse-ogah
  * @version October 18, 2024
  */
-public class Square {
+public class Square implements Serializable {
     /**
      * Represents all the possible types for the square such as
      * Triple Word, Triple Letter, Double Word, Double Letter, and the normal squares.

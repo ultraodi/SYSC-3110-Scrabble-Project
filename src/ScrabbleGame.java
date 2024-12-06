@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.io.Serializable;
 
 import static java.lang.String.*;
 
@@ -14,7 +15,7 @@ import static java.lang.String.*;
  * @author Marvel Adotse-ogah
  * @version October 22, 2024
  */
-public class ScrabbleGame {
+public class ScrabbleGame implements Serializable {
     public static boolean DEBUG = false; // To be added to the XML 'configuration' file
     public static boolean TEXT_VERSION = false;
     /** Players of the game*/
@@ -26,7 +27,7 @@ public class ScrabbleGame {
     /** The tile bag for the game*/
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
-    private ArrayList<Play> plays;
+    public ArrayList<Play> plays;
     /** Holds the URL from which the validWords set will be generated from*/
     private URL validWordsURL;
     /** Holds a set of valid words*/
@@ -42,11 +43,13 @@ public class ScrabbleGame {
     /** Play direction of a played word either horizontal or vertical*/
     private Direction playerInputPlayDirection;
     /** Holds a list of the player's order*/
-    private ArrayList<Player> playerOrder;
+    public ArrayList<Player> playerOrder;
     /** Holds the current index of the player's turn */
-    private int currentPlayerIndex = 0;
+    public int currentPlayerIndex = 0;
     /** Current play being worked with*/
-    private Play currentPlay;
+    public Play currentPlay;
+    /** Holds a stack for all the plays*/
+    public Stack<Play> playStack;
     /** Is true when the player's input is a command. False otherwise*/
     private boolean isCommand;
     /** Stores the command*/
@@ -59,6 +62,7 @@ public class ScrabbleGame {
 
     private ScrabbleGameView view = new ScrabbleGameView();
     private ScrabbleGameController controller;
+    public boolean showAllPlayerTiles = false;
 
 
     /**
@@ -84,6 +88,7 @@ public class ScrabbleGame {
         playerInputBoardPosition = "";
         playerInputPlayDirection = Direction.HORIZONTAL;
         currentPlay = null;
+        playStack = new Stack<>();
         isCommand = false;
         command = "board";
     }
@@ -114,7 +119,7 @@ public class ScrabbleGame {
          *  - There are no tiles left in the tile bag
          *  - No players can make a play after 6 turns
          */
-        boolean showAllPlayerTiles = false; // To be added to the XML 'configuration' file
+        showAllPlayerTiles = false; // To be added to the XML 'configuration' file
         setupPlayers();
         playerTurn = players.getFirst();
         scrabbleBoard.drawBoard();
@@ -226,6 +231,33 @@ public class ScrabbleGame {
 
     public void setController(ScrabbleGameController controller){
         this.controller = controller;
+    }
+
+    // Method to export ScrabbleGame to a serialized file
+    public void exportSerializedScrabbleGame(String fileName) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            out.writeObject(this);  // Serialize the ScrabbleGame object
+            System.out.println("ScrabbleGame saved to " + fileName);
+        } catch (IOException e) {
+            System.err.println("Error saving to file: " + e.getMessage());
+        }
+    }
+
+    // Static method to import ScrabbleGame from a serialized file
+    public static ScrabbleGame importSerializedScrabbleGame(String fileName) {
+        ScrabbleGame scrabbleGame = null;
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            scrabbleGame = (ScrabbleGame) in.readObject();
+            System.out.println("ScrabbleGame loaded from " + fileName);
+            scrabbleGame.getScrabbleBoard().drawBoard();
+
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error loading from file: " + e.getMessage());
+        }
+
+        return scrabbleGame;
     }
 
     /**
@@ -345,19 +377,11 @@ public class ScrabbleGame {
         putPlayOnBoard(dir, rowNum, colNum);
 
         // First play goes through the center of the board.
-        if (!plays.contains(currentPlay)) {
-            if (firstPlayIsThroughCenter()) plays.add(currentPlay);
-            else {
-                removePlayFromBoard(currentPlay);
-                return false;
-            }
+
+        if (firstPlayIsThroughCenter()) {
+            playStack.push(currentPlay); // Add the current play to the stack
         } else {
-            System.out.printf("%s'%s' has already been played", debugTag, currentPlay.getWordString());
-            if (view.getIsAI()){
-                controller.setIsRepeated(true);
-                controller.handleAITurn();
-                JOptionPane.showMessageDialog(null, "AI detected repeated " + currentPlay.getWordString() + " word, Removing now");
-            }
+            removePlayFromBoard(currentPlay);
             return false;
         }
 
@@ -373,8 +397,39 @@ public class ScrabbleGame {
         return true;
     }
 
+    /**
+     * Removes the most recent play from the plays list.
+     * @return True if a play was successfully removed, false if the list was empty.
+     */
+    public boolean removeMostRecentPlay() {
+        if (!plays.isEmpty()) {
+            Play removedPlay = plays.remove(plays.size()); // Remove the last play
+
+            System.out.println("Most recent play removed: " + removedPlay.getWordString());
+            return true;
+        }
+        // Add this after a play is added or removed to debug the plays list
+        System.out.println("No plays to remove.");
+        return false;
+    }
+
+    /**
+     * Removes the specified play from the plays list if it exists.
+     * @param play The play to remove.
+     * @return True if the play was found and removed, false otherwise.
+     */
+    public boolean removeSpecificPlay(Play play) {
+        if (plays.contains(play)) {
+            plays.remove(play); // Remove the play from the list
+            System.out.println("Play removed: " + play.getWordString());
+            return true;
+        }
+        System.out.println("Play not found: " + play.getWordString());
+        return false;
+    }
+
     public boolean firstPlayIsThroughCenter() {
-        if (plays.isEmpty()) {
+        if (playStack.isEmpty()) {
             for (Square square : currentPlay.getWordSquares()) {
                 if (square.getType() == Square.Types.CENTER) {
                     return true;
@@ -460,7 +515,7 @@ public class ScrabbleGame {
             if (DEBUG) System.out.printf("%s word is %s%n", debugTag, _pl.getWordString());
             if (!isValidWord(_pl.getWordString())) {
                 System.out.printf("%s'%s' is not a word.\n", debugTag, _pl.getWordString());
-                controller.setIsRepeated(true);
+                controller.setIsRepeated(false);
                 controller.handleAITurn();
                 return false;
             }
@@ -855,6 +910,7 @@ public class ScrabbleGame {
         return playerOrder;
     }
 
+
     public Play getCurrentPlay() {
         return currentPlay;
     }
@@ -893,6 +949,29 @@ public class ScrabbleGame {
 
     public void setCurrentPlayerIndex(int currentPlayerIndex) {
         this.currentPlayerIndex = currentPlayerIndex;
+    }
+
+    public Player getPlayerWithHighestScore() {
+        if (players == null || players.isEmpty()) {
+            return null; // Return null if the list is empty or null
+        }
+
+        Player highestScoringPlayer = players.get(0); // Assume the first player has the highest score initially
+        int highestScore = highestScoringPlayer.getScore();
+        boolean tie = false; // Flag to track if there is a tie
+
+        for (int i = 1; i < players.size(); i++) {
+            Player currentPlayer = players.get(i);
+            if (currentPlayer.getScore() > highestScore) {
+                highestScoringPlayer = currentPlayer; // Update highest scoring player
+                highestScore = currentPlayer.getScore(); // Update the highest score
+                tie = false; // Reset the tie flag as we have a new highest score
+            } else if (currentPlayer.getScore() == highestScore) {
+                tie = true; // Set tie flag if another player matches the highest score
+            }
+        }
+
+        return tie ? null : highestScoringPlayer; // Return null if there's a tie
     }
 
     public void setPlayerInputBoardPosition(String playerInputBoardPosition) {
