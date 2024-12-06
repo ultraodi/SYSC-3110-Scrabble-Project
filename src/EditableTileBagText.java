@@ -101,9 +101,4 @@ public class EditableTileBagText {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        EditableTileBagText tileBag = new EditableTileBagText();
-        tileBag.printTileBagToFile("resources/TileBagText.txt");
-    }
 }
