@@ -24,7 +24,7 @@
     - Unit tests for GUI elements
     - Win conditions for the game need to be implemented
     - Refactoring for clarity
-    - Packaging to run in a JAR file
+    - Packaging the resources to run in a JAR file. For now, the jar file must be run with the resource folder in the same directory
 
 ## How to play
 - GUI version of the game
