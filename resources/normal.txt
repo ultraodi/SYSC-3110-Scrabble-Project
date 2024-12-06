@@ -1,0 +1,134 @@
+<boardLayout>
+
+<coordinates>0, 0</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>7, 0</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>14, 0</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>0, 7</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>0, 14</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>7, 14</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>14, 7</coordinates>
+<type>TRIPLE_W</type>
+<coordinates>14, 14</coordinates>
+<type>TRIPLE_W</type>
+
+
+<coordinates>5, 1</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>5, 5</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>5, 9</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>5, 13</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>9, 1</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>9, 5</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>9, 9</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>9, 13</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>1, 5</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>1, 9</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>13, 5</coordinates>
+<type>TRIPLE_L</type>
+<coordinates>13, 9</coordinates>
+<type>TRIPLE_L</type>
+
+
+<coordinates>1, 1</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>2, 2</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>3, 3</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>4, 4</coordinates>
+<type>DOUBLE_W</type>
+
+<coordinates>1, 13</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>2, 12</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>3, 11</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>4, 10</coordinates>
+<type>DOUBLE_W</type>
+
+<coordinates>13, 1</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>12, 2</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>11, 3</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>10, 4</coordinates>
+<type>DOUBLE_W</type>
+
+<coordinates>13, 13</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>12, 12</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>11, 11</coordinates>
+<type>DOUBLE_W</type>
+<coordinates>10, 10</coordinates>
+<type>DOUBLE_W</type>
+
+
+<coordinates>3, 0</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>11, 0</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>6, 2</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>8, 2</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>0, 3</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>7, 3</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>14, 3</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>2, 6</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>6, 6</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>8, 6</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>12, 6</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>3, 7</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>11, 7</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>3, 14</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>11, 14</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>6, 12</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>8, 12</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>0, 11</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>7, 11</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>14, 11</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>2, 8</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>6, 8</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>8, 8</coordinates>
+<type>DOUBLE_L</type>
+<coordinates>12, 8</coordinates>
+<type>DOUBLE_L</type>
+
+
+</boardLayout>

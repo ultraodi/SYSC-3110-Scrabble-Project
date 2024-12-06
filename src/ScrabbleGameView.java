@@ -106,7 +106,7 @@ public class ScrabbleGameView extends JFrame implements Serializable {
     }
 
     public static String getBoardLayout() {
-        String[] options = {"normal", "diamond", "diagonal"};
+        String[] options = {"normal", "diamond"};
         String selectedLayout = (String) JOptionPane.showInputDialog(
                 null,
                 "Choose board layout:",
