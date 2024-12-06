@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.sql.SQLInvalidAuthorizationSpecException;
 
 /**
  * The Square class models the squares on a Scrabble Board.
@@ -81,7 +80,7 @@ public class Square implements Serializable {
     /**
      * Sets the type of the square to normal
      * */
-    public void setSquareNormal(Square.Types type){
+    public void setSquareType(Square.Types type){
         this.squareType = type;
     }
 

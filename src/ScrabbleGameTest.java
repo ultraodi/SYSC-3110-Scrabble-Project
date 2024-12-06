@@ -1,6 +1,5 @@
 import org.junit.Before;
 
-import java.net.SecureCacheResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -362,7 +361,7 @@ public class ScrabbleGameTest {
     @Before
     public void setUp() throws Exception {
         // Initialize game and controller
-        game = new ScrabbleGame();
+        game = new ScrabbleGame("normal");
         game.game();
         controller = new ScrabbleGameController(game, view);
 

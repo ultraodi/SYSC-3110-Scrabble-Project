@@ -98,7 +98,7 @@ public class PowerSetWithPermutations {
      * @return a list of unique, valid words generated from the input string.
      */
     public static List<String> generateValidWords(String str) {
-        ScrabbleGame game = new ScrabbleGame();
+        ScrabbleGame game = new ScrabbleGame("normal");
         List<String> allPossibleWords = generatePowerSetWithPermutations(str);
 
         // Use a LinkedHashSet to ensure uniqueness while preserving order

@@ -1,14 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 
 /**
  * The ScrabbleGame class simulates as at this version a turn by turn text version of the
@@ -56,7 +53,10 @@ public class ScrabbleGameView extends JFrame implements Serializable {
         this.setSize(1500, 1000);
         this.setResizable(true);
         this.setBackground(new Color(255, 230, 0));
-        tileBag = new TileBag();
+
+        String selectedLayout = getBoardLayout();
+
+        tileBag = new TileBag(selectedLayout);
         menuBar = new JMenuBar();
 
         currentColor = Color.GREEN;
@@ -103,6 +103,25 @@ public class ScrabbleGameView extends JFrame implements Serializable {
 
         // Set the menu bar for the frame
         setJMenuBar(menuBar);
+    }
+
+    public static String getBoardLayout() {
+        String[] options = {"normal", "diamond", "diagonal"};
+        String selectedLayout = (String) JOptionPane.showInputDialog(
+                null,
+                "Choose board layout:",
+                "Select board layout",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+        if (selectedLayout == null) {
+            JOptionPane.showMessageDialog(null, "No options selected", "No layout seleced", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(1);
+        }
+        System.out.println(selectedLayout);
+        return selectedLayout;
     }
 
     // Move the board creation to a separate method
@@ -297,45 +316,9 @@ public class ScrabbleGameView extends JFrame implements Serializable {
      * This method can be customized for actual Scrabble board layout.
      */
     private Square.Types getSquareType(int row, int col) {
-        // Triple Word Squares
-        if ((row == 0 && col == 0) || (row == 7 && col == 0) || (row == 14 && col == 0) ||
-                (row == 0 && col == 7) || (row == 0 && col == 14) || (row == 7 && col == 14) ||
-                (row == 14 && col == 7) || (row == 14 && col == 14)) {
-            return Square.Types.TRIPLE_WORD;
-        }
-
-        // Triple Letter Squares
-        if ((row == 5 && col == 1) || (row == 5 && col == 5) || (row == 5 && col == 9) || (row == 5 && col == 13) ||
-                (row == 9 && col == 1) || (row == 9 && col == 5) || (row == 9 && col == 9) || (row == 9 && col == 13) ||
-                (row == 1 && col == 5) || (row == 1 && col == 9) || (row == 13 && col == 5) || (row == 13 && col == 9)) {
-            return Square.Types.TRIPLE_LETTER;
-        }
-
-        // Double Word Squares (diagonal positions)
-        if ((row == 1 && col == 1) || (row == 2 && col == 2) || (row == 3 && col == 3) || (row == 4 && col == 4) ||
-                (row == 1 && col == 13) || (row == 2 && col == 12) || (row == 3 && col == 11) || (row == 4 && col == 10) ||
-                (row == 13 && col == 1) || (row == 12 && col == 2) || (row == 11 && col == 3) || (row == 10 && col == 4) ||
-                (row == 13 && col == 13) || (row == 12 && col == 12) || (row == 11 && col == 11) || (row == 10 && col == 10)) {
-            return Square.Types.DOUBLE_WORD;
-        }
-
-        // Double Letter Squares
-        if ((row == 3 && col == 0) || (row == 11 && col == 0) || (row == 6 && col == 2) || (row == 8 && col == 2) ||
-                (row == 0 && col == 3) || (row == 7 && col == 3) || (row == 14 && col == 3) || (row == 2 && col == 6) ||
-                (row == 6 && col == 6) || (row == 8 && col == 6) || (row == 12 && col == 6) || (row == 3 && col == 7) ||
-                (row == 11 && col == 7) || (row == 3 && col == 14) || (row == 11 && col == 14) || (row == 6 && col == 12) ||
-                (row == 8 && col == 12) || (row == 0 && col == 11) || (row == 7 && col == 11) || (row == 14 && col == 11) ||
-                (row == 2 && col == 8) || (row == 6 && col == 8) || (row == 8 && col == 8) || (row == 12 && col == 8)) {
-            return Square.Types.DOUBLE_LETTER;
-        }
-
-        // Center Square
-        if (row == 7 && col == 7) {
-            return Square.Types.CENTER;
-        }
-
-        // Normal Squares
-        return Square.Types.NORMAL;
+        ScrabbleBoard board = model.getScrabbleBoard();
+        Square square = board.getSquare(row, col);
+        return square.getType();
     }
 
 

@@ -1,11 +1,20 @@
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.File;
 import java.io.Serializable;
+import java.util.Scanner;
+
+import org.xml.sax.Attributes;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * The ScrabbleBoard class represents the board where the scrabble game is played.
  * @author Marvel Adotse-ogah
  * @version October 18, 2024
  */
-public class ScrabbleBoard implements Serializable {
+public class ScrabbleBoard extends DefaultHandler implements Serializable {
     // The following are ANSI codes for console text. Might not be portable on Windows computers.
     public static final String RESET = "\033[0m"; // Colour Reset
     public static final String RED = "\033[0;31m"; // Red
@@ -17,13 +26,18 @@ public class ScrabbleBoard implements Serializable {
 
     /** The array model of the scrabble board*/
     private Square[][] board;
+    private String layoutFilename;
+
+    private String content;
+    private int row;
+    private int col;
     /** The dimension of the board. Since the board is a square the size is singular.*/
     public static final int SIZE = 15;
 
     /**
      * Constructor for the ScrabbleBoard.
      */
-    public ScrabbleBoard() {
+    public ScrabbleBoard(String layoutFilename) throws Exception {
         /*
             The concept of the board.
             @ = Triple Word
@@ -69,6 +83,7 @@ public class ScrabbleBoard implements Serializable {
 
         // Building the board
         board = new Square[SIZE][SIZE];
+        this.layoutFilename = "resources/" + layoutFilename + ".txt";
 
         // Set all squares as null
         for (int row = 0; row < SIZE; row++) {
@@ -77,66 +92,64 @@ public class ScrabbleBoard implements Serializable {
             }
         }
 
-        // Triple Word Squares
-        board[0][0] = new Square(Square.Types.TRIPLE_WORD);
-        board[7][0] = new Square(Square.Types.TRIPLE_WORD);
-        board[14][0] = new Square(Square.Types.TRIPLE_WORD);
-        board[0][7] = new Square(Square.Types.TRIPLE_WORD);
-        board[0][14] = new Square(Square.Types.TRIPLE_WORD);
-        board[7][14] = new Square(Square.Types.TRIPLE_WORD);
-        board[14][7] = new Square(Square.Types.TRIPLE_WORD);
-        board[14][14] = new Square(Square.Types.TRIPLE_WORD);
+//        // Triple Word Squares
+//        board[0][0] = new Square(Square.Types.TRIPLE_WORD);
+//        board[7][0] = new Square(Square.Types.TRIPLE_WORD);
+//        board[14][0] = new Square(Square.Types.TRIPLE_WORD);
+//        board[0][7] = new Square(Square.Types.TRIPLE_WORD);
+//        board[0][14] = new Square(Square.Types.TRIPLE_WORD);
+//        board[7][14] = new Square(Square.Types.TRIPLE_WORD);
+//        board[14][7] = new Square(Square.Types.TRIPLE_WORD);
+//        board[14][14] = new Square(Square.Types.TRIPLE_WORD);
+//
+//        // Triple Letter Squares
+//        board[5][1] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[5][5] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[5][9] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[5][13] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[9][1] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[9][5] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[9][9] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[9][13] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[1][5] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[1][9] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[13][5] = new Square(Square.Types.TRIPLE_LETTER);
+//        board[13][9] = new Square(Square.Types.TRIPLE_LETTER);
+//
+//        // Double Word Squares
+//        for (int i = 0; i < 4; i++) {
+//            board[1 + i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
+//            board[1 + i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
+//            board[13 - i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
+//            board[13 - i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
+//        }
+//
+//        // Double Letter Squares
+//        board[3][0] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[11][0] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[6][2] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[8][2] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[0][3] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[7][3] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[14][3] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[2][6] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[6][6] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[8][6] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[12][6] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[3][7] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[11][7] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[3][14] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[11][14] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[6][12] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[8][12] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[0][11] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[7][11] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[14][11] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[2][8] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[6][8] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[8][8] = new Square(Square.Types.DOUBLE_LETTER);
+//        board[12][8] = new Square(Square.Types.DOUBLE_LETTER);
 
-        // Triple Letter Squares
-        board[5][1] = new Square(Square.Types.TRIPLE_LETTER);
-        board[5][5] = new Square(Square.Types.TRIPLE_LETTER);
-        board[5][9] = new Square(Square.Types.TRIPLE_LETTER);
-        board[5][13] = new Square(Square.Types.TRIPLE_LETTER);
-        board[9][1] = new Square(Square.Types.TRIPLE_LETTER);
-        board[9][5] = new Square(Square.Types.TRIPLE_LETTER);
-        board[9][9] = new Square(Square.Types.TRIPLE_LETTER);
-        board[9][13] = new Square(Square.Types.TRIPLE_LETTER);
-        board[1][5] = new Square(Square.Types.TRIPLE_LETTER);
-        board[1][9] = new Square(Square.Types.TRIPLE_LETTER);
-        board[13][5] = new Square(Square.Types.TRIPLE_LETTER);
-        board[13][9] = new Square(Square.Types.TRIPLE_LETTER);
-
-        // Double Word Squares
-        for (int i = 0; i < 4; i++) {
-            board[1 + i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
-            board[1 + i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
-            board[13 - i][1 + i] = new Square(Square.Types.DOUBLE_WORD);
-            board[13 - i][13 - i] = new Square(Square.Types.DOUBLE_WORD);
-        }
-
-        // Double Letter Squares
-        board[3][0] = new Square(Square.Types.DOUBLE_LETTER);
-        board[11][0] = new Square(Square.Types.DOUBLE_LETTER);
-        board[6][2] = new Square(Square.Types.DOUBLE_LETTER);
-        board[8][2] = new Square(Square.Types.DOUBLE_LETTER);
-        board[0][3] = new Square(Square.Types.DOUBLE_LETTER);
-        board[7][3] = new Square(Square.Types.DOUBLE_LETTER);
-        board[14][3] = new Square(Square.Types.DOUBLE_LETTER);
-        board[2][6] = new Square(Square.Types.DOUBLE_LETTER);
-        board[6][6] = new Square(Square.Types.DOUBLE_LETTER);
-        board[8][6] = new Square(Square.Types.DOUBLE_LETTER);
-        board[12][6] = new Square(Square.Types.DOUBLE_LETTER);
-        board[3][7] = new Square(Square.Types.DOUBLE_LETTER);
-        board[11][7] = new Square(Square.Types.DOUBLE_LETTER);
-        board[3][14] = new Square(Square.Types.DOUBLE_LETTER);
-        board[11][14] = new Square(Square.Types.DOUBLE_LETTER);
-        board[6][12] = new Square(Square.Types.DOUBLE_LETTER);
-        board[8][12] = new Square(Square.Types.DOUBLE_LETTER);
-        board[0][11] = new Square(Square.Types.DOUBLE_LETTER);
-        board[7][11] = new Square(Square.Types.DOUBLE_LETTER);
-        board[14][11] = new Square(Square.Types.DOUBLE_LETTER);
-        board[2][8] = new Square(Square.Types.DOUBLE_LETTER);
-        board[6][8] = new Square(Square.Types.DOUBLE_LETTER);
-        board[8][8] = new Square(Square.Types.DOUBLE_LETTER);
-        board[12][8] = new Square(Square.Types.DOUBLE_LETTER);
-
-        // Center Square
-        board[7][7] = new Square(Square.Types.CENTER);
 
         // Normal Squares
         for (int row = 0; row < SIZE; row++) {
@@ -146,6 +159,16 @@ public class ScrabbleBoard implements Serializable {
                 }
             }
         }
+
+        // Read layout defined in the file layoutFilename
+        try {
+            readSAX(new File(this.layoutFilename));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // Center Square
+        board[7][7] = new Square(Square.Types.CENTER);
     }
 
     /**
@@ -240,10 +263,10 @@ public class ScrabbleBoard implements Serializable {
     public void resetSquare(String input, int row, int col, ScrabbleGame.Direction direction){
         for(int i = 0; i < input.length(); i++){
             if (direction == ScrabbleGame.Direction.HORIZONTAL){
-                board[row][col + i].setSquareNormal(Square.Types.NORMAL);
+                board[row][col + i].setSquareType(Square.Types.NORMAL);
             }
             else if (direction == ScrabbleGame.Direction.VERTICAL){
-                board[row + i][col].setSquareNormal(Square.Types.NORMAL);
+                board[row + i][col].setSquareType(Square.Types.NORMAL);
             }
         }
     }
@@ -269,6 +292,81 @@ public class ScrabbleBoard implements Serializable {
 
     public Square[][] getBoardSquare(){
         return board;
+    }
+
+    public String getLayout() {
+        return layoutFilename;
+    }
+
+    public void readSAX(File f) throws Exception {
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser s = spf.newSAXParser();
+        s.parse(f, this);
+    }
+
+    /**
+     * Overrides the corresponding method in DefaultHandler
+     * @param u The Namespace URI, or the empty string if the
+     *        element has no Namespace URI or if Namespace
+     *        processing is not being performed.
+     * @param ln The local name (without prefix), or the
+     *        empty string if Namespace processing is not being
+     *        performed.
+     * @param qName The qualified name (with prefix), or the
+     *        empty string if qualified names are not available.
+     * @param a The attributes attached to the element.  If
+     *        there are no attributes, it shall be an empty
+     *        Attributes object.
+     */
+    @Override
+    public void startElement(String u, String ln, String qName, Attributes a) {
+        // no op
+    }
+
+    /**
+     * Overrides the corresponding method in DefaultHandler
+     * @param uri The Namespace URI, or the empty string if the
+     *        element has no Namespace URI or if Namespace
+     *        processing is not being performed.
+     * @param localName The local name (without prefix), or the
+     *        empty string if Namespace processing is not being
+     *        performed.
+     * @param qName The qualified name (with prefix), or the
+     *        empty string if qualified names are not available.
+     */
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        if (qName.equals("coordinates")) {
+            Scanner tokenizer = new Scanner(content);
+            tokenizer.useDelimiter(", ");
+            row = tokenizer.nextInt();
+            col = tokenizer.nextInt();
+
+        } else if (qName.equals("type")) {
+            if (content.equals("TRIPLE_W")) {
+                board[row][col].setSquareType(Square.Types.TRIPLE_WORD);
+            } else if (content.equals("TRIPLE_L")) {
+                board[row][col].setSquareType(Square.Types.TRIPLE_LETTER);
+            } else if (content.equals("DOUBLE_W")) {
+                board[row][col].setSquareType(Square.Types.DOUBLE_WORD);
+            } else if (content.equals("DOUBLE_L")) {
+                board[row][col].setSquareType(Square.Types.DOUBLE_LETTER);
+            }
+        } else if (qName.equals("boardLayout")) {
+            // No operation
+        }
+    }
+
+    /**
+     * Overrides the corresponding method in DefaultHandler
+     * @param ch The characters.
+     * @param start The start position in the character array.
+     * @param length The number of characters to use from the
+     *               character array.
+     */
+    @Override
+    public void characters(char[] ch, int start, int length) {
+        content = new String(ch, start, length);
     }
 
     /**

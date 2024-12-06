@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,6 +23,8 @@ public class ScrabbleGame implements Serializable {
     private Player playerTurn;
     /** The scrabble board for the game*/
     private final ScrabbleBoard scrabbleBoard;
+
+    private String boardLayout;
     /** The tile bag for the game*/
     private TileBag tileBag;
     /** Holds the history of the successful words made by the players*/
@@ -68,10 +69,14 @@ public class ScrabbleGame implements Serializable {
     /**
      * Constructor for the ScrabbleGame class.
      */
-    public ScrabbleGame() {
+    public ScrabbleGame(String layout) {
         players = new ArrayList<>();
-        scrabbleBoard = new ScrabbleBoard();
-        tileBag = new TileBag();
+        try {
+            scrabbleBoard = new ScrabbleBoard(layout);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        tileBag = new TileBag(layout);
         plays = new ArrayList<>();
         playerTurn = null;
         // The URL class throws the MalformedURLException so the program is required to handle it.
@@ -1031,7 +1036,8 @@ public class ScrabbleGame implements Serializable {
     }
 
     public static void main(String[] args) {
-        ScrabbleGame game = new ScrabbleGame();
+        String layout = ScrabbleGameView.getBoardLayout();
+        ScrabbleGame game = new ScrabbleGame(layout);
         game.game();
     }
 

@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class TileBag implements Serializable {
     /**
      * Constructor for the TileBag class.
      * */
-    public TileBag() {
+    public TileBag(String layout) {
         LETTER_FREQUENCY = new HashMap<>();
         LETTER_VALUE = new HashMap<>();
         numTilesLeft = 0;
@@ -43,7 +42,11 @@ public class TileBag implements Serializable {
 
         // Initialize the letter value
         initializeLetterValues();
-        gameBoard = new ScrabbleBoard();
+        try {
+            gameBoard = new ScrabbleBoard(layout);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
